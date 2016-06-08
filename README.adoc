@@ -1,0 +1,17 @@
+= Gatling tests for James server
+
+For now the only tested protocol is JMAP.
+
+For now, you need to have a running dockerized James JMAP server running on the same computer than your Gatling host.
+
+== Available scenario
+
+=== JmapAuthentication
+
+Authenticate a single JMAP user, one time.
+
+You need to :
+
+ - Execute the provisioning script with as a first parameter the docker ID of the James container.
+ - Copy the JmapAuthentication script to the user-files folder of your gatling installation
+ - Execute the JmapAuthentication scenario
