@@ -5,16 +5,7 @@ import io.gatling.http.Predef._
 
 import scala.concurrent.duration._
 
-class JmapAuthentication extends Simulation {
-
-  val domain = "domain-jmapauthentication.tld"
-  val username = "username@" + domain
-  val password = "password"
-
-  val httpProtocol = http
-    .baseURL("http://127.0.0.1")
-    .acceptHeader("application/json")
-    .contentTypeHeader("application/json; charset=UTF-8")
+object JmapAuthentication {
 
   def obtainContinuationToken(username: String) = exec(
     http("obtainContinuationToken")
@@ -43,8 +34,4 @@ class JmapAuthentication extends Simulation {
     .pause(1 second)
     .exec(obtainAccessToken(password))
 
-  val scn = scenario("JmapAuthentication")
-    .exec(authentication(username, password))
-
-  setUp(scn.inject(atOnceUsers(1))).protocols(httpProtocol)
 }
