@@ -4,14 +4,33 @@ For now the only tested protocol is JMAP.
 
 For now, you need to have a running dockerized James JMAP server running on the same computer than your Gatling host.
 
+You can run all the scenari via sbt :
+
+.bash
+----
+$ sbt
+ > gatling:test
+----
+
+Run a specific scenario via sbt :
+
+.bash
+----
+$ sbt
+ > gatling:testOnly SCENARIO_FQDN
+----
+
 == Available scenario
 
-=== JmapAuthentication
+=== JmapAuthenticationScenario
+
+FQDN :
+
+.scala
+----
+org.apache.james.gatling.jmap.scenari.JmapAuthenticationScenario
+----
 
 Authenticate a single JMAP user, one time.
 
-You need to :
-
- - Execute the provisioning script with as a first parameter the docker ID of the James container.
- - Copy the JmapAuthentication script to the user-files folder of your gatling installation
- - Execute the JmapAuthentication scenario
+You need to execute the provisioning script with as a first parameter the docker ID of the James container before running it.
