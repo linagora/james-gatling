@@ -31,4 +31,4 @@ FQDN :
 org.apache.james.gatling.jmap.scenari.JmapAuthenticationScenario
 ----
 
-Authenticate 10 JMAP user, one time. Demonstrate user auto-provisioning threw James WebAdmin server.
+Authenticate 10 JMAP users, one time. Demonstrate user auto-provisioning through James WebAdmin server.
