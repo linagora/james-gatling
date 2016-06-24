@@ -23,7 +23,7 @@ object JmapMailboxes {
   def extractOutboxId(httpRequestBuilder: HttpRequestBuilder) = extractMailboxWithRole("outbox", "outboxMailboxId")(httpRequestBuilder)
 
   def extractMailboxesIds(httpRequestBuilder: HttpRequestBuilder) = httpRequestBuilder
-    .check(jsonPath("$.mailboxes.list[*].id").saveAs("mailboxIds"))
+    .check(jsonPath("$[0][1].list[*].id").saveAs("mailboxIds"))
 
   def extractMailboxWithRole(role: String, sessionVariableName: String)(httpRequestBuilder: HttpRequestBuilder) =
     extractMailboxWithAttribute("role")(role, sessionVariableName)(httpRequestBuilder)
@@ -31,7 +31,7 @@ object JmapMailboxes {
     extractMailboxWithAttribute("name")(name, sessionVariableName)(httpRequestBuilder)
 
   def extractMailboxWithAttribute(attributeKey: String)(value: String, sessionVariableName: String)(httpRequestBuilder: HttpRequestBuilder): HttpRequestBuilder = {
-    val path: String = s"$$.mailboxes.list[?(@.$attributeKey == '$value')].id"
+    val path: String = s"$$[0][1].list[?(@.$attributeKey == '$value')].id"
     httpRequestBuilder.check(jsonPath(path).saveAs(sessionVariableName))
   }
 
@@ -40,7 +40,7 @@ object JmapMailboxes {
   def allMailboxesRequest = JmapAuthentication.authenticatedQuery("getMailboxes", "/jmap")
     .body(StringBody("""[["getMailboxes", {}, "#0"]]"""))
     .check(status.is(200))
-    .check(jsonPath("error").notExists)
+    .check(jsonPath("$.error").notExists)
 
   class PipelineElement (val dataExtractor: HttpRequestBuilder => HttpRequestBuilder, val next: Option[PipelineElement]) {
 
