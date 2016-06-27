@@ -7,22 +7,22 @@ import scala.concurrent.duration._
 
 object JmapAuthentication {
 
-  def obtainContinuationToken(username: String) = exec(
+  def obtainContinuationToken() = exec(
     http("obtainContinuationToken")
       .post("/authentication")
-      .body(StringBody(s"""{"username": "$username",
+      .body(StringBody("""{"username": "${username}",
         "clientName": "Mozilla Thunderbird",
         "clientVersion": "42.0",
         "deviceName": "Joe Blogg’s iPhone"}"""))
       .check(status.is(200))
       .check(jsonPath("$.continuationToken").saveAs("continuationToken")))
 
-  def obtainAccessToken(password: String) = exec(
+  def obtainAccessToken() = exec(
     http("obtainAccessToken")
       .post("/authentication")
-      .body(StringBody(s"""{"token": "$${continuationToken}",
+      .body(StringBody("""{"token": "${continuationToken}",
         "method": "password",
-        "password": "$password"}"""))
+        "password": "${password}"}"""))
       .check(status.is(201))
       .check(jsonPath("$.accessToken").saveAs("accessToken"))
       .check(jsonPath("$.api").saveAs("api"))
@@ -30,8 +30,8 @@ object JmapAuthentication {
       .check(jsonPath("$.upload").saveAs("upload"))
       .check(jsonPath("$.download").saveAs("download")))
 
-  def authentication(username: String, password: String) = obtainContinuationToken(username)
+  def authentication() = obtainContinuationToken()
     .pause(1 second)
-    .exec(obtainAccessToken(password))
+    .exec(obtainAccessToken())
 
 }

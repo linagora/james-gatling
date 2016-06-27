@@ -2,7 +2,7 @@
 
 For now the only tested protocol is JMAP.
 
-For now, you need to have a running dockerized James JMAP server running on the same computer than your Gatling host.
+For now, you need to have a running dockerized James JMAP server running on the same computer than your Gatling host. It needs to export the webAdmin over port 8000.
 
 You can run all the scenari via sbt :
 
@@ -31,6 +31,4 @@ FQDN :
 org.apache.james.gatling.jmap.scenari.JmapAuthenticationScenario
 ----
 
-Authenticate a single JMAP user, one time.
-
-You need to execute the provisioning script with as a first parameter the docker ID of the James container before running it.
+Authenticate 10 JMAP users, one time. Demonstrate user auto-provisioning through James WebAdmin server.
