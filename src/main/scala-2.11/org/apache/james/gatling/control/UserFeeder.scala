@@ -1,60 +1,26 @@
 package org.apache.james.gatling.control
 
-import java.util.UUID
-
 import io.gatling.core.Predef._
 
+import scala.concurrent.duration.Duration.Inf
+import scala.concurrent.{Await, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.util.Success
+import scala.concurrent.Awaitable
 
 object UserFeeder {
 
-  val USERNAME: String = "username"
-  val PASSWORD: String = "password"
+  type UserFeeder = Array[Map[String, String]]
 
-  def createUserFeeder(userCount: Int): Array[Map[String, String]] = {
-    toFeeder(createRegisteredUsers(userCount))
-  }
+  val USERNAME_SESSION_PARAM: String = "username"
+  val PASSWORD_SESSION_PARAM: String = "password"
 
-  def createUserFeederWithInboxAndOutbox(userCount: Int): Array[Map[String, String]] = {
-    toFeeder(
-      decorateWithInboxAndOutbox(
-        createRegisteredUsers(userCount)))
-  }
+  def createCompletedUserFeederWithInboxAndOutbox(userCount: Int): UserFeeder =
+    await(toFeeder(UserCreator.createUsersWithInboxAndOutbox(userCount)))
 
-  def decorateWithInboxAndOutbox(users: List[User]): List[User] = {
-    Future.sequence(
-      users.map(user => Future.sequence(
-        List(JamesWebAdministration.createInbox(user.username),
-          JamesWebAdministration.createOutbox(user.username))))
-    ).get
-    users
-  }
+  private def await[T](f: Awaitable[T]): T = Await.result(f, Inf)
 
-  def createRegisteredUsers(userCount: Int): List[User] = {
-    val domain = Domain(UUID.randomUUID().toString)
-    JamesWebAdministration.addDomain(domain).get
-
-    registerUsers(generateUsers(userCount, domain))
-  }
-
-  def generateUsers(userCount: Int, domain: Domain): List[User] = {
-    (0 until userCount)
-      .map(i => User(
-        Username(s"""${UUID.randomUUID().toString}@${domain.value}"""),
-        Password(UUID.randomUUID().toString)))
-      .toList
-  }
-
-  def registerUsers(users: List[User]): List[User] = {
-    Future.sequence(
-      users.map(user => JamesWebAdministration.addUser(user)))
-      .get
-    users
-  }
-
-  def toFeeder(users: List[User]): Array[Map[String, String]] = {
-    users.map(user => Map(USERNAME -> user.username.value, PASSWORD -> user.password.value)).toArray
-  }
-
+  private def toFeeder(users: Seq[Future[User]]): Future[UserFeeder] =
+    Future.sequence(users)
+      .map(users => users.map(user => Map(USERNAME_SESSION_PARAM -> user.username.value, PASSWORD_SESSION_PARAM -> user.password.value)).toArray)
 }

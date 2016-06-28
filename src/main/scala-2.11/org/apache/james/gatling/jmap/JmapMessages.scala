@@ -8,6 +8,10 @@ import org.apache.james.gatling.control.UserFeeder
 import org.apache.james.gatling.utils.{JmapChecks, RandomStringGenerator}
 
 import scala.util.Random
+import org.apache.james.gatling.control.{User, Username}
+import scala.concurrent.Future
+import scala.concurrent.Await
+import scala.concurrent.duration.Duration.Inf
 
 case class MessageId(id: String = RandomStringGenerator.randomString)
 case class RecipientAddress(address: String)
@@ -37,17 +41,15 @@ object JmapMessages {
       .check(status.is(200))
       .check(JmapChecks.noError)
 
-  def sendMessagesRandomly(feeder: Array[Map[String, String]]) =
+  def sendMessagesRandomly(users: Seq[Future[User]]) =
     sendMessages(
       messageId = MessageId(),
-      recipientAddress = selectectRecipientAtRandom(feeder),
+      recipientAddress = selectRecipientAtRandom(users),
       subject = Subject(),
       textBody = TextBody())
 
-  def selectectRecipientAtRandom(feeder: Array[Map[String, String]]) =
+  def selectRecipientAtRandom(users: Seq[Future[User]]) =
     RecipientAddress(
-      feeder(Random.nextInt(feeder.length))
-        .get(UserFeeder.USERNAME_SESSION_PARAM)
-        .get)
+      Await.result(users(Random.nextInt(users.length)), Inf).username.value)
 
 }
