@@ -18,15 +18,16 @@ object UserFeeder {
 
   def createUserFeederWithInboxAndOutbox(userCount: Int): Array[Map[String, String]] = {
     toFeeder(
-      decorateWithInboxAndOutbox(
+      decorateWithSystemMailboxes(
         createRegisteredUsers(userCount)))
   }
 
-  def decorateWithInboxAndOutbox(users: List[User]): List[User] = {
+  def decorateWithSystemMailboxes(users: List[User]): List[User] = {
     Future.sequence(
       users.map(user => Future.sequence(
         List(JamesWebAdministration.createInbox(user.username),
-          JamesWebAdministration.createOutbox(user.username))))
+          JamesWebAdministration.createOutbox(user.username),
+          JamesWebAdministration.createSentBox(user.username))))
     ).get
     users
   }

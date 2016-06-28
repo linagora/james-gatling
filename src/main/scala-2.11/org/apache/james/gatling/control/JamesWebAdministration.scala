@@ -27,5 +27,6 @@ object JamesWebAdministration {
 
   def createInbox(username: Username) = wsClient.url(s"$baseUrl/users/${username.value}/mailboxes/INBOX").put("")
   def createOutbox(username: Username) = wsClient.url(s"$baseUrl/users/${username.value}/mailboxes/outbox").put("")
+  def createSentBox(username: Username) = wsClient.url(s"$baseUrl/users/${username.value}/mailboxes/sent").put("")
 
 }
