@@ -32,3 +32,25 @@ org.apache.james.gatling.jmap.scenari.JmapAuthenticationScenario
 ----
 
 Authenticate 10 JMAP users, one time. Demonstrate user auto-provisioning through James WebAdmin server.
+
+=== JmapSendMessagesScenario
+
+FQDN :
+
+.scala
+----
+org.apache.james.gatling.jmap.scenari.JmapSendMessagesScenario
+----
+
+Authenticate 100 JMAP users, one time. Then they all retrieve their mailboxes, and then sends messages 360 messages each to other recipients.
+
+=== JmapGetMailboxesScenario
+
+FQDN :
+
+.scala
+----
+org.apache.james.gatling.jmap.scenari.JmapSendMessagesScenario
+----
+
+Authenticate 200 JMAP users, one time. Then they all retrieve 360 times their mailboxes each.
