@@ -10,7 +10,7 @@ object CommonSteps {
 
   def authentication(userCount: Int) =
     scenario("JmapAuthentication")
-    .feed(UserFeeder.createUserFeederWithInboxAndOutbox(userCount))
+    .feed(UserFeeder.createCompletedUserFeederWithInboxAndOutbox(userCount))
     .pause(1 second, 30 second)
     .exec(JmapAuthentication.authentication())
     .pause(1 second)
