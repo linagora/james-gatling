@@ -57,16 +57,11 @@ object JmapMessages {
     JmapAuthentication.authenticatedQuery("listMessages", "/jmap")
       .body(StringBody(
         """[[
-          "getMessageList",
-          {
-            "filter": {
-              "inMailboxes": ["${inboxMailboxId}"]
-            }
-          },
+          "getMessageList", { },
           "#0"
           ]]"""))
       .check(status.is(200))
       .check(jsonPath("$.error").notExists)
-      .check(jsonPath("$[0][1].messageIds").saveAs("messageIds"))
+      .check(jsonPath("$[0][1].messageIds[*]").findAll.saveAs("messageIds"))
 
 }
