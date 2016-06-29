@@ -60,4 +60,35 @@ object JmapMessages {
       .check(jsonPath("$.error").notExists)
       .check(jsonPath("$[0][1].messageIds[*]").findAll.saveAs("messageIds"))
 
+  def getRandomMessage() =
+    JmapAuthentication.authenticatedQuery("getMessages", "/jmap")
+      .body(StringBody(
+        """[[
+          "getMessages",
+          {
+            "ids": ["${messageIds.random()}"],
+            "properties": [
+              "id",
+              "mailboxIds",
+              "isUnread",
+              "isFlagged",
+              "isAnswered",
+              "isDraft",
+              "hasAttachment",
+              "from",
+              "to",
+              "cc",
+              "bcc",
+              "subject",
+              "date",
+              "size",
+              "textBody",
+              "htmlBody"
+            ]
+          },
+          "#0"
+          ]]"""))
+      .check(status.is(200))
+      .check(jsonPath("$.error").notExists)
+
 }
