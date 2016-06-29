@@ -49,4 +49,20 @@ object JmapMessages {
         .get(UserFeeder.USERNAME)
         .get)
 
+  def listMessages() =
+    JmapAuthentication.authenticatedQuery("listMessages", "/jmap")
+      .body(StringBody(
+        """[[
+          "getMessageList",
+          {
+            "filter": {
+              "inMailboxes": ["${inboxMailboxId}"]
+            }
+          },
+          "#0"
+          ]]"""))
+      .check(status.is(200))
+      .check(jsonPath("$.error").notExists)
+      .check(jsonPath("$[0][1].messageIds").saveAs("messageIds"))
+
 }
