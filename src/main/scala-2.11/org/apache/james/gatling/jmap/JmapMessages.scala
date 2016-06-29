@@ -1,7 +1,5 @@
 package org.apache.james.gatling.jmap
 
-import java.util.UUID
-
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import org.apache.james.gatling.control.UserFeeder
@@ -17,6 +15,9 @@ case class MessageId(id: String = RandomStringGenerator.randomString)
 case class RecipientAddress(address: String)
 case class Subject(subject: String = RandomStringGenerator.randomString)
 case class TextBody(text: String = RandomStringGenerator.randomString)
+
+case class RequestTitle(title: String)
+case class Property(name: String)
 
 object JmapMessages {
 
@@ -61,7 +62,7 @@ object JmapMessages {
           "#0"
           ]]"""))
       .check(status.is(200))
-      .check(jsonPath("$.error").notExists)
+      .check(JmapChecks.noError)
       .check(jsonPath("$[0][1].messageIds[*]").findAll.saveAs("messageIds"))
 
   def getRandomMessage() =
@@ -93,6 +94,28 @@ object JmapMessages {
           "#0"
           ]]"""))
       .check(status.is(200))
-      .check(jsonPath("$.error").notExists)
+      .check(JmapChecks.noError)
+
+  def markAsRead() = performUpdate(RequestTitle("markAsRead"), Property("isUnread"), value = false)
+  def markAsAnswered() = performUpdate(RequestTitle("markAsAnswered"), Property("isAnswered"), value = true)
+  def markAsFlagged() = performUpdate(RequestTitle("markAsFlagged"), Property("isFlagged"), value = true)
+
+  def performUpdate(title: RequestTitle, property: Property, value: Boolean) = {
+    JmapAuthentication.authenticatedQuery(title.title, "/jmap")
+      .body(StringBody(
+        s"""[[
+          "setMessages",
+          {
+            "update": {
+              "$${messageIds.random()}" : {
+                "${property.name}": "$value"
+              }
+            }
+          },
+          "#0"
+          ]]"""))
+      .check(status.is(200))
+      .check(JmapChecks.noError)
+  }
 
 }
