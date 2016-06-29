@@ -92,4 +92,26 @@ object JmapMessages {
       .check(status.is(200))
       .check(jsonPath("$.error").notExists)
 
+  def markAsRead() = performUpdate("markAsRead", "isUnread", "false")
+  def markAsAnswered() = performUpdate("markAsAnswered", "isAnswered", "true")
+  def markAsFlagged() = performUpdate("markAsFlagged", "isFlagged", "true")
+
+  def performUpdate(title: String, property: String, value: String) = {
+    JmapAuthentication.authenticatedQuery(title, "/jmap")
+      .body(StringBody(
+        s"""[[
+          "setMessages",
+          {
+            "update": {
+              "$${messageIds.random()}" : {
+                "$property": "$value"
+              }
+            }
+          },
+          "#0"
+          ]]"""))
+      .check(status.is(200))
+      .check(jsonPath("$.error").notExists)
+  }
+
 }
