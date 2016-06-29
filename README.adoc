@@ -76,3 +76,18 @@ org.apache.james.gatling.jmap.scenari.JmapGetMessagesScenario
 ----
 
 Authenticate 100 JMAP users, one time. Then they all retrieve their system mailboxes. Then they send each other 10 mails each at random. Then wait 30 seconds for mails to be delivered. They retrieve their mails list using GetMessagesList. Then they retrieve their mails 250 times, at random.
+
+=== JmapGetMessagesScenario
+
+FQDN :
+
+.scala
+----
+org.apache.james.gatling.jmap.scenari.JmapGetMessagesScenario
+----
+
+Authenticate 100 JMAP users, one time. Then they all retrieve their system mailboxes. Then they send each other 10 mails each at random. Then wait 30 seconds for mails to be delivered. They retrieve their mails list using GetMessagesList. Then they update their mail 250 times with the following properties :.
+
+ - 70% mark mails as READ
+ - 20% mark mails as ANSWERED
+ - 10% mark mails as FLAGGED
