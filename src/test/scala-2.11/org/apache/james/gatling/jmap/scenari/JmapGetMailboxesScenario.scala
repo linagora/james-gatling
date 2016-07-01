@@ -1,6 +1,8 @@
 package org.apache.james.gatling.jmap.scenari
 
 import io.gatling.core.Predef._
+import org.apache.james.gatling.control.UserFeeder
+import org.apache.james.gatling.control.UserFeeder.UserFeeder
 import org.apache.james.gatling.jmap.scenari.common.CommonSteps
 import org.apache.james.gatling.jmap.{HttpSettings, JmapMailboxes}
 
