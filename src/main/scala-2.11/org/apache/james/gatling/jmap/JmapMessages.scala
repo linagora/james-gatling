@@ -59,7 +59,7 @@ object JmapMessages {
           "#0"
           ]]"""))
       .check(status.is(200))
-      .check(jsonPath("$.error").notExists)
+      .check(JmapChecks.noError)
       .check(jsonPath("$[0][1].messageIds[*]").findAll.saveAs("messageIds"))
 
   def getRandomMessage() =
@@ -91,7 +91,7 @@ object JmapMessages {
           "#0"
           ]]"""))
       .check(status.is(200))
-      .check(jsonPath("$.error").notExists)
+      .check(JmapChecks.noError)
 
   def markAsRead() = performUpdate(RequestTitle("markAsRead"), Property("isUnread"), value = false)
   def markAsAnswered() = performUpdate(RequestTitle("markAsAnswered"), Property("isAnswered"), value = true)
@@ -112,7 +112,7 @@ object JmapMessages {
           "#0"
           ]]"""))
       .check(status.is(200))
-      .check(jsonPath("$.error").notExists)
+      .check(JmapChecks.noError)
   }
 
 }
