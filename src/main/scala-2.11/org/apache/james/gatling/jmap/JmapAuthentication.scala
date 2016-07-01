@@ -2,6 +2,7 @@ package org.apache.james.gatling.jmap
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
+import io.gatling.http.request.builder.HttpRequestBuilder
 
 import scala.concurrent.duration._
 
@@ -33,5 +34,9 @@ object JmapAuthentication {
   def authentication() = obtainContinuationToken()
     .pause(1 second)
     .exec(obtainAccessToken())
+
+  def authenticatedQuery(requestName: String, endPoint: String): HttpRequestBuilder = http(requestName)
+    .post(endPoint)
+    .header("Authorization", "${accessToken}")
 
 }

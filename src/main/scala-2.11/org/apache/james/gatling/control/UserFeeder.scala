@@ -1,30 +1,59 @@
 package org.apache.james.gatling.control
 
-import java.util.UUID
-
 import io.gatling.core.Predef._
 
+import scala.concurrent.duration.Duration.Inf
+import scala.concurrent.{Await, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.util.Success
 
 object UserFeeder {
 
-  def createUserFeeder(userCount: Int): Array[Map[String, String]] = {
-    val domain = Domain(UUID.randomUUID().toString)
+  type UserFeeder = Array[Map[String, String]]
 
+  val USERNAME_SESSION_PARAM: String = "username"
+  val PASSWORD_SESSION_PARAM: String = "password"
+
+  def createUserFeeder(userCount: Int): UserFeeder =
+    toFeeder(
+      awaitInitialization(
+        createRegisteredUserFutures(userCount)))
+
+  def createUserFeederWithInboxAndOutbox(userCount: Int): UserFeeder =
+    toFeeder(
+      awaitInitialization(
+        createRegisteredUserFutures(userCount)
+          .map(userFuture => userFuture.andThen {
+            case Success(user) => registerSystemMailboxes(user)
+          })))
+
+  private def awaitInitialization(userFutures: List[Future[User]]) =
+    Await.result(
+      Future.sequence(userFutures),
+      Inf)
+
+  private def createRegisteredUserFutures(userCount: Int): List[Future[User]] = {
+    val domain = Domain.random
     JamesWebAdministration.addDomain(domain).get
 
-    val users = (0 until userCount)
-      .map(i => User(
-        Username(s"""${UUID.randomUUID().toString}@${domain.value}"""),
-        Password(UUID.randomUUID().toString)))
+    generateUsers(userCount, domain)
+      .map(JamesWebAdministration.addUser)
+  }
+
+  private def generateUsers(userCount: Int, domain: Domain): List[User] =
+    (0 until userCount)
+      .map(i => User.random(domain))
       .toList
 
+  def registerSystemMailboxes(user: User): Future[User] = {
     Future.sequence(
-      users.map(user => JamesWebAdministration.addUser(user)))
-      .get
-
-    users.map(user => Map("username" -> user.username.value, "password" -> user.password.value)).toArray
+      List(JamesWebAdministration.createInbox(user.username),
+        JamesWebAdministration.createOutbox(user.username),
+        JamesWebAdministration.createSentBox(user.username)))
+      .map(responseList => user)
   }
+
+  private def toFeeder(users: List[User]): UserFeeder =
+    users.map(user => Map(USERNAME_SESSION_PARAM -> user.username.value, PASSWORD_SESSION_PARAM -> user.password.value)).toArray
 
 }
