@@ -44,22 +44,22 @@ object JamesWebAdministration {
       .put(s"""{"password":"${user.password.value}"}""")
       .map(response => user)
 
-  def getMailboxesUrl(username: Username): String = {
-    s"$baseUrl/users/${username.value}/mailboxes"
+  def getMailboxesUrl(username: Username): URL = {
+    new URL(s"$baseUrl/users/${username.value}/mailboxes")
   }
 
   def createInbox(username: Username) = {
-    val mailboxesUrl: String = getMailboxesUrl(username)
+    val mailboxesUrl = getMailboxesUrl(username)
     wsClient.url(s"$mailboxesUrl/INBOX").put("")
   }
 
   def createOutbox(username: Username) = {
-    val mailboxesUrl: String = getMailboxesUrl(username)
+    val mailboxesUrl = getMailboxesUrl(username)
     wsClient.url(s"$mailboxesUrl/outbox").put("")
   }
 
   def createSentBox(username: Username) = {
-    val mailboxesUrl: String = getMailboxesUrl(username)
+    val mailboxesUrl = getMailboxesUrl(username)
     wsClient.url(s"$mailboxesUrl/sent").put("")
   }
 
