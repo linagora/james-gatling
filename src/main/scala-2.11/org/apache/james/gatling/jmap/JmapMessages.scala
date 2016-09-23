@@ -40,6 +40,7 @@ object JmapMessages {
           ]]"""))
       .check(status.is(200))
       .check(JmapChecks.noError)
+      .check(JmapChecks.created(messageId))
 
   def sendMessagesRandomly(users: Seq[Future[User]]) =
     sendMessages(
