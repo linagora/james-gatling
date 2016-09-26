@@ -15,7 +15,7 @@ class JmapSendMessagesScenario extends Simulation {
   val loopVariableName = "any"
 
   val scn = scenario("JmapSendMessages")
-    .exec(CommonSteps.provisionSystemMailboxes(userCount))
+    .exec(CommonSteps.provisionSystemMailboxes(users))
     .repeat(360, loopVariableName) {
       exec(JmapMessages.sendMessagesRandomly(users))
         .pause(1 second , 2 seconds)
