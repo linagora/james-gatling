@@ -15,8 +15,8 @@ object UserFeeder {
   val USERNAME_SESSION_PARAM: String = "username"
   val PASSWORD_SESSION_PARAM: String = "password"
 
-  def createCompletedUserFeederWithInboxAndOutbox(userCount: Int): UserFeeder =
-    await(toFeeder(UserCreator.createUsersWithInboxAndOutbox(userCount)))
+  def createCompletedUserFeederWithInboxAndOutbox(users: Seq[Future[User]]): UserFeeder =
+    await(toFeeder(users))
 
   private def await[T](f: Awaitable[T]): T = Await.result(f, Inf)
 
