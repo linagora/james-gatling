@@ -29,11 +29,8 @@ object Password {
   def random = Password(RandomStringGenerator.randomString)
 }
 
-object JamesWebAdministration {
-
+class JamesWebAdministration(val baseUrl: URL) {
   val wsClient = NingWSClient()
-
-  val baseUrl = new URL("http://172.17.0.4:8000")
 
   def addDomain(domain: Domain): Future[Domain] = wsClient.url(s"$baseUrl/domains/${domain.value}")
     .put("")
