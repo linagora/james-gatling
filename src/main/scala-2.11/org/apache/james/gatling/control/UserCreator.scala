@@ -7,8 +7,10 @@ import scala.concurrent.{Await, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.Success
 import scala.concurrent.Awaitable
+import java.net.URL
 
-object UserCreator {
+class UserCreator(val baseJamesWebAdministrationUrl: URL) {
+  private val jamesWebAdministration = new JamesWebAdministration(baseJamesWebAdministrationUrl)
 
   def createUsersWithInboxAndOutbox(userCount: Int): Seq[Future[User]] =
     createUsers(userCount)
@@ -18,10 +20,10 @@ object UserCreator {
 
   private def createUsers(userCount: Int): Seq[Future[User]] = {
     val domain = Domain.random
-    JamesWebAdministration.addDomain(domain).get
+    jamesWebAdministration.addDomain(domain).get
 
     generateUsers(userCount, domain)
-      .map(JamesWebAdministration.addUser)
+      .map(jamesWebAdministration.addUser)
   }
 
   private def generateUsers(userCount: Int, domain: Domain): Seq[User] =
@@ -30,8 +32,8 @@ object UserCreator {
 
   def registerSystemMailboxes(user: User): Future[User] =
     Future.sequence(
-      List(JamesWebAdministration.createInbox(user.username),
-        JamesWebAdministration.createOutbox(user.username),
-        JamesWebAdministration.createSentBox(user.username)))
+      List(jamesWebAdministration.createInbox(user.username),
+        jamesWebAdministration.createOutbox(user.username),
+        jamesWebAdministration.createSentBox(user.username)))
       .map(responseList => user)
 }

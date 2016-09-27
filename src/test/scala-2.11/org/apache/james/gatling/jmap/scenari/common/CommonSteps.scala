@@ -7,6 +7,7 @@ import scala.concurrent.duration._
 import scala.concurrent.Future
 import org.apache.james.gatling.control.User
 import org.apache.james.gatling.control.UserFeeder
+import org.apache.james.gatling.jmap.scenari.common.Configuration._
 
 object CommonSteps {
 
@@ -29,7 +30,7 @@ object CommonSteps {
   def provisionUsersWithMessages(users: Seq[Future[User]]) =
     scenario("ProvisionUserWithMessages")
       .exec(provisionSystemMailboxes(users))
-      .repeat(10, loopVariableName) {
+      .repeat(RandomlySentMails, loopVariableName) {
         exec(JmapMessages.sendMessagesRandomly(users))
           .pause(1 second, 2 seconds)
       }
