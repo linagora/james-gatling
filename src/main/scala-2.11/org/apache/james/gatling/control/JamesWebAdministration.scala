@@ -44,9 +44,8 @@ object JamesWebAdministration {
       .put(s"""{"password":"${user.password.value}"}""")
       .map(response => user)
 
-  def getMailboxesUrl(username: Username): URL = {
+  def getMailboxesUrl(username: Username): URL =
     new URL(s"$baseUrl/users/${username.value}/mailboxes")
-  }
 
   def createInbox(username: Username) = {
     val mailboxesUrl = getMailboxesUrl(username)
