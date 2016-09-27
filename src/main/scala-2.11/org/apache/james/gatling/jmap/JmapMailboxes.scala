@@ -6,12 +6,13 @@ import org.apache.james.gatling.utils.JmapChecks
 
 object JmapMailboxes {
 
-  private val mailboxListPath: String = "[0][1].list"
+  private val mailboxListPath = "[0][1].list"
 
-  def getMailboxes = JmapAuthentication.authenticatedQuery("getMailboxes", "/jmap")
-    .body(StringBody("""[["getMailboxes", {}, "#0"]]"""))
-    .check(status.is(200))
-    .check(JmapChecks.noError)
+  def getMailboxes =
+    JmapAuthentication.authenticatedQuery("getMailboxes", "/jmap")
+      .body(StringBody("""[["getMailboxes", {}, "#0"]]"""))
+      .check(status.is(200))
+      .check(JmapChecks.noError)
 
   def getMailboxIds = {
     val idPaths = s"$$$mailboxListPath[*].id"

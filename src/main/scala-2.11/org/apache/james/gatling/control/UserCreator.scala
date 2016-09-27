@@ -11,10 +11,10 @@ import scala.concurrent.Awaitable
 object UserCreator {
 
   def createUsersWithInboxAndOutbox(userCount: Int): Seq[Future[User]] =
-        createUsers(userCount)
-          .map(userFuture => userFuture.andThen {
-            case Success(user) => registerSystemMailboxes(user)
-          })
+    createUsers(userCount)
+      .map(userFuture => userFuture.andThen {
+        case Success(user) => registerSystemMailboxes(user)
+      })
 
   private def createUsers(userCount: Int): Seq[Future[User]] = {
     val domain = Domain.random
@@ -28,11 +28,10 @@ object UserCreator {
     (0 until userCount)
       .map(i => User.random(domain))
 
-  def registerSystemMailboxes(user: User): Future[User] = {
+  def registerSystemMailboxes(user: User): Future[User] =
     Future.sequence(
       List(JamesWebAdministration.createInbox(user.username),
         JamesWebAdministration.createOutbox(user.username),
         JamesWebAdministration.createSentBox(user.username)))
       .map(responseList => user)
-  }
 }

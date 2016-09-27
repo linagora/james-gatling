@@ -12,15 +12,15 @@ object UserFeeder {
 
   type UserFeeder = Array[Map[String, String]]
 
-  val USERNAME_SESSION_PARAM: String = "username"
-  val PASSWORD_SESSION_PARAM: String = "password"
+  val UsernameSessionParam = "username"
+  val PasswordSessionParam = "password"
 
   def createCompletedUserFeederWithInboxAndOutbox(users: Seq[Future[User]]): UserFeeder =
     await(toFeeder(users))
 
-  private def await[T](f: Awaitable[T]): T = Await.result(f, Inf)
+  private def await[A](f: Awaitable[A]): A = Await.result(f, Inf)
 
   private def toFeeder(users: Seq[Future[User]]): Future[UserFeeder] =
     Future.sequence(users)
-      .map(users => users.map(user => Map(USERNAME_SESSION_PARAM -> user.username.value, PASSWORD_SESSION_PARAM -> user.password.value)).toArray)
+      .map(users => users.map(user => Map(UsernameSessionParam -> user.username.value, PasswordSessionParam -> user.password.value)).toArray)
 }

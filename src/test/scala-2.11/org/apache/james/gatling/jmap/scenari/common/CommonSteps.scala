@@ -12,10 +12,10 @@ object CommonSteps {
 
   def authentication(users: Seq[Future[User]]) =
     scenario("JmapAuthentication")
-    .feed(UserFeeder.createCompletedUserFeederWithInboxAndOutbox(users))
-    .pause(1 second, 30 second)
-    .exec(JmapAuthentication.authentication())
-    .pause(1 second)
+      .feed(UserFeeder.createCompletedUserFeederWithInboxAndOutbox(users))
+      .pause(1 second, 30 second)
+      .exec(JmapAuthentication.authentication())
+      .pause(1 second)
 
   def provisionSystemMailboxes(users: Seq[Future[User]]) =
     scenario("provisionSystemMailboxes")
