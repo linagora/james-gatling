@@ -9,7 +9,8 @@ object Configuration {
   val BaseJmapUrl = s"http://$ServerHostName:1080"
   val BaseJamesWebAdministrationUrl = new URL(s"http://$ServerHostName:8000")
 
-  val ScenarioDuration = 3 hours
+//  val ScenarioDuration = 3 hours
+  val ScenarioDuration = 30 seconds
   val UserCount = 100
   val RandomlySentMails = 10
 

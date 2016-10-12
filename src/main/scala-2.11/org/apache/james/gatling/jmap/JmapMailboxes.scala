@@ -22,6 +22,8 @@ object JmapMailboxes {
 
   def getSystemMailboxes = getMailboxes
 
+  def getSystemMailboxesWithChecks = getSystemMailboxes.check(getSystemMailboxesChecks: _*)
+
   val getSystemMailboxesChecks: Seq[HttpCheck] = getMailboxesChecks ++ List[HttpCheck](
     jsonPath(inboxIdPath).saveAs("inboxMailboxId"),
     jsonPath(outboxIdPath).saveAs("outboxMailboxId"),

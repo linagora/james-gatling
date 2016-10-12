@@ -10,6 +10,8 @@ import org.apache.james.gatling.control.{User, Username}
 import scala.concurrent.Future
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration.Inf
+import io.gatling.http.check.HttpCheck
+import org.apache.james.gatling.utils.RetryAuthentication._
 
 case class MessageId(id: String = RandomStringGenerator.randomString)
 case class RecipientAddress(address: String)
@@ -39,12 +41,18 @@ object JmapMessages {
           },
           "#0"
           ]]"""))
-      .check(status.is(200))
-      .check(JmapChecks.noError)
-      .check(JmapChecks.created(messageId))
+  
+  def sendMessagesChecks(messageId: MessageId): Seq[HttpCheck] = List(
+    status.is(200),
+    JmapChecks.noError,
+    JmapChecks.created(messageId))
 
-  def sendMessagesRandomly(users: Seq[Future[User]]) =
-    sendMessages(
+  def sendMessagesWithRetryAuthentication(messageId: MessageId, recipientAddress: RecipientAddress, subject: Subject, textBody: TextBody) =
+    execWithRetryAuthentication(sendMessages(messageId, recipientAddress, subject, textBody), sendMessagesChecks(messageId))
+
+
+  def sendMessagesRandomlyWithRetryAuthentication(users: Seq[Future[User]]) =
+    sendMessagesWithRetryAuthentication(
       messageId = MessageId(),
       recipientAddress = selectRecipientAtRandom(users),
       subject = Subject(),
@@ -61,9 +69,14 @@ object JmapMessages {
           "getMessageList", { },
           "#0"
           ]]"""))
-      .check(status.is(200))
-      .check(JmapChecks.noError)
-      .check(jsonPath("$[0][1].messageIds[*]").findAll.saveAs("messageIds"))
+
+  val listMessagesChecks: Seq[HttpCheck] = List(
+      status.is(200),
+      JmapChecks.noError,
+      jsonPath("$[0][1].messageIds[*]").findAll.saveAs("messageIds"))
+
+  def listMessagesWithRetryAuthentication() =
+    execWithRetryAuthentication(listMessages, listMessagesChecks)
 
   def getRandomMessage() =
     JmapAuthentication.authenticatedQuery("getMessages", "/jmap")
@@ -93,12 +106,14 @@ object JmapMessages {
           },
           "#0"
           ]]"""))
-      .check(status.is(200))
-      .check(JmapChecks.noError)
 
-  def markAsRead() = performUpdate(RequestTitle("markAsRead"), Property("isUnread"), value = false)
-  def markAsAnswered() = performUpdate(RequestTitle("markAsAnswered"), Property("isAnswered"), value = true)
-  def markAsFlagged() = performUpdate(RequestTitle("markAsFlagged"), Property("isFlagged"), value = true)
+  val getRandomMessageChecks: Seq[HttpCheck] = List(
+      status.is(200),
+      JmapChecks.noError)
+
+  def markAsRead() = performUpdateWithRetryAuthentication(RequestTitle("markAsRead"), Property("isUnread"), value = false)
+  def markAsAnswered() = performUpdateWithRetryAuthentication(RequestTitle("markAsAnswered"), Property("isAnswered"), value = true)
+  def markAsFlagged() = performUpdateWithRetryAuthentication(RequestTitle("markAsFlagged"), Property("isFlagged"), value = true)
 
   def performUpdate(title: RequestTitle, property: Property, value: Boolean) = {
     JmapAuthentication.authenticatedQuery(title.title, "/jmap")
@@ -114,8 +129,13 @@ object JmapMessages {
           },
           "#0"
           ]]"""))
-      .check(status.is(200))
-      .check(JmapChecks.noError)
   }
+
+  val performUpdateChecks: Seq[HttpCheck] = List(
+      status.is(200),
+      JmapChecks.noError)
+
+  def performUpdateWithRetryAuthentication(title: RequestTitle, property: Property, value: Boolean) = 
+    execWithRetryAuthentication(performUpdate(title, property, value), performUpdateChecks)
 
 }

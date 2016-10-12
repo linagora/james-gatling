@@ -8,6 +8,7 @@ import scala.concurrent.Future
 import org.apache.james.gatling.control.User
 import org.apache.james.gatling.control.UserFeeder
 import org.apache.james.gatling.jmap.scenari.common.Configuration._
+import org.apache.james.gatling.utils.RetryAuthentication._
 
 object CommonSteps {
 
@@ -24,14 +25,14 @@ object CommonSteps {
     scenario("provisionSystemMailboxes")
       .exec(authentication(users))
       .pause(1 second)
-      .exec(JmapMailboxes.getSystemMailboxes)
+      .exec(JmapMailboxes.getSystemMailboxesWithChecks)   // TODO replace this by with retryauth
       .pause(1 second)
 
   def provisionUsersWithMessages(users: Seq[Future[User]]) =
     scenario("ProvisionUserWithMessages")
       .exec(provisionSystemMailboxes(users))
       .repeat(RandomlySentMails, loopVariableName) {
-        exec(JmapMessages.sendMessagesRandomly(users))
+        exec(JmapMessages.sendMessagesRandomlyWithRetryAuthentication(users))
           .pause(1 second, 2 seconds)
       }
       .pause(30 second)
@@ -39,6 +40,6 @@ object CommonSteps {
   def provisionUsersWithMessageList(users: Seq[Future[User]]) =
     scenario("provisionUsersWithMessageList")
       .exec(provisionUsersWithMessages(users))
-      .exec(JmapMessages.listMessages())
+      .exec(JmapMessages.listMessagesWithRetryAuthentication())
       .pause(1 second)
 }
