@@ -3,30 +3,29 @@ package org.apache.james.gatling.jmap
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import org.apache.james.gatling.utils.JmapChecks
+import io.gatling.http.check.HttpCheck
 
 object JmapMailboxes {
 
   private val mailboxListPath = "[0][1].list"
+  private val inboxIdPath = s"$$$mailboxListPath[?(@.role == 'inbox')].id"
+  private val outboxIdPath = s"$$$mailboxListPath[?(@.role == 'outbox')].id"
+  private val sentIdPath = s"$$$mailboxListPath[?(@.role == 'sent')].id"
 
   def getMailboxes =
     JmapAuthentication.authenticatedQuery("getMailboxes", "/jmap")
       .body(StringBody("""[["getMailboxes", {}, "#0"]]"""))
-      .check(status.is(200))
-      .check(JmapChecks.noError)
 
-  def getMailboxIds = {
-    val idPaths = s"$$$mailboxListPath[*].id"
-    getMailboxes
-      .check(jsonPath(idPaths).findAll.saveAs("mailboxIds"))
-  }
+  val getMailboxesChecks: Seq[HttpCheck] = List(
+    status.is(200),
+    JmapChecks.noError)
 
-  def getSystemMailboxes = {
-    val inboxIdPath = s"$$$mailboxListPath[?(@.role == 'inbox')].id"
-    val outboxIdPath = s"$$$mailboxListPath[?(@.role == 'outbox')].id"
-    val sentIdPath = s"$$$mailboxListPath[?(@.role == 'sent')].id"
-    getMailboxes
-      .check(jsonPath(inboxIdPath).saveAs("inboxMailboxId"))
-      .check(jsonPath(outboxIdPath).saveAs("outboxMailboxId"))
-      .check(jsonPath(sentIdPath).saveAs("sentMailboxId"))
-  }
+  def getSystemMailboxes = getMailboxes
+
+  def getSystemMailboxesWithChecks = getSystemMailboxes.check(getSystemMailboxesChecks: _*)
+
+  val getSystemMailboxesChecks: Seq[HttpCheck] = getMailboxesChecks ++ List[HttpCheck](
+    jsonPath(inboxIdPath).saveAs("inboxMailboxId"),
+    jsonPath(outboxIdPath).saveAs("outboxMailboxId"),
+    jsonPath(sentIdPath).saveAs("sentMailboxId"))
 }

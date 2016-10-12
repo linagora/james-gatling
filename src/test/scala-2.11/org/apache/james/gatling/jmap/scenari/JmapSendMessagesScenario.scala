@@ -16,7 +16,7 @@ class JmapSendMessagesScenario extends Simulation {
   val scn = scenario("JmapSendMessages")
     .exec(CommonSteps.provisionSystemMailboxes(users))
     .during(ScenarioDuration) {
-      exec(JmapMessages.sendMessagesRandomly(users))
+      exec(JmapMessages.sendMessagesRandomlyWithRetryAuthentication(users))
         .pause(1 second , 2 seconds)
     }
 
