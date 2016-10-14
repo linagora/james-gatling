@@ -13,7 +13,7 @@ class NoAuthenticationNoEncryptionScenario extends Simulation {
 
   val scn = scenario("SMTP_No_Authentication_No_Encryption")
     .feed(UserFeeder.createCompletedUserFeederWithInboxAndOutbox(users))
-    .pause(10 second, 30 second)
+    .pause(1 second)
     .during(ScenarioDuration) {
       exec(smtp("sendMail")
         .subject("subject")
@@ -21,5 +21,5 @@ class NoAuthenticationNoEncryptionScenario extends Simulation {
         .pause(1 second)
     }
 
-  setUp(scn.inject(atOnceUsers(UserCount))).protocols(smtp)
+  setUp(scn.inject(nothingFor(10 seconds), rampUsers(UserCount) over(10 seconds))).protocols(smtp)
 }
