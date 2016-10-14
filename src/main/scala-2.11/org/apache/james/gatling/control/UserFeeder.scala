@@ -1,12 +1,8 @@
 package org.apache.james.gatling.control
 
-import io.gatling.core.Predef._
-
-import scala.concurrent.duration.Duration.Inf
-import scala.concurrent.{Await, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.util.Success
-import scala.concurrent.Awaitable
+import scala.concurrent.duration.Duration.Inf
+import scala.concurrent.{Await, Awaitable, Future}
 
 object UserFeeder {
 
