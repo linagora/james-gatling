@@ -9,6 +9,8 @@ import io.gatling.core.stats.message.ResponseTimings
 import org.apache.commons.mail.SimpleEmail
 import org.apache.james.gatling.control.UserFeeder
 
+import scala.util.{Failure, Success, Try}
+
 class SmtpAction(
                   requestName: String,
                   subject: String,
@@ -51,15 +53,11 @@ class SmtpAction(
   }
 
   private def sendMail(email: SimpleEmail): ExecutionReport = {
-    try {
-      email.send()
-      GoodExecutionReport()
-    } catch {
-      case e: Exception => {
+    Try(email.send()) match {
+      case Success(v) => GoodExecutionReport()
+      case Failure(e) =>
         logger.error("Exception caught while sending mail", e)
-
         BadExecutionReport(e.getMessage)
-      }
     }
   }
 }
