@@ -62,6 +62,9 @@ class SmtpAction(
   }
 }
 
-case class ExecutionReport(errorMessage: Option[String], status: Status)
+abstract class ExecutionReport(_errorMessage: Option[String], _status: Status) {
+  def errorMessage = _errorMessage
+  def status = _status
+}
 case class GoodExecutionReport() extends ExecutionReport(None, OK)
 case class BadExecutionReport(message: String) extends ExecutionReport(Some(message), KO)
