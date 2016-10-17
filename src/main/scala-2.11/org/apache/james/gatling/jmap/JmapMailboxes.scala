@@ -2,8 +2,9 @@ package org.apache.james.gatling.jmap
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-import org.apache.james.gatling.utils.JmapChecks
 import io.gatling.http.check.HttpCheck
+import org.apache.james.gatling.utils.JmapChecks
+import org.apache.james.gatling.utils.RetryAuthentication.execWithRetryAuthentication
 
 object JmapMailboxes {
 
@@ -20,10 +21,14 @@ object JmapMailboxes {
     status.is(200),
     JmapChecks.noError)
 
-  def getSystemMailboxes = getMailboxes
-
   val getSystemMailboxesChecks: Seq[HttpCheck] = getMailboxesChecks ++ List[HttpCheck](
     jsonPath(inboxIdPath).saveAs("inboxMailboxId"),
     jsonPath(outboxIdPath).saveAs("outboxMailboxId"),
     jsonPath(sentIdPath).saveAs("sentMailboxId"))
+
+  def getSystemMailboxes = getMailboxes
+
+  def getSystemMailboxesWithRetryAuthentication = execWithRetryAuthentication(getSystemMailboxes, getSystemMailboxesChecks)
+
+  def getSystemMailboxesWithChecks = getSystemMailboxes.check(getSystemMailboxesChecks: _*)
 }
