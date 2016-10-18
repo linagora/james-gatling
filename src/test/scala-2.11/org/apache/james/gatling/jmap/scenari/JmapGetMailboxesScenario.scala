@@ -4,7 +4,7 @@ import io.gatling.core.Predef._
 import org.apache.james.gatling.control.UserCreator
 import org.apache.james.gatling.jmap.JmapMailboxes
 import org.apache.james.gatling.jmap.scenari.common.Configuration._
-import org.apache.james.gatling.jmap.scenari.common._
+import org.apache.james.gatling.jmap.scenari.common.{CommonSteps, HttpSettings}
 
 import scala.concurrent.duration._
 
@@ -13,7 +13,7 @@ class JmapGetMailboxesScenario extends Simulation {
   val scn = scenario("JmapGetMailboxes")
     .exec(CommonSteps.authentication(new UserCreator(BaseJamesWebAdministrationUrl).createUsersWithInboxAndOutbox(UserCount)))
     .during(ScenarioDuration) {
-      exec(JmapMailboxes.getSystemMailboxes)
+      JmapMailboxes.getSystemMailboxesWithRetryAuthentication
         .pause(1 second , 2 seconds)
     }
 
