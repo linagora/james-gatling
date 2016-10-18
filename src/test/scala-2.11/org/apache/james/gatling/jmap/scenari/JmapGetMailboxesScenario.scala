@@ -1,14 +1,12 @@
 package org.apache.james.gatling.jmap.scenari
 
 import io.gatling.core.Predef._
-import org.apache.james.gatling.control.UserFeeder
-import org.apache.james.gatling.control.UserFeeder.UserFeeder
-import org.apache.james.gatling.jmap.JmapMailboxes
-import org.apache.james.gatling.jmap.scenari.common.CommonSteps
-import org.apache.james.gatling.jmap.scenari.common.Configuration._
-import org.apache.james.gatling.jmap.scenari.common.HttpSettings
-import scala.concurrent.duration._
 import org.apache.james.gatling.control.UserCreator
+import org.apache.james.gatling.jmap.JmapMailboxes
+import org.apache.james.gatling.jmap.scenari.common.Configuration._
+import org.apache.james.gatling.jmap.scenari.common._
+
+import scala.concurrent.duration._
 
 class JmapGetMailboxesScenario extends Simulation {
 

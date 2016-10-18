@@ -1,13 +1,12 @@
 package org.apache.james.gatling.control
 
+import java.net.URL
+
 import io.gatling.core.Predef._
 
-import scala.concurrent.duration.Duration.Inf
-import scala.concurrent.{Await, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 import scala.util.Success
-import scala.concurrent.Awaitable
-import java.net.URL
 
 class UserCreator(val baseJamesWebAdministrationUrl: URL) {
   private val jamesWebAdministration = new JamesWebAdministration(baseJamesWebAdministrationUrl)
