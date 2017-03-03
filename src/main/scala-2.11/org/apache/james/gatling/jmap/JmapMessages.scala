@@ -78,6 +78,9 @@ object JmapMessages {
   def listMessagesWithRetryAuthentication() =
     execWithRetryAuthentication(listMessages, listMessagesChecks)
 
+  def getMessagesWithRetryAuthentication() =
+    execWithRetryAuthentication(getRandomMessage(), getRandomMessageChecks)
+
   def getRandomMessage() =
     JmapAuthentication.authenticatedQuery("getMessages", "/jmap")
       .body(StringBody(
