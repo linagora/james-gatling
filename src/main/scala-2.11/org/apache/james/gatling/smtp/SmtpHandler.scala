@@ -1,14 +1,15 @@
 package org.apache.james.gatling.smtp
 
-import akka.actor.Props
+import javax.mail.internet.InternetAddress
+
+import akka.actor.{ActorRef, Props}
 import io.gatling.commons.stats.{KO, OK}
 import io.gatling.core.Predef.Status
 import io.gatling.core.akka.BaseActor
 import io.gatling.core.session.Session
 import io.gatling.core.stats.message.ResponseTimings
-import org.apache.commons.mail.SimpleEmail
 
-import scala.util.{Failure, Success, Try}
+import scala.concurrent.ExecutionContext.global
 
 object SmtpHandler {
   def props(): Props = Props(new SmtpHandler)
@@ -17,34 +18,42 @@ object SmtpHandler {
 class SmtpHandler extends BaseActor {
   override def receive: Receive = {
     case sendMailRequest: SendMailRequest =>
-      sender ! send(sendMailRequest)
+      sendMail(sendMailRequest)
+      context.become(waitCallback(sender))
+    case msg => logger.error(s"received unexpected message $msg")
+  }
+
+  def waitCallback(sender: ActorRef): Receive = {
+    case executionReport: ExecutionReport =>
+      sender ! executionReport
       context.stop(self)
-    case msg =>
-      logger.error(s"received unexpected message $msg")
+    case msg => logger.error(s"received unexpected message while expecting response $msg")
   }
 
-  def send(sendMailRequest: SendMailRequest): ExecutionReport = doSend(generateEmail(sendMailRequest), sendMailRequest.session)
+  def sendMail(sendMailRequest: SendMailRequest) = {
+    import courier._
+    val baseMailer = Mailer(sendMailRequest.host, sendMailRequest.port)
+      .startTtls(sendMailRequest.ssl)
 
-  private def generateEmail(sendMailRequest: SendMailRequest): SimpleEmail = {
-    val email = new SimpleEmail()
-    sendMailRequest.credentials.fold {} {value => email.setAuthentication(value.login, value.password)}
-    email.setHostName(sendMailRequest.host)
-    email.setSSLOnConnect(sendMailRequest.ssl)
-    email.setSmtpPort(sendMailRequest.port)
-    email.setSubject(sendMailRequest.subject + " [" + Math.random() + "]")
-    email.setMsg(sendMailRequest.body)
-    email.setFrom(sendMailRequest.from)
-    email.addTo(sendMailRequest.to)
-    email
-  }
+    val mailer = sendMailRequest.credentials
+      .map(value => baseMailer.auth(true)
+        .as(value.login, value.password))
+      .getOrElse(baseMailer.auth(false))()
 
-  private def doSend(email: SimpleEmail, session: Session): ExecutionReport = {
     val requestStart = System.currentTimeMillis()
-    Try(email.send()) match {
-      case Success(v) => GoodExecutionReport(computeResponseTimings(requestStart), session)
-      case Failure(e) =>
-        logger.error("Exception caught while sending mail", e)
-        BadExecutionReport(e.getMessage, computeResponseTimings(requestStart), session)
+
+    val future = mailer(Envelope.from(new InternetAddress(sendMailRequest.from))
+      .to(new InternetAddress(sendMailRequest.to))
+      .subject(sendMailRequest.subject)
+      .content(Text(sendMailRequest.body)))
+
+    future.onSuccess {case _ =>
+      self ! GoodExecutionReport(computeResponseTimings(requestStart), sendMailRequest.session)
+    }
+
+    future.onFailure {case e =>
+      logger.error("Exception caught while sending mail", e)
+      self ! BadExecutionReport(e.getMessage, computeResponseTimings(requestStart), sendMailRequest.session)
     }
   }
 

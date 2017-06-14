@@ -23,8 +23,12 @@ class SmtpAction(requestName: String,
   val name = "sendMail"
 
   def execute(session: Session) {
-    def readSession(variableName: String): String = session.apply(variableName).as[String]
-    val request = SendMailRequest(session = session,
+    context.actorOf(SmtpHandler.props()) ! generateSendMailRequest(session)
+  }
+
+  private def generateSendMailRequest(session: Session) = {
+    def readSession(variableName: String) = session(variableName).as[String]
+    SendMailRequest(session = session,
       host = protocol.host,
       port = protocol.port,
       ssl = protocol.ssl,
@@ -32,22 +36,18 @@ class SmtpAction(requestName: String,
       to = readSession(UserFeeder.UsernameSessionParam),
       subject = subject,
       body = body,
-      credentials = readCredentials(readSession)(protocol))
-
-    context.actorOf(SmtpHandler.props()) ! request
-
-    next ! session
+      credentials = provideCredentialsIfNeeded(readSession)(protocol))
   }
 
   override def receive: Receive = {
     case session: Session => execute(session)
     case executionReport: ExecutionReport =>
       statsEngine.logResponse(executionReport.session, requestName, executionReport.responseTimings, executionReport.status, None, executionReport.errorMessage)
-    case Failure(e) =>
-      logger.error("Exception caught while sending mail", e)
+      next ! executionReport.session
+    case msg => logger.error(s"Unexpected message $msg")
   }
 
-  def readCredentials(sessionReader: String => String)(protocol: SmtpProtocol): Option[Credentials] = {
+  def provideCredentialsIfNeeded(sessionReader: String => String)(protocol: SmtpProtocol): Option[Credentials] = {
     if (protocol.auth) None
     else Some(Credentials(sessionReader(UserFeeder.UsernameSessionParam), sessionReader(UserFeeder.PasswordSessionParam)))
   }
