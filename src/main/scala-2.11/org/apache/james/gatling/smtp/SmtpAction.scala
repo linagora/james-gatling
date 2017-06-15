@@ -6,8 +6,6 @@ import io.gatling.core.session.Session
 import io.gatling.core.stats.StatsEngine
 import org.apache.james.gatling.control.UserFeeder
 
-import scala.util.Failure
-
 object SmtpAction {
   def props(requestName: String, subject: String, body: String, statsEngine: StatsEngine, next: Action, protocol: SmtpProtocol) =
     Props(new SmtpAction(requestName, subject, body, statsEngine, next, protocol))
@@ -20,10 +18,12 @@ class SmtpAction(requestName: String,
                   val next: Action,
                   protocol: SmtpProtocol) extends ChainableAction with Actor {
 
+  val smtpHandler = context.actorOf(SmtpHandler.props())
+
   val name = "sendMail"
 
   def execute(session: Session) {
-    context.actorOf(SmtpHandler.props()) ! generateSendMailRequest(session)
+    smtpHandler ! generateSendMailRequest(session)
   }
 
   private def generateSendMailRequest(session: Session) = {

@@ -17,9 +17,7 @@ object SmtpHandler {
 
 class SmtpHandler extends BaseActor {
   override def receive: Receive = {
-    case sendMailRequest: SendMailRequest =>
-      sendMail(sendMailRequest)
-      context.become(waitCallback(sender))
+    case sendMailRequest: SendMailRequest => sendMail(sendMailRequest, sender)
     case msg => logger.error(s"received unexpected message $msg")
   }
 
@@ -30,7 +28,7 @@ class SmtpHandler extends BaseActor {
     case msg => logger.error(s"received unexpected message while expecting response $msg")
   }
 
-  def sendMail(sendMailRequest: SendMailRequest) = {
+  def sendMail(sendMailRequest: SendMailRequest, requestOrigin: ActorRef) = {
     import courier._
     val baseMailer = Mailer(sendMailRequest.host, sendMailRequest.port)
       .startTtls(sendMailRequest.ssl)
@@ -48,12 +46,12 @@ class SmtpHandler extends BaseActor {
       .content(Text(sendMailRequest.body)))
 
     future.onSuccess {case _ =>
-      self ! GoodExecutionReport(computeResponseTimings(requestStart), sendMailRequest.session)
+      requestOrigin ! GoodExecutionReport(computeResponseTimings(requestStart), sendMailRequest.session)
     }
 
     future.onFailure {case e =>
       logger.error("Exception caught while sending mail", e)
-      self ! BadExecutionReport(e.getMessage, computeResponseTimings(requestStart), sendMailRequest.session)
+      requestOrigin ! BadExecutionReport(e.getMessage, computeResponseTimings(requestStart), sendMailRequest.session)
     }
   }
 
