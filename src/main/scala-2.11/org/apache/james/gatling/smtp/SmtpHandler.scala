@@ -73,15 +73,19 @@ case class SendMailRequest(session: Session,
 
 case class Credentials(login: String, password: String)
 
-abstract class ExecutionReport(_errorMessage: Option[String], _status: Status, _responseTimings: ResponseTimings, _session: Session) {
-  def errorMessage = _errorMessage
-  def status = _status
-  def responseTimings = _responseTimings
-  def session = _session
+trait ExecutionReport {
+  def errorMessage: Option[String]
+  def status: Status
+  def responseTimings: ResponseTimings
+  def  session: Session
 }
 
-case class GoodExecutionReport(_responseTimings: ResponseTimings, _session: Session)
-  extends ExecutionReport(None, OK, _responseTimings, _session)
+case class GoodExecutionReport(responseTimings: ResponseTimings, session: Session) extends ExecutionReport{
+  override def errorMessage: Option[String] = None
+  override def status: Status = OK
+}
 
-case class BadExecutionReport(message: String, _responseTimings: ResponseTimings, _session: Session)
-  extends ExecutionReport(Some(message), KO, _responseTimings, _session)
+case class BadExecutionReport(message: String, responseTimings: ResponseTimings, override val session: Session) extends ExecutionReport {
+  override def errorMessage: Option[String] = Some(message)
+  override def status: Status = KO
+}
