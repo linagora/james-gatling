@@ -62,6 +62,23 @@ object JmapMessages {
     jsonPath(messageIdsPath).findAll.saveAs("messageIds")
   }
 
+  def moveSentMessagesToMailboxId = 
+    foreach("${messageIds}", "messageId") {
+      exec(JmapAuthentication.authenticatedQuery("moveSentMessagesToMessageId", "/jmap")
+        .body(StringBody(
+          s"""[[
+            "setMessages",
+            {
+              "update": {
+                "$${messageId}" : {
+                  "mailboxIds": [ "$${mailboxId}" ]
+                }
+              }
+            },
+            "#0"
+            ]]""")))
+    }
+
   def sendMessagesChecks(messageId: MessageId): Seq[HttpCheck] = List(
     status.is(200),
     JmapChecks.noError,
