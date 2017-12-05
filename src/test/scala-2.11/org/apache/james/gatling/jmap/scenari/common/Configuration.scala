@@ -12,5 +12,7 @@ object Configuration {
   val ScenarioDuration = 3 hours
   val UserCount = 1000
   val RandomlySentMails = 10
+  val NumberOfMailboxes = 10
+  val NumberOfMessages = 20
 
 }
