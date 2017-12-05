@@ -21,6 +21,14 @@ object JmapMailboxes {
     JmapAuthentication.authenticatedQuery("getMailboxes", "/jmap")
       .body(StringBody("""[["getMailboxes", {}, "#0"]]"""))
 
+  def getMailboxIdByName(name: Name) =
+    JmapAuthentication.authenticatedQuery("getMailboxes", "/jmap")
+      .body(StringBody("""[["getMailboxes", {}, "#0"]]"""))
+      .check(getMailboxIdCheck(name))
+
+  def getMailboxIdCheck(name: Name) =
+      jsonPath(s"$$$mailboxListPath[?(@.name == '${name.name}')].id").saveAs("mailboxId")
+      
   def createMailbox(id: Id, name: Name) =
     JmapAuthentication.authenticatedQuery("setMailboxes", "/jmap")
       .body(StringBody(s"""[["setMailboxes", 
