@@ -23,6 +23,8 @@ case class Property(name: String)
 
 object JmapMessages {
 
+  private val messageIdsPath = "$[0][1].messageIds[*]"
+  
   def sendMessages(messageId: MessageId, recipientAddress: RecipientAddress, subject: Subject, textBody: TextBody) =
     JmapAuthentication.authenticatedQuery("sendMessages", "/jmap")
       .body(StringBody(
@@ -42,6 +44,24 @@ object JmapMessages {
           "#0"
           ]]"""))
   
+  def getMessageIds(mailboxId: String) = 
+    JmapAuthentication.authenticatedQuery("getMessageIds", "/jmap")
+      .body(StringBody(
+        s"""[[
+          "getMessageList",
+          {
+            "filter": {
+              "inMailboxes" : [ "$mailboxId" ]
+            }
+          },
+          "#0"
+          ]]"""))
+      .check(getMessageIdsCheck)    
+
+  def getMessageIdsCheck = {
+    jsonPath(messageIdsPath).findAll.saveAs("messageIds")
+  }
+
   def sendMessagesChecks(messageId: MessageId): Seq[HttpCheck] = List(
     status.is(200),
     JmapChecks.noError,
