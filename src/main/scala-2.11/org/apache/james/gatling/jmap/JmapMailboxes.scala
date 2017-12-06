@@ -7,8 +7,17 @@ import org.apache.james.gatling.utils.JmapChecks
 import org.apache.james.gatling.utils.RetryAuthentication.execWithRetryAuthentication
 import org.apache.james.gatling.utils.RandomStringGenerator
 
-case class Id(id: String = RandomStringGenerator.randomString)
-case class Name(name: String = RandomStringGenerator.randomString)
+object IdFactory {
+  def apply(): Id =
+    Id(RandomStringGenerator.randomString)
+}
+case class Id private(id: String)
+
+object NameFactory {
+  def apply(): Name =
+    Name(RandomStringGenerator.randomString)
+}
+case class Name private(name: String)
 
 object JmapMailboxes {
 
