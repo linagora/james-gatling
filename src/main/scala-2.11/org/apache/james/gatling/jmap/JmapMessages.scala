@@ -44,8 +44,8 @@ object JmapMessages {
           "#0"
           ]]"""))
   
-  def getMessageIds(mailboxId: String) = 
-    JmapAuthentication.authenticatedQuery("getMessageIds", "/jmap")
+  def retrieveMessageIds(mailboxId: String) = 
+    JmapAuthentication.authenticatedQuery("retrieveMessageIds", "/jmap")
       .body(StringBody(
         s"""[[
           "getMessageList",
@@ -56,13 +56,13 @@ object JmapMessages {
           },
           "#0"
           ]]"""))
-      .check(getMessageIdsCheck)    
+      .check(saveMessageIds)    
 
-  def getMessageIdsCheck = {
+  def saveMessageIds = {
     jsonPath(messageIdsPath).findAll.saveAs("messageIds")
   }
 
-  def moveSentMessagesToMailboxId = 
+  def moveMessagesToMailboxId =
     foreach("${messageIds}", "messageId") {
       exec(JmapAuthentication.authenticatedQuery("moveSentMessagesToMessageId", "/jmap")
         .body(StringBody(
