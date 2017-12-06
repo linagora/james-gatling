@@ -8,6 +8,8 @@ import org.apache.james.gatling.jmap.scenari.common.CommonSteps
 import org.apache.james.gatling.jmap.scenari.common.Configuration.BaseJamesWebAdministrationUrl
 import org.apache.james.gatling.jmap.scenari.common.Configuration.ScenarioDuration
 import org.apache.james.gatling.jmap.scenari.common.Configuration.UserCount
+import org.apache.james.gatling.jmap.scenari.common.Configuration.NumberOfMailboxes
+import org.apache.james.gatling.jmap.scenari.common.Configuration.NumberOfMessages
 import org.apache.james.gatling.jmap.scenari.common.HttpSettings
 import org.apache.james.gatling.utils.RetryAuthentication.execWithRetryAuthentication
 
@@ -24,7 +26,7 @@ class JmapBigSetScenario extends Simulation {
   val users = new UserCreator(BaseJamesWebAdministrationUrl).createUsersWithInboxAndOutbox(UserCount)
   
   val scn = scenario("JmapBigSet")
-    .exec(CommonSteps.provisionUsersWithMailboxesAndMessages(users))
+    .exec(CommonSteps.provisionUsersWithMailboxesAndMessages(users, NumberOfMailboxes, NumberOfMessages))
     .during(ScenarioDuration) {
       execWithRetryAuthentication(JmapMessages.listMessages(), JmapMessages.listMessagesChecks)
         .pause(1 second , 2 seconds)

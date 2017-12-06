@@ -11,6 +11,8 @@ import org.apache.james.gatling.jmap.scenari.common.Configuration._
 import org.apache.james.gatling.jmap.JmapMailboxes
 import org.apache.james.gatling.jmap.Id
 import org.apache.james.gatling.jmap.Name
+import org.apache.james.gatling.jmap.IdFactory
+import org.apache.james.gatling.jmap.NameFactory
 
 object CommonSteps {
 
@@ -39,20 +41,20 @@ object CommonSteps {
       }
       .pause(30 second)
 
-  def provisionUsersWithMailboxesAndMessages(users: Seq[Future[User]]) =
+  def provisionUsersWithMailboxesAndMessages(users: Seq[Future[User]], numberOfMailboxes: Int, numberOfMessages: Int) =
     scenario("ProvisionUsersWithMailboxesAndMessages")
       .exec(provisionSystemMailboxes(users))
-      .repeat(NumberOfMailboxes) {
-        var mailboxName = Name()
-        exec(JmapMailboxes.createMailbox(Id(), mailboxName))
+      .repeat(numberOfMailboxes) {
+        var mailboxName = NameFactory()
+        exec(JmapMailboxes.createMailbox(IdFactory(), mailboxName))
           .pause(1 second, 2 seconds)
           .exec(JmapMailboxes.getMailboxIdByName(mailboxName))
-          .repeat(NumberOfMessages) {
+          .repeat(numberOfMessages) {
             exec(JmapMessages.sendMessagesRandomlyWithRetryAuthentication(users))
           }
           .pause(1 second, 2 seconds)
-          .exec(JmapMessages.getMessageIds("${sentMailboxId}"))
-          .exec(JmapMessages.moveSentMessagesToMailboxId)
+          .exec(JmapMessages.retrieveMessageIds("${sentMailboxId}"))
+          .exec(JmapMessages.moveMessagesToMailboxId)
       }
       .pause(30 second)
 
