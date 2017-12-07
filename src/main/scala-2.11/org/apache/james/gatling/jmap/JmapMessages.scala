@@ -44,14 +44,14 @@ object JmapMessages {
           "#0"
           ]]"""))
   
-  def retrieveMessageIds(mailboxId: String) = 
+  def retrieveMessageIds(mailboxId: Id) = 
     JmapAuthentication.authenticatedQuery("retrieveMessageIds", "/jmap")
       .body(StringBody(
         s"""[[
           "getMessageList",
           {
             "filter": {
-              "inMailboxes" : [ "$mailboxId" ]
+              "inMailboxes" : [ "${mailboxId.id}" ]
             }
           },
           "#0"
