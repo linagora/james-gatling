@@ -8,6 +8,9 @@ import scala.concurrent.Future
 import org.apache.james.gatling.control.User
 import org.apache.james.gatling.control.UserFeeder
 import org.apache.james.gatling.jmap.scenari.common.Configuration._
+import org.apache.james.gatling.jmap.JmapMailboxes
+import org.apache.james.gatling.jmap.Id
+import org.apache.james.gatling.jmap.Name
 
 object CommonSteps {
 
@@ -33,6 +36,23 @@ object CommonSteps {
       .repeat(RandomlySentMails, loopVariableName) {
         exec(JmapMessages.sendMessagesRandomlyWithRetryAuthentication(users))
           .pause(1 second, 2 seconds)
+      }
+      .pause(30 second)
+
+  def provisionUsersWithMailboxesAndMessages(users: Seq[Future[User]], numberOfMailboxes: Int, numberOfMessages: Int) =
+    scenario("ProvisionUsersWithMailboxesAndMessages")
+      .exec(provisionSystemMailboxes(users))
+      .repeat(numberOfMailboxes) {
+        var mailboxName = Name.generate
+        exec(JmapMailboxes.createMailbox(Id.generate, mailboxName))
+          .pause(1 second, 2 seconds)
+          .exec(JmapMailboxes.getMailboxIdByName(mailboxName))
+          .repeat(numberOfMessages) {
+            exec(JmapMessages.sendMessagesRandomlyWithRetryAuthentication(users))
+          }
+          .pause(1 second, 2 seconds)
+          .exec(JmapMessages.retrieveMessageIds(Id("${sentMailboxId}")))
+          .exec(JmapMessages.moveMessagesToMailboxId)
       }
       .pause(30 second)
 

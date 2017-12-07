@@ -12,6 +12,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration.Duration.Inf
 import io.gatling.http.check.HttpCheck
 import org.apache.james.gatling.utils.RetryAuthentication._
+import io.gatling.core.session.Session
 
 case class MessageId(id: String = RandomStringGenerator.randomString)
 case class RecipientAddress(address: String)
@@ -23,6 +24,8 @@ case class Property(name: String)
 
 object JmapMessages {
 
+  private val messageIdsPath = "$[0][1].messageIds[*]"
+  
   def sendMessages(messageId: MessageId, recipientAddress: RecipientAddress, subject: Subject, textBody: TextBody) =
     JmapAuthentication.authenticatedQuery("sendMessages", "/jmap")
       .body(StringBody(
@@ -42,6 +45,42 @@ object JmapMessages {
           "#0"
           ]]"""))
   
+  def retrieveMessageIds(mailboxId: Id) = 
+    JmapAuthentication.authenticatedQuery("retrieveMessageIds", "/jmap")
+      .body(StringBody(
+        s"""[[
+          "getMessageList",
+          {
+            "filter": {
+              "inMailboxes" : [ "${mailboxId.id}" ]
+            }
+          },
+          "#0"
+          ]]"""))
+      .check(saveMessageIds)    
+
+  def saveMessageIds = {
+    jsonPath(messageIdsPath).findAll.saveAs("messageIds")
+  }
+
+  def moveMessagesToMailboxId =
+    exec((session: Session) => session.set("update", {
+        var mailboxId = session("mailboxId").as[String]
+        session("messageIds").as[Vector[String]].map(x =>s""" 
+            "$x" : { "mailboxIds": [ "${mailboxId}" ] }"""
+          )
+          .mkString(",")
+      }))
+    .exec(JmapAuthentication.authenticatedQuery("moveSentMessagesToMessageId", "/jmap")
+            .body(StringBody(
+              s"""[[
+                "setMessages",
+                {
+                  "update": { $${update} }
+                },
+                "#0"
+                ]]""")))
+
   def sendMessagesChecks(messageId: MessageId): Seq[HttpCheck] = List(
     status.is(200),
     JmapChecks.noError,
