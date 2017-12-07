@@ -11,8 +11,6 @@ import org.apache.james.gatling.jmap.scenari.common.Configuration._
 import org.apache.james.gatling.jmap.JmapMailboxes
 import org.apache.james.gatling.jmap.Id
 import org.apache.james.gatling.jmap.Name
-import org.apache.james.gatling.jmap.IdFactory
-import org.apache.james.gatling.jmap.NameFactory
 
 object CommonSteps {
 
@@ -45,15 +43,15 @@ object CommonSteps {
     scenario("ProvisionUsersWithMailboxesAndMessages")
       .exec(provisionSystemMailboxes(users))
       .repeat(numberOfMailboxes) {
-        var mailboxName = NameFactory()
-        exec(JmapMailboxes.createMailbox(IdFactory(), mailboxName))
+        var mailboxName = Name.generate
+        exec(JmapMailboxes.createMailbox(Id.generate, mailboxName))
           .pause(1 second, 2 seconds)
           .exec(JmapMailboxes.getMailboxIdByName(mailboxName))
           .repeat(numberOfMessages) {
             exec(JmapMessages.sendMessagesRandomlyWithRetryAuthentication(users))
           }
           .pause(1 second, 2 seconds)
-          .exec(JmapMessages.retrieveMessageIds("${sentMailboxId}"))
+          .exec(JmapMessages.retrieveMessageIds(Id("${sentMailboxId}")))
           .exec(JmapMessages.moveMessagesToMailboxId)
       }
       .pause(30 second)
