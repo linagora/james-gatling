@@ -7,14 +7,14 @@ import org.apache.james.gatling.utils.JmapChecks
 import org.apache.james.gatling.utils.RetryAuthentication.execWithRetryAuthentication
 import org.apache.james.gatling.utils.RandomStringGenerator
 
-object IdFactory {
-  def apply(): Id =
+object Id {
+  def generate(): Id =
     Id(RandomStringGenerator.randomString)
 }
 case class Id private(id: String)
 
-object NameFactory {
-  def apply(): Name =
+object Name {
+  def generate(): Name =
     Name(RandomStringGenerator.randomString)
 }
 case class Name private(name: String)
