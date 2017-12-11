@@ -7,7 +7,6 @@ import org.apache.james.gatling.utils.JmapChecks
 import org.apache.james.gatling.utils.RetryAuthentication.execWithRetryAuthentication
 import org.apache.james.gatling.utils.RandomStringGenerator
 import fabricator.Words
-import scala.concurrent.Future
 
 object Id {
   def generate(): Id =
@@ -29,6 +28,7 @@ object JmapMailboxes {
   private val inboxIdPath = s"$$$mailboxListPath[?(@.role == 'inbox')].id"
   private val outboxIdPath = s"$$$mailboxListPath[?(@.role == 'outbox')].id"
   private val sentIdPath = s"$$$mailboxListPath[?(@.role == 'sent')].id"
+  val numberOfSystemMailboxes = 5
 
   def getMailboxes =
     JmapAuthentication.authenticatedQuery("getMailboxes", "/jmap")
@@ -53,6 +53,12 @@ object JmapMailboxes {
   val getMailboxesChecks: Seq[HttpCheck] = List(
     status.is(200),
     JmapChecks.noError)
+
+  def assertNumberOfMailboxes(numberOfMailboxes: Int): HttpCheck =
+    jsonPath(s"$$$mailboxListPath[*].id").count.is(numberOfMailboxes)
+    
+  def getMailboxesChecks(expectedNumberOfMailboxes: Int): Seq[HttpCheck] =
+    getMailboxesChecks :+ assertNumberOfMailboxes(expectedNumberOfMailboxes)
 
   val getSystemMailboxesChecks: Seq[HttpCheck] = getMailboxesChecks ++ List[HttpCheck](
     jsonPath(inboxIdPath).saveAs("inboxMailboxId"),
