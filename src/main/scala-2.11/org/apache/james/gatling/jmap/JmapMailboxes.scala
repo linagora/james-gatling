@@ -5,6 +5,23 @@ import io.gatling.http.Predef._
 import io.gatling.http.check.HttpCheck
 import org.apache.james.gatling.utils.JmapChecks
 import org.apache.james.gatling.utils.RetryAuthentication.execWithRetryAuthentication
+import org.apache.james.gatling.utils.RandomStringGenerator
+import fabricator.Words
+import scala.concurrent.Future
+
+object Id {
+  def generate(): Id =
+    Id(RandomStringGenerator.randomString)
+}
+case class Id private(id: String)
+
+object Name {
+  private val words = Words()
+  
+  def generate(): Name =
+    Name(words.words(2).mkString("_"))
+}
+case class Name private(name: String)
 
 object JmapMailboxes {
 
