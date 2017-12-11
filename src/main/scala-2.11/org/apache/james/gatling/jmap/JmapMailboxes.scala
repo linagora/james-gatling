@@ -17,6 +17,22 @@ object JmapMailboxes {
     JmapAuthentication.authenticatedQuery("getMailboxes", "/jmap")
       .body(StringBody("""[["getMailboxes", {}, "#0"]]"""))
 
+  def createMailbox() =
+    JmapAuthentication.authenticatedQuery("setMailboxes", "/jmap")
+      .body(StringBody(s"""[["setMailboxes", 
+            {
+              "create": {
+                "$${createdId}": {
+                  "name": "$${mailboxName}"
+                } 
+              }
+            }, "#0"]]"""))
+      .check(saveMailboxId())
+
+  def saveMailboxId() = {
+    jsonPath(s"""$$[0][1].created..$${createdId}.id""").findAll.saveAs("mailboxId")
+  }
+
   val getMailboxesChecks: Seq[HttpCheck] = List(
     status.is(200),
     JmapChecks.noError)
