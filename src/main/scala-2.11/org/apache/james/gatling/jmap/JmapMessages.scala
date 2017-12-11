@@ -12,6 +12,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration.Duration.Inf
 import io.gatling.http.check.HttpCheck
 import org.apache.james.gatling.utils.RetryAuthentication._
+import io.gatling.core.session.Session
 
 case class MessageId(id: String = RandomStringGenerator.randomString)
 case class RecipientAddress(address: String)
@@ -62,6 +63,27 @@ object JmapMessages {
   def saveMessageIds =
     jsonPath(messageIdsPath).findAll.saveAs("messageIds")
 
+  def moveMessagesToMailboxId =
+    exec((session: Session) => session.set("update", {
+        session("messageIds").as[Vector[String]].map(x =>s""" 
+            "$x" : { "mailboxIds": [ "${session.get("mailboxId").as[Vector[String]].get(0)}" ] }"""
+          )
+          .mkString(",")
+      }))
+    .exec(JmapAuthentication.authenticatedQuery("moveSentMessagesToMessageId", "/jmap")
+            .body(StringBody(
+              s"""[[
+                "setMessages",
+                {
+                  "update": { $${update} }
+                },
+                "#0"
+                ]]"""))
+            .check(hasBeenUpdated))
+
+  def hasBeenUpdated = 
+    jsonPath("$..updated[*]").count.greaterThan(0)
+        
   def sendMessagesChecks(messageId: MessageId): Seq[HttpCheck] = List(
     status.is(200),
     JmapChecks.noError,
