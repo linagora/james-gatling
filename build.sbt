@@ -1,4 +1,5 @@
 name := "james-gatling"
+cancelable in Global := true
 
 version := "1.0-SNAPSHOT"
 
