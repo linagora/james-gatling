@@ -51,12 +51,12 @@ class JamesWebAdministration(val baseUrl: URL) {
 
   def createOutbox(username: Username) = {
     val mailboxesUrl = getMailboxesUrl(username)
-    wsClient.url(s"$mailboxesUrl/outbox").put("")
+    wsClient.url(s"$mailboxesUrl/Outbox").put("")
   }
 
   def createSentBox(username: Username) = {
     val mailboxesUrl = getMailboxesUrl(username)
-    wsClient.url(s"$mailboxesUrl/sent").put("")
+    wsClient.url(s"$mailboxesUrl/Sent").put("")
   }
 
 }
