@@ -17,7 +17,7 @@ class UserCreator(val baseJamesWebAdministrationUrl: URL) {
         case Success(user) => registerSystemMailboxes(user)
       })
 
-  private def createUsers(userCount: Int): Seq[Future[User]] = {
+  def createUsers(userCount: Int): Seq[Future[User]] = {
     val domain = Domain.random
     jamesWebAdministration.addDomain(domain).get
 
