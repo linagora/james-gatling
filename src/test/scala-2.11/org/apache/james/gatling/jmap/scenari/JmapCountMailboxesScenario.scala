@@ -36,7 +36,7 @@ class JmapCountMailboxesScenario extends Simulation {
       Success.apply(session)
     })
     .during(ScenarioDuration) {
-      execWithRetryAuthentication(JmapMailboxes.getMailboxes, JmapMailboxes.getMailboxesChecks(numberOfSystemMailboxes))
+      execWithRetryAuthentication(JmapMailboxes.getMailboxes, JmapMailboxes.checkMailboxIdsHasNotChange)
         .pause(1 second , 2 seconds)
     }
 
