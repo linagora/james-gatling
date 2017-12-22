@@ -7,6 +7,7 @@ import org.apache.james.gatling.utils.JmapChecks
 import org.apache.james.gatling.utils.RetryAuthentication.execWithRetryAuthentication
 import org.apache.james.gatling.utils.RandomStringGenerator
 import fabricator.Words
+import io.gatling.core.session.Session
 
 object Id {
   def generate(): Id =
@@ -60,10 +61,23 @@ object JmapMailboxes {
   def getMailboxesChecks(expectedNumberOfMailboxes: Int): Seq[HttpCheck] =
     getMailboxesChecks :+ assertNumberOfMailboxes(expectedNumberOfMailboxes)
 
+  def checkMailboxIdsHasNotChange: Seq[HttpCheck] =
+    getMailboxesChecks :+ assertMailboxIdsHasNotChange
+
+  def assertMailboxIdsHasNotChange: HttpCheck =
+    exec((session: Session) => session.set("mailboxIdsAsString", {
+        session("mailboxIds").as[Vector[String]].map(x =>s"$x")
+          .mkString(",")
+      })).
+//      .check(jsonPath(s"""$$$mailboxListPath[*].id).in($${mailboxIdsAsString}"""))
+    
   val getSystemMailboxesChecks: Seq[HttpCheck] = getMailboxesChecks ++ List[HttpCheck](
     jsonPath(inboxIdPath).saveAs("inboxMailboxId"),
     jsonPath(outboxIdPath).saveAs("outboxMailboxId"),
     jsonPath(sentIdPath).saveAs("sentMailboxId"))
+
+  def storeMailboxIds: Seq[HttpCheck] = getMailboxesChecks ++ List[HttpCheck](
+    jsonPath(s"$$$mailboxListPath[*].id").findAll.saveAs("mailboxIds"))
 
   def getSystemMailboxes = getMailboxes
 
