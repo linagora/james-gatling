@@ -26,6 +26,7 @@ class JmapCountMailboxesScenario extends Simulation {
   
   val scn = scenario("JMAP scenario counting system mailboxes")
     .exec(CommonSteps.authentication(users))
+    .exec(execWithRetryAuthentication(JmapMailboxes.getMailboxes, JmapMailboxes.storeMailboxIds))
     .during(ScenarioDuration) {
       execWithRetryAuthentication(JmapMailboxes.getMailboxes, JmapMailboxes.getMailboxesChecks(numberOfSystemMailboxes))
         .pause(1 second , 2 seconds)

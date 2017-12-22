@@ -65,6 +65,9 @@ object JmapMailboxes {
     jsonPath(outboxIdPath).saveAs("outboxMailboxId"),
     jsonPath(sentIdPath).saveAs("sentMailboxId"))
 
+  def storeMailboxIds: Seq[HttpCheck] = getMailboxesChecks ++ List[HttpCheck](
+    jsonPath(s"$$$mailboxListPath[*].id").findAll.saveAs("mailboxIds"))
+
   def getSystemMailboxes = getMailboxes
 
   def getSystemMailboxesWithRetryAuthentication = execWithRetryAuthentication(getSystemMailboxes, getSystemMailboxesChecks)
