@@ -30,7 +30,8 @@ object JmapMailboxes {
   private val sentIdPath = s"$$$mailboxListPath[?(@.role == 'sent')].id"
   private val draftsIdPath = s"$$$mailboxListPath[?(@.role == 'drafts')].id"
   private val trashIdPath = s"$$$mailboxListPath[?(@.role == 'trash')].id"
-  val numberOfSystemMailboxes = 5
+  private val spamIdPath = s"$$$mailboxListPath[?(@.role == 'spam')].id"
+  val numberOfSystemMailboxes = 6
 
   def getMailboxes =
     JmapAuthentication.authenticatedQuery("getMailboxes", "/jmap")
@@ -68,7 +69,8 @@ object JmapMailboxes {
       jsonPath(outboxIdPath).is("${outboxMailboxId}"),
       jsonPath(sentIdPath).is("${sentMailboxId}"),
       jsonPath(draftsIdPath).is("${draftMailboxId}"),
-      jsonPath(trashIdPath).is("${trashMailboxId}")
+      jsonPath(trashIdPath).is("${trashMailboxId}"),
+      jsonPath(spamIdPath).is("${spamMailboxId}")
     )
 
   val getSystemMailboxesChecks: Seq[HttpCheck] = getMailboxesChecks ++ List[HttpCheck](
@@ -76,7 +78,8 @@ object JmapMailboxes {
     jsonPath(outboxIdPath).saveAs("outboxMailboxId"),
     jsonPath(sentIdPath).saveAs("sentMailboxId"),
     jsonPath(draftsIdPath).saveAs("draftMailboxId"),
-    jsonPath(trashIdPath).saveAs("trashMailboxId"))
+    jsonPath(trashIdPath).saveAs("trashMailboxId"),
+    jsonPath(spamIdPath).saveAs("spamMailboxId"))
 
   def storeMailboxIds: Seq[HttpCheck] = getSystemMailboxesChecks
 

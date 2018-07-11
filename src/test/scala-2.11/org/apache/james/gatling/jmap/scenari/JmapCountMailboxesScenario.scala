@@ -25,8 +25,5 @@ class JmapCountMailboxesScenario extends Simulation {
         .pause(1 second , 2 seconds)
     }
 
-  setUp(
-    scn.inject(
-      rampUsers(1000) over(5 minutes)
-  )).protocols(HttpSettings.httpProtocol)
+  setUp(scn.inject(atOnceUsers(UserCount))).protocols(HttpSettings.httpProtocol)
 }
