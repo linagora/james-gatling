@@ -57,11 +57,14 @@ object JmapMessages {
           },
           "#0"
           ]]"""))
-      .check(saveMessageIds)
+      .check(saveMessageIds: _*)
   }
 
-  def saveMessageIds =
-    jsonPath(messageIdsPath).findAll.saveAs("messageIds")
+  def saveMessageIds: Seq[HttpCheck] = List(
+    status.is(200),
+    JmapChecks.noError,
+    jsonPath(messageIdsPath).count.greaterThan(0),
+    jsonPath(messageIdsPath).findAll.saveAs("messageIds"))
 
   def moveMessagesToMailboxId =
     exec((session: Session) => session.set("update", {
