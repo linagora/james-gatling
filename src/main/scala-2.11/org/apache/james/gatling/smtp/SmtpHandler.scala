@@ -31,7 +31,7 @@ class SmtpHandler extends BaseActor {
   def sendMail(sendMailRequest: SendMailRequest, requestOrigin: ActorRef) = {
     import courier._
     val baseMailer = Mailer(sendMailRequest.host, sendMailRequest.port)
-      .startTtls(sendMailRequest.ssl)
+      .startTls(sendMailRequest.ssl)
 
     val mailer = sendMailRequest.credentials
       .map(value => baseMailer.auth(true)
