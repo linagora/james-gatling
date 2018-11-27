@@ -13,7 +13,7 @@ class NoAuthenticationNoEncryptionBigBodyScenario extends Simulation {
   val myRandom = Random.alphanumeric
 
   def generateMessage() : String =
-    myRandom take (1024 * 1024) grouped 200 map (_ append Stream('\n')) flatMap identity mkString
+    myRandom grouped 200 map (_ append Stream('\r', '\n')) flatMap identity take (1024 * 1024) mkString
 
   val users = new UserCreator(BaseJamesWebAdministrationUrl).createUsersWithInboxAndOutbox(UserCount)
 
