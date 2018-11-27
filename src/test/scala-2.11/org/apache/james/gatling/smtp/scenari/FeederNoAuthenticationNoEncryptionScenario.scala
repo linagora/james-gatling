@@ -11,7 +11,7 @@ class FeederNoAuthenticationNoEncryptionScenario extends Simulation {
 
   def feeder = csv("users.csv")
 
-  val scn = scenario("SMTP_No_Authentication_No_Encryption")
+  val scn = scenario("SMTP No authentication no encryption with fixed list of already provisioned users.")
     .feed(feeder)
     .pause(1 second)
     .during(ScenarioDuration) {
