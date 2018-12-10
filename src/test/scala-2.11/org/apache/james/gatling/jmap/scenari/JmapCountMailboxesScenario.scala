@@ -1,9 +1,9 @@
 package org.apache.james.gatling.jmap.scenari
 
-import io.gatling.core.Predef.{Simulation, atOnceUsers, nothingFor, rampUsers, scenario}
+import io.gatling.core.Predef.{Simulation, atOnceUsers, scenario}
+import org.apache.james.gatling.configuration.Configuration.{BaseJamesWebAdministrationUrl, ScenarioDuration, UserCount}
 import org.apache.james.gatling.control.UserCreator
 import org.apache.james.gatling.jmap.JmapMailboxes
-import org.apache.james.gatling.jmap.scenari.common.Configuration.{BaseJamesWebAdministrationUrl, ScenarioDuration, UserCount}
 import org.apache.james.gatling.jmap.scenari.common.{CommonSteps, HttpSettings}
 import org.apache.james.gatling.utils.RetryAuthentication.execWithRetryAuthentication
 

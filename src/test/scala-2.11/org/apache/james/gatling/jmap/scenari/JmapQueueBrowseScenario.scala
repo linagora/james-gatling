@@ -1,12 +1,10 @@
 package org.apache.james.gatling.jmap.scenari
 
 import io.gatling.core.Predef._
-import org.apache.james.gatling.control.{UserCreator, JamesWebAdministrationQuery}
+import org.apache.james.gatling.configuration.Configuration._
+import org.apache.james.gatling.control.{JamesWebAdministrationQuery, UserCreator}
 import org.apache.james.gatling.jmap.JmapMessages
-import org.apache.james.gatling.jmap.scenari.common.Configuration._
 import org.apache.james.gatling.jmap.scenari.common.{CommonSteps, HttpSettings}
-
-import scala.concurrent.duration._
 
 class JmapQueueBrowseScenario extends Simulation {
 

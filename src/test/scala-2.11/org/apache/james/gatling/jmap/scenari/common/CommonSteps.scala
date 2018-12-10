@@ -1,16 +1,12 @@
 package org.apache.james.gatling.jmap.scenari.common
 
 import io.gatling.core.Predef._
-import org.apache.james.gatling.jmap.{JmapAuthentication, JmapMailboxes, JmapMessages}
+import org.apache.james.gatling.configuration.Configuration._
+import org.apache.james.gatling.control.{User, UserFeeder}
+import org.apache.james.gatling.jmap._
 
-import scala.concurrent.duration._
 import scala.concurrent.Future
-import org.apache.james.gatling.control.User
-import org.apache.james.gatling.control.UserFeeder
-import org.apache.james.gatling.jmap.scenari.common.Configuration._
-import org.apache.james.gatling.jmap.JmapMailboxes
-import org.apache.james.gatling.jmap.Id
-import org.apache.james.gatling.jmap.Name
+import scala.concurrent.duration._
 
 object CommonSteps {
 

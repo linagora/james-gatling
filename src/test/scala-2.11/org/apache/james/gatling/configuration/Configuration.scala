@@ -1,7 +1,8 @@
-package org.apache.james.gatling.jmap.scenari.common
+package org.apache.james.gatling.configuration
+
+import java.net.URL
 
 import scala.concurrent.duration._
-import java.net.URL
 
 object Configuration {
 
@@ -9,7 +10,7 @@ object Configuration {
   val BaseJmapUrl = s"http://$ServerHostName:1080"
   val BaseJamesWebAdministrationUrl = new URL(s"http://$ServerHostName:8000")
 
-  val ScenarioDuration = 3 hours
+  val ScenarioDuration = 3.hours
   val UserCount = 1000
   val RandomlySentMails = 10
   val NumberOfMailboxes = 10

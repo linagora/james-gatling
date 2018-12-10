@@ -1,25 +1,14 @@
 package org.apache.james.gatling.jmap.scenari
 
-import scala.concurrent.duration.DurationInt
-
+import io.gatling.core.Predef.{Simulation, atOnceUsers, scenario}
+import org.apache.james.gatling.configuration.Configuration._
 import org.apache.james.gatling.control.UserCreator
-import org.apache.james.gatling.jmap.JmapMessages
-import org.apache.james.gatling.jmap.scenari.common.CommonSteps
-import org.apache.james.gatling.jmap.scenari.common.Configuration.BaseJamesWebAdministrationUrl
-import org.apache.james.gatling.jmap.scenari.common.Configuration.ScenarioDuration
-import org.apache.james.gatling.jmap.scenari.common.Configuration.UserCount
-import org.apache.james.gatling.jmap.scenari.common.Configuration.NumberOfMailboxes
-import org.apache.james.gatling.jmap.scenari.common.Configuration.NumberOfMessages
-import org.apache.james.gatling.jmap.scenari.common.HttpSettings
+import org.apache.james.gatling.jmap.JmapMailboxes.numberOfSystemMailboxes
+import org.apache.james.gatling.jmap.{JmapMailboxes, JmapMessages}
+import org.apache.james.gatling.jmap.scenari.common.{CommonSteps, HttpSettings}
 import org.apache.james.gatling.utils.RetryAuthentication.execWithRetryAuthentication
 
-import io.gatling.core.Predef.Simulation
-import io.gatling.core.Predef.atOnceUsers
-import io.gatling.core.Predef.scenario
-import org.apache.james.gatling.jmap.JmapMailboxes
-import org.apache.james.gatling.jmap.JmapMailboxes.numberOfSystemMailboxes
-import org.apache.james.gatling.jmap.Id
-import org.apache.james.gatling.jmap.Name
+import scala.concurrent.duration.DurationInt
 
 /*
  * The aim of the scenario is to provide multiple mailboxes per user and several mails in them.

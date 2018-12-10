@@ -1,8 +1,7 @@
 package org.apache.james.gatling.smtp.scenari
 
 import io.gatling.core.Predef._
-import org.apache.james.gatling.control._
-import org.apache.james.gatling.jmap.scenari.common.Configuration._
+import org.apache.james.gatling.configuration.Configuration._
 import org.apache.james.gatling.smtp.scenari.common.SmtpSettings._
 
 import scala.concurrent.duration._
