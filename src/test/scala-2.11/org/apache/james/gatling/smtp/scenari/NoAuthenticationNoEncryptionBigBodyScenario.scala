@@ -10,22 +10,22 @@ import scala.util.Random
 
 class NoAuthenticationNoEncryptionBigBodyScenario extends Simulation {
 
-  val myRandom = Random.alphanumeric
+  private val myRandom = Random.alphanumeric
 
   def generateMessage() : String =
-    myRandom grouped 200 map (_ append Stream('\r', '\n')) flatMap identity take (1024 * 1024) mkString
+    myRandom.grouped(200).flatMap(_.append(Stream('\r', '\n'))).take(1024 * 1024).mkString
 
-  val users = new UserCreator(BaseJamesWebAdministrationUrl).createUsersWithInboxAndOutbox(UserCount)
+  private val users = new UserCreator(BaseJamesWebAdministrationUrl).createUsersWithInboxAndOutbox(UserCount)
 
-  val scn = scenario("SMTP_No_Authentication_No_Encryption_Big_Body")
+  private val scn = scenario("SMTP_No_Authentication_No_Encryption_Big_Body")
     .feed(UserFeeder.createCompletedUserFeederWithInboxAndOutbox(users))
-    .pause(1 second)
+    .pause(1.second)
     .during(ScenarioDuration) {
       exec(smtp("sendMail")
         .subject("subject")
         .body(generateMessage()))
-        .pause(1 second)
+        .pause(1.second)
     }
 
-  setUp(scn.inject(nothingFor(10 seconds), rampUsers(UserCount) over(10 seconds))).protocols(smtp)
+  setUp(scn.inject(nothingFor(10.seconds), rampUsers(UserCount) over(10.seconds))).protocols(smtp)
 }
