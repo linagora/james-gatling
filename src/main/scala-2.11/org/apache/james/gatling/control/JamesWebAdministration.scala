@@ -45,18 +45,20 @@ class JamesWebAdministration(val baseUrl: URL) {
     new URL(s"$baseUrl/users/${username.value}/mailboxes")
 
   def createInbox(username: Username) = {
-    val mailboxesUrl = getMailboxesUrl(username)
-    wsClient.url(s"$mailboxesUrl/INBOX").put("")
+    createMailbox(username, "INBOX")
   }
 
   def createOutbox(username: Username) = {
-    val mailboxesUrl = getMailboxesUrl(username)
-    wsClient.url(s"$mailboxesUrl/Outbox").put("")
+    createMailbox(username, "Outbox")
   }
 
   def createSentBox(username: Username) = {
+    createMailbox(username, "Sent")
+  }
+
+  def createMailbox(username: Username, name: String) = {
     val mailboxesUrl = getMailboxesUrl(username)
-    wsClient.url(s"$mailboxesUrl/Sent").put("")
+    wsClient.url(s"$mailboxesUrl/" + name).put("")
   }
 
 }

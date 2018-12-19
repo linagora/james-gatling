@@ -17,6 +17,12 @@ class UserCreator(val baseJamesWebAdministrationUrl: URL) {
         case Success(user) => registerSystemMailboxes(user)
       })
 
+  def createUsersWithInboxAndOutboxAndNumerousOthers(userCount: Int, mailboxCount: Int): Seq[Future[User]] =
+    createUsersWithInboxAndOutbox(userCount)
+      .map(userFuture => userFuture.andThen {
+        case Success(user) => registerOtherMailboxes(user, mailboxCount)
+      })
+
   def createUsers(userCount: Int): Seq[Future[User]] = {
     val domain = Domain.random
     jamesWebAdministration.addDomain(domain).get
@@ -34,5 +40,11 @@ class UserCreator(val baseJamesWebAdministrationUrl: URL) {
       List(jamesWebAdministration.createInbox(user.username),
         jamesWebAdministration.createOutbox(user.username),
         jamesWebAdministration.createSentBox(user.username)))
+      .map(responseList => user)
+
+  def registerOtherMailboxes(user: User, mailboxCount: Int): Future[User] =
+    Future.sequence(
+      (1.to(mailboxCount)
+        .map(index => jamesWebAdministration.createMailbox(user.username, "MBOX" + index.toString))))
       .map(responseList => user)
 }
