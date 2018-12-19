@@ -11,7 +11,7 @@ import scala.concurrent.duration._
 class JmapGetMailboxesHugeNumberScenario extends Simulation {
 
   val scn = scenario("JmapGetMailboxesHugeNumber")
-    .exec(CommonSteps.authentication(new UserCreator(BaseJamesWebAdministrationUrl).createUsersWithInboxAndOutboxAndNumerousOthers(UserCount, 200)))
+    .exec(CommonSteps.authentication(new UserCreator(BaseJamesWebAdministrationUrl).createUsersWithInboxAndOutboxAndNumerousOthers(UserCount, 50)))
     .during(ScenarioDuration) {
       JmapMailboxes.getSystemMailboxesWithRetryAuthentication
         .pause(1 second , 2 seconds)
