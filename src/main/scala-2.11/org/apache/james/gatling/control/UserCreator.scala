@@ -42,9 +42,11 @@ class UserCreator(val baseJamesWebAdministrationUrl: URL) {
         jamesWebAdministration.createSentBox(user.username)))
       .map(responseList => user)
 
-  def registerOtherMailboxes(user: User, mailboxCount: Int): Future[User] =
+  def registerOtherMailboxes(user: User, mailboxCount: Int): Future[User] = {
+    val createMailbox = (name: String) => jamesWebAdministration.createMailbox(name)(user.username)
     Future.sequence(
       (1.to(mailboxCount)
-        .map(index => jamesWebAdministration.createMailbox("MBOX$index")(user.username))))
+        .map(index => createMailbox("MBOX$index"))))
       .map(responseList => user)
+  }
 }
