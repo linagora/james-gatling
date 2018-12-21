@@ -11,7 +11,7 @@ import scala.concurrent.duration._
 class JmapAllScenario extends Simulation {
   private val loopVariableName = "any"
 
-  val users = new UserCreator(BaseJamesWebAdministrationUrl).createUsersWithInboxAndOutbox(UserCount)
+  val users = new UserCreator(BaseJamesWebAdministrationUrl).createUsersWithSystemMailboxes(UserCount)
 
   val scn = scenario("JmapAllScenarios")
     .exec(CommonSteps.provisionSystemMailboxes(users))

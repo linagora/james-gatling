@@ -9,7 +9,7 @@ import org.apache.james.gatling.jmap.scenari.common.Configuration._
 class JmapAuthenticationScenario extends Simulation {
 
   val scn = scenario("JmapAuthentication")
-    .exec(CommonSteps.authentication(new UserCreator(BaseJamesWebAdministrationUrl).createUsersWithInboxAndOutbox(UserCount)))
+    .exec(CommonSteps.authentication(new UserCreator(BaseJamesWebAdministrationUrl).createUsersWithSystemMailboxes(UserCount)))
 
   setUp(scn.inject(atOnceUsers(UserCount))).protocols(HttpSettings.httpProtocol)
 

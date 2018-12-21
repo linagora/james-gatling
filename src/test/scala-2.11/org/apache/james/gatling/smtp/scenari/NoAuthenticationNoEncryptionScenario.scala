@@ -9,7 +9,7 @@ import scala.concurrent.duration._
 
 class NoAuthenticationNoEncryptionScenario extends Simulation {
 
-  val users = new UserCreator(BaseJamesWebAdministrationUrl).createUsersWithInboxAndOutbox(UserCount)
+  val users = new UserCreator(BaseJamesWebAdministrationUrl).createUsersWithSystemMailboxes(UserCount)
 
   val scn = scenario("SMTP_No_Authentication_No_Encryption")
     .feed(UserFeeder.createCompletedUserFeederWithInboxAndOutbox(users))

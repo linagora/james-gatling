@@ -15,7 +15,7 @@ class NoAuthenticationNoEncryptionBigBodyScenario extends Simulation {
   def generateMessage() : String =
     myRandom.grouped(200).flatMap(_.append(Stream('\r', '\n'))).take(1024 * 1024).mkString
 
-  private val users = new UserCreator(BaseJamesWebAdministrationUrl).createUsersWithInboxAndOutbox(UserCount)
+  private val users = new UserCreator(BaseJamesWebAdministrationUrl).createUsersWithSystemMailboxes(UserCount)
 
   private val scn = scenario("SMTP_No_Authentication_No_Encryption_Big_Body")
     .feed(UserFeeder.createCompletedUserFeederWithInboxAndOutbox(users))
