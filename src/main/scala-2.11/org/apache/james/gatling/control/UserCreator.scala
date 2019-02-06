@@ -2,10 +2,9 @@ package org.apache.james.gatling.control
 
 import java.net.URL
 
-import io.gatling.core.Predef._
-
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.duration._
+import scala.concurrent.{Await, Future}
 import scala.util.Success
 
 class UserCreator(val baseJamesWebAdministrationUrl: URL) {
@@ -19,7 +18,7 @@ class UserCreator(val baseJamesWebAdministrationUrl: URL) {
 
   def createUsers(userCount: Int): Seq[Future[User]] = {
     val domain = Domain.random
-    jamesWebAdministration.addDomain(domain).get
+    Await.result(jamesWebAdministration.addDomain(domain), 10.seconds)
 
     generateUsers(userCount, domain)
       .map(jamesWebAdministration.addUser)
