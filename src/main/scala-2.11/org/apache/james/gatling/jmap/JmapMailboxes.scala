@@ -85,6 +85,9 @@ object JmapMailboxes {
 
   def getSystemMailboxes = getMailboxes
 
+  def getMailboxesWithRetryAuthentication(expectedNumberOfMailboxes: Int) =
+    execWithRetryAuthentication(getMailboxes, getMailboxesChecks(expectedNumberOfMailboxes))
+
   def getSystemMailboxesWithRetryAuthentication = execWithRetryAuthentication(getSystemMailboxes, getSystemMailboxesChecks)
 
   def getSystemMailboxesWithChecks = getSystemMailboxes.check(getSystemMailboxesChecks: _*)

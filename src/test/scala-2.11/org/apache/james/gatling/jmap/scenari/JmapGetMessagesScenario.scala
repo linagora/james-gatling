@@ -11,7 +11,7 @@ import org.apache.james.gatling.utils.RetryAuthentication._
 
 class JmapGetMessagesScenario extends Simulation {
 
-  val users = new UserCreator(BaseJamesWebAdministrationUrl).createUsersWithInboxAndOutbox(UserCount)
+  val users = new UserCreator(BaseJamesWebAdministrationUrl).createUsersWithSystemMailboxes(UserCount)
 
   val scn = scenario("JmapGetMessages")
     .exec(CommonSteps.provisionUsersWithMessageList(users))

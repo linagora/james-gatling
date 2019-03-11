@@ -10,7 +10,7 @@ import scala.concurrent.duration._
 
 class JmapQueueBrowseScenario extends Simulation {
 
-  val users = new UserCreator(BaseJamesWebAdministrationUrl).createUsersWithInboxAndOutbox(UserCount)
+  val users = new UserCreator(BaseJamesWebAdministrationUrl).createUsersWithSystemMailboxes(UserCount)
 
   val webAdmin = new JamesWebAdministrationQuery(BaseJamesWebAdministrationUrl)
 

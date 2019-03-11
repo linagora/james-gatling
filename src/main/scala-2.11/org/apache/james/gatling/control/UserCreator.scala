@@ -10,7 +10,7 @@ import scala.util.Success
 class UserCreator(val baseJamesWebAdministrationUrl: URL) {
   private val jamesWebAdministration = new JamesWebAdministration(baseJamesWebAdministrationUrl)
 
-  def createUsersWithInboxAndOutbox(userCount: Int): Seq[Future[User]] =
+  def createUsersWithSystemMailboxes(userCount: Int): Seq[Future[User]] =
     createUsers(userCount)
       .map(userFuture => userFuture.andThen {
         case Success(user) => registerSystemMailboxes(user)

@@ -27,7 +27,7 @@ import org.apache.james.gatling.jmap.Name
  */
 class JmapBigSetScenario extends Simulation {
 
-  val users = new UserCreator(BaseJamesWebAdministrationUrl).createUsersWithInboxAndOutbox(UserCount)
+  val users = new UserCreator(BaseJamesWebAdministrationUrl).createUsersWithSystemMailboxes(UserCount)
   
   val scn = scenario("JMAP scenario on multiple mailboxes containing multiple messages")
     .exec(CommonSteps.provisionUsersWithMailboxesAndMessages(users, NumberOfMailboxes, NumberOfMessages))
