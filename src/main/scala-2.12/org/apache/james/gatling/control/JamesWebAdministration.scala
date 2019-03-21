@@ -11,11 +11,11 @@ import play.api.libs.ws.ahc.StandaloneAhcWSClient
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-case class Domain(value: String)
+case class Domain(value: String) extends AnyVal
 
-case class Username(value: String)
+case class Username(value: String) extends AnyVal
 
-case class Password(value: String)
+case class Password(value: String) extends AnyVal
 
 case class User(username: Username, password: Password)
 

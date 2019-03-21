@@ -12,13 +12,13 @@ import scala.concurrent.{Await, Future}
 import scala.concurrent.duration.Duration.Inf
 import scala.util.Random
 
-case class MessageId(id: String = RandomStringGenerator.randomString)
-case class RecipientAddress(address: String)
-case class Subject(subject: String = RandomStringGenerator.randomString)
-case class TextBody(text: String = RandomStringGenerator.randomString)
+case class MessageId(id: String = RandomStringGenerator.randomString) extends AnyVal
+case class RecipientAddress(address: String) extends AnyVal
+case class Subject(subject: String = RandomStringGenerator.randomString) extends AnyVal
+case class TextBody(text: String = RandomStringGenerator.randomString) extends AnyVal
 
-case class RequestTitle(title: String)
-case class Property(name: String)
+case class RequestTitle(title: String) extends AnyVal
+case class Property(name: String) extends AnyVal
 
 object JmapMessages {
 

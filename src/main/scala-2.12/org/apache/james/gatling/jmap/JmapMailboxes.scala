@@ -12,7 +12,7 @@ object Id {
   def generate(): Id =
     Id(RandomStringGenerator.randomString)
 }
-case class Id private(id: String)
+case class Id private(id: String) extends AnyVal
 
 object Name {
   private val words = Words()
@@ -20,7 +20,7 @@ object Name {
   def generate(): Name =
     Name(words.words(2).mkString("_"))
 }
-case class Name private(name: String)
+case class Name private(name: String) extends AnyVal
 
 object JmapMailboxes {
 
