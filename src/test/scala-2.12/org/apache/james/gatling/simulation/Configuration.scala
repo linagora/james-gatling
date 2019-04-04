@@ -1,7 +1,8 @@
-package org.apache.james.gatling.jmap.scenari.common
+package org.apache.james.gatling.simulation
+
+import java.net.URL
 
 import scala.concurrent.duration._
-import java.net.URL
 
 object Configuration {
 

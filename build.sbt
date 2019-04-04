@@ -18,6 +18,7 @@ resolvers += "Fabricator" at "http://dl.bintray.com/biercoff/Fabricator"
 libraryDependencies += "com.typesafe.play" %% "play-ahc-ws-standalone" % playWsVersion
 libraryDependencies += "io.gatling" % "gatling-test-framework" % gatlingVersion
 libraryDependencies += "io.gatling.highcharts" % "gatling-charts-highcharts" % gatlingVersion
+libraryDependencies += "org.testcontainers" % "testcontainers" % "1.11.0" % "it"
 
 libraryDependencies += "com.github.azakordonets" %% "fabricator" % "2.1.5"
 

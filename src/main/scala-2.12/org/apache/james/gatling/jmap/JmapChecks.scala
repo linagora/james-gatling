@@ -1,9 +1,6 @@
-package org.apache.james.gatling.utils
+package org.apache.james.gatling.jmap
 
 import io.gatling.core.Predef._
-import io.gatling.core.check.CheckBuilder
-import io.gatling.http.Predef._
-import org.apache.james.gatling.jmap.MessageId
 
 object JmapChecks {
 

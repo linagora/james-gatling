@@ -31,6 +31,10 @@ object SmtpProtocol {
 
   def defaultPort(ssl: Boolean) = if (ssl) SmtpProtocol.DEFAULT_PORT_SSL else SmtpProtocol.DEFAULT_PORT
 
+  val smtp = SmtpProtocol.default
+
+  def smtp(requestName: String) = new SmtpActionBuilder(requestName, null, null)
+
 }
 
 case class SmtpProtocol(
@@ -39,3 +43,4 @@ case class SmtpProtocol(
                          port: Int,
                          auth: Boolean) extends Protocol {
 }
+

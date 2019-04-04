@@ -1,16 +1,10 @@
-package org.apache.james.gatling.jmap.scenari.common
+package org.apache.james.gatling.jmap
 
 import io.gatling.core.Predef._
-import org.apache.james.gatling.jmap.{JmapAuthentication, JmapMailboxes, JmapMessages}
+import org.apache.james.gatling.control.{User, UserFeeder}
 
-import scala.concurrent.duration._
 import scala.concurrent.Future
-import org.apache.james.gatling.control.User
-import org.apache.james.gatling.control.UserFeeder
-import org.apache.james.gatling.jmap.scenari.common.Configuration._
-import org.apache.james.gatling.jmap.JmapMailboxes
-import org.apache.james.gatling.jmap.Id
-import org.apache.james.gatling.jmap.Name
+import scala.concurrent.duration._
 
 object CommonSteps {
 
@@ -30,10 +24,10 @@ object CommonSteps {
       .exec(JmapMailboxes.getSystemMailboxesWithRetryAuthentication)
       .pause(1 second)
 
-  def provisionUsersWithMessages(users: Seq[Future[User]]) =
+  def provisionUsersWithMessages(users: Seq[Future[User]], randomlySentMails: Int) =
     scenario("ProvisionUserWithMessages")
       .exec(provisionSystemMailboxes(users))
-      .repeat(RandomlySentMails, loopVariableName) {
+      .repeat(randomlySentMails, loopVariableName) {
         exec(JmapMessages.sendMessagesRandomlyWithRetryAuthentication(users))
           .pause(1 second, 2 seconds)
       }
@@ -60,9 +54,9 @@ object CommonSteps {
         .exec(JmapMailboxes.createMailbox())
   }
 
-  def provisionUsersWithMessageList(users: Seq[Future[User]]) =
+  def provisionUsersWithMessageList(users: Seq[Future[User]], randomlySentMails: Int) =
     scenario("provisionUsersWithMessageList")
-      .exec(provisionUsersWithMessages(users))
+      .exec(provisionUsersWithMessages(users, randomlySentMails))
       .exec(JmapMessages.listMessagesWithRetryAuthentication())
       .pause(1 second)
 }

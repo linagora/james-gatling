@@ -1,29 +1,19 @@
 package org.apache.james.gatling.jmap.scenari
 
 import io.gatling.core.Predef._
+import io.gatling.core.structure.ScenarioBuilder
 import org.apache.james.gatling.control.{Password, User, Username}
-import org.apache.james.gatling.jmap.scenari.common.Configuration._
-import org.apache.james.gatling.jmap.scenari.common.{CommonSteps, HttpSettings}
-import org.apache.james.gatling.jmap.{JmapMailboxes, JmapMessages}
+import org.apache.james.gatling.jmap.{CommonSteps, JmapMailboxes, JmapMessages}
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
 
-class FeederJmapAllScenario extends Simulation {
+class FeederJmapAllScenario {
   private val loopVariableName = "any"
 
-  private def recordValueToString(recordValue: Any):String = recordValue match {
-    case s: String => s
-    case a: Any => println("Warning: calling toString on a feeder value"); a.toString
-  }
-
-  val users = csv("users.csv").readRecords
-    .map({ record => User(Username(recordValueToString(record("username"))), Password(recordValueToString(record("password")))) })
-    .map(Future.successful(_))
-    .seq
-
-  val scn = scenario("FeederJmapAllScenarios")
-    .during(ScenarioDuration) {
+  def generate(duration: Duration, users: Seq[Future[User]]): ScenarioBuilder =
+    scenario("FeederJmapAllScenarios")
+      .during(duration) {
         exec(CommonSteps.authentication(users))
         .exec(JmapMessages.sendMessagesRandomlyWithRetryAuthentication(users))
         .pause(1 second, 5 seconds)
@@ -38,6 +28,4 @@ class FeederJmapAllScenario extends Simulation {
         )
     }
 
-  setUp(
-    scn.inject(atOnceUsers(UserCount))).protocols(HttpSettings.httpProtocol)
 }
