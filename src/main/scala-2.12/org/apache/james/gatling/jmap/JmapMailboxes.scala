@@ -1,12 +1,10 @@
 package org.apache.james.gatling.jmap
 
+import fabricator.Words
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import io.gatling.http.check.HttpCheck
-import org.apache.james.gatling.utils.JmapChecks
-import org.apache.james.gatling.utils.RetryAuthentication.execWithRetryAuthentication
 import org.apache.james.gatling.utils.RandomStringGenerator
-import fabricator.Words
 
 object Id {
   def generate(): Id =
@@ -85,7 +83,7 @@ object JmapMailboxes {
 
   def getSystemMailboxes = getMailboxes
 
-  def getSystemMailboxesWithRetryAuthentication = execWithRetryAuthentication(getSystemMailboxes, getSystemMailboxesChecks)
+  def getSystemMailboxesWithRetryAuthentication = RetryAuthentication.execWithRetryAuthentication(getSystemMailboxes, getSystemMailboxesChecks)
 
   def getSystemMailboxesWithChecks = getSystemMailboxes.check(getSystemMailboxesChecks: _*)
 }

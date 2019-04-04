@@ -5,11 +5,11 @@ import io.gatling.core.session.Session
 import io.gatling.http.Predef._
 import io.gatling.http.check.HttpCheck
 import org.apache.james.gatling.control.User
-import org.apache.james.gatling.utils.RetryAuthentication._
-import org.apache.james.gatling.utils.{JmapChecks, RandomStringGenerator}
+import org.apache.james.gatling.jmap.RetryAuthentication._
+import org.apache.james.gatling.utils.RandomStringGenerator
 
-import scala.concurrent.{Await, Future}
 import scala.concurrent.duration.Duration.Inf
+import scala.concurrent.{Await, Future}
 import scala.util.Random
 
 case class MessageId(id: String = RandomStringGenerator.randomString) extends AnyVal

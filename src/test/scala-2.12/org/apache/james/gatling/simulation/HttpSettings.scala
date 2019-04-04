@@ -1,11 +1,11 @@
-package org.apache.james.gatling.jmap.scenari.common
+package org.apache.james.gatling.simulation
 
 import io.gatling.core.Predef._
-import io.gatling.http.Predef._
+import io.gatling.http.Predef.http
 
 object HttpSettings {
 
-  val httpProtocol = http
+  def httpProtocol = http
     .baseUrl(Configuration.BaseJmapUrl)
     .acceptHeader("application/json")
     .contentTypeHeader("application/json; charset=UTF-8")

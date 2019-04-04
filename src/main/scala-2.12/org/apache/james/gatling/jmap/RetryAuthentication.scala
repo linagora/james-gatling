@@ -1,4 +1,4 @@
-package org.apache.james.gatling.utils
+package org.apache.james.gatling.jmap
 
 import io.gatling.core.Predef._
 import io.gatling.core.structure.ChainBuilder
@@ -7,7 +7,6 @@ import io.gatling.http.check.HttpCheck
 import io.gatling.http.request.builder.HttpRequestBuilder
 import io.gatling.http.request.builder.HttpRequestBuilder.toActionBuilder
 import io.gatling.http.response.Response
-import org.apache.james.gatling.jmap.JmapAuthentication
 
 object RetryAuthentication {
 
