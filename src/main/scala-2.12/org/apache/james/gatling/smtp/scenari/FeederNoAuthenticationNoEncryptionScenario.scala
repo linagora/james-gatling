@@ -7,7 +7,7 @@ import org.apache.james.gatling.smtp.SmtpProtocol.smtp
 
 import scala.concurrent.duration._
 
-class FeederNoAuthenticationNoEncryptionScenario extends Simulation {
+class FeederNoAuthenticationNoEncryptionScenario {
 
   def generate(duration: Duration, feeder: FeederBuilder): ScenarioBuilder =
     scenario("SMTP No authentication no encryption with fixed list of already provisioned users.")

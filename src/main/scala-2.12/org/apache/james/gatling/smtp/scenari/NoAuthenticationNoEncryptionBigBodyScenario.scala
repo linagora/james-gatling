@@ -9,7 +9,7 @@ import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.util.Random
 
-class NoAuthenticationNoEncryptionBigBodyScenario extends Simulation {
+class NoAuthenticationNoEncryptionBigBodyScenario {
 
   private val myRandom = Random.alphanumeric
 

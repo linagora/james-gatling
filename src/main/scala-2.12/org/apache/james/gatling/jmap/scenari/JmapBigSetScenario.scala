@@ -14,7 +14,7 @@ import scala.concurrent.duration.{Duration, DurationInt}
  * The aim of the scenario is to provide multiple mailboxes per user and several mails in them.
  * Then, it's just checking that the created mailboxes exists.
  */
-class JmapBigSetScenario extends Simulation {
+class JmapBigSetScenario {
 
   def generate(duration: Duration, numberOfMailboxes: Int, numberOfMessages: Int, users: Seq[Future[User]]): ScenarioBuilder = {
     def numberOfMailboxesPerUser: Int = numberOfMailboxes + numberOfSystemMailboxes

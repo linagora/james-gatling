@@ -12,7 +12,7 @@ import scala.concurrent.duration.{Duration, DurationInt}
  * The aim of the scenario is to count the number of mailboxes.
  * No mailboxes are created manually, only the system mailboxes whose are automatically provisioned should be present.
  */
-class JmapCountMailboxesScenario extends Simulation {
+class JmapCountMailboxesScenario {
 
 
   def generate(duration: Duration, users: Seq[Future[User]]): ScenarioBuilder =

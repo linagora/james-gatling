@@ -8,7 +8,7 @@ import org.apache.james.gatling.jmap.{CommonSteps, JmapMessages}
 import scala.concurrent.Future
 import scala.concurrent.duration._
 
-class JmapSendMessagesScenario extends Simulation {
+class JmapSendMessagesScenario {
 
   def generate(duration: Duration, users: Seq[Future[User]]): ScenarioBuilder =
     scenario("JmapSendMessages")

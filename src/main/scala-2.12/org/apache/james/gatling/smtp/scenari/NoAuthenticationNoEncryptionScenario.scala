@@ -8,7 +8,7 @@ import org.apache.james.gatling.smtp.SmtpProtocol.smtp
 import scala.concurrent.Future
 import scala.concurrent.duration._
 
-class NoAuthenticationNoEncryptionScenario extends Simulation {
+class NoAuthenticationNoEncryptionScenario {
 
   def generate(duration: Duration, users: Seq[Future[User]]): ScenarioBuilder =
     scenario("SMTP_No_Authentication_No_Encryption")

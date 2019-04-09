@@ -7,7 +7,7 @@ import org.apache.james.gatling.jmap.CommonSteps
 
 import scala.concurrent.Future
 
-class JmapAuthenticationScenario extends Simulation {
+class JmapAuthenticationScenario {
 
   def generate(users: Seq[Future[User]]): ScenarioBuilder =
     scenario("JmapAuthentication")
