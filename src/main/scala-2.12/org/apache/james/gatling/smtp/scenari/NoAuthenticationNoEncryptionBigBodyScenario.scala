@@ -16,9 +16,8 @@ class NoAuthenticationNoEncryptionBigBodyScenario {
   private def generateMessage() : String =
     myRandom.grouped(200).flatMap(_.append(Stream('\r', '\n'))).take(1024 * 1024).mkString
 
-  def generate(duration: Duration, users: Seq[Future[User]]): ScenarioBuilder =
+  def generate(duration: Duration): ScenarioBuilder =
     scenario("SMTP_No_Authentication_No_Encryption_Big_Body")
-    .feed(UserFeeder.createCompletedUserFeederWithInboxAndOutbox(users))
     .pause(1.second)
     .during(duration) {
       exec(smtp("sendMail")

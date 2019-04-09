@@ -9,6 +9,10 @@ import scala.concurrent.duration._
 
 object CommonSteps {
 
+  trait UserPicker {
+    def pick(): User
+  }
+
   private val loopVariableName = "any"
 
   def authentication(): ChainBuilder =
@@ -23,20 +27,20 @@ object CommonSteps {
       .exec(JmapMailboxes.getSystemMailboxesWithRetryAuthentication)
       .pause(1 second)
 
-  def provisionUsersWithMessages(users: Seq[Future[User]], randomlySentMails: Int): ChainBuilder =
+  def provisionUsersWithMessages(userPicker: UserPicker, numberOfMessages: Int): ChainBuilder =
     exec(provisionSystemMailboxes())
-      .repeat(randomlySentMails, loopVariableName) {
-        exec(JmapMessages.sendMessagesRandomlyWithRetryAuthentication(users))
+      .repeat(numberOfMessages, loopVariableName) {
+        exec(JmapMessages.sendMessagesToUserWithRetryAuthentication(userPicker))
           .pause(1 second, 2 seconds)
       }
       .pause(30 second)
 
-  def provisionUsersWithMailboxesAndMessages(users: Seq[Future[User]], numberOfMailboxes: Int, numberOfMessages: Int): ChainBuilder =
+  def provisionUsersWithMailboxesAndMessages(userPicker: UserPicker, numberOfMailboxes: Int, numberOfMessages: Int): ChainBuilder =
     exec(provisionSystemMailboxes())
       .repeat(numberOfMailboxes) {
         provisionNewMailboxAndRememberItsIdAndName()
         .repeat(numberOfMessages) {
-          exec(JmapMessages.sendMessagesRandomlyWithRetryAuthentication(users))
+          exec(JmapMessages.sendMessagesToUserWithRetryAuthentication(userPicker))
         }
         .pause(1 second, 2 seconds)
         .exec(JmapMessages.retrieveSentMessageIds())
@@ -50,8 +54,8 @@ object CommonSteps {
         .exec((session: Session) => session.set("mailboxName", Name.generate().name))
         .exec(JmapMailboxes.createMailbox())
 
-  def provisionUsersWithMessageList(users: Seq[Future[User]], randomlySentMails: Int): ChainBuilder =
-    exec(provisionUsersWithMessages(users, randomlySentMails))
+  def provisionUsersWithMessageList(userPicker: UserPicker, numberOfMessages: Int): ChainBuilder =
+    exec(provisionUsersWithMessages(userPicker, numberOfMessages))
       .exec(JmapMessages.listMessagesWithRetryAuthentication())
       .pause(1 second)
 }
