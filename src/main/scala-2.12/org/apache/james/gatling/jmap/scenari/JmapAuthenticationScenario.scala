@@ -9,8 +9,8 @@ import scala.concurrent.Future
 
 class JmapAuthenticationScenario {
 
-  def generate(users: Seq[Future[User]]): ScenarioBuilder =
+  def generate(): ScenarioBuilder =
     scenario("JmapAuthentication")
-    .exec(CommonSteps.authentication(users))
+    .exec(CommonSteps.authentication())
 
 }

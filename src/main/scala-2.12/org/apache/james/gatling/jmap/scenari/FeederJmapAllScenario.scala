@@ -14,7 +14,7 @@ class FeederJmapAllScenario {
   def generate(duration: Duration, users: Seq[Future[User]]): ScenarioBuilder =
     scenario("FeederJmapAllScenarios")
       .during(duration) {
-        exec(CommonSteps.authentication(users))
+        exec(CommonSteps.authentication())
         .exec(JmapMessages.sendMessagesRandomlyWithRetryAuthentication(users))
         .pause(1 second, 5 seconds)
         .exec(JmapMailboxes.getSystemMailboxesWithRetryAuthentication)

@@ -12,7 +12,7 @@ class JmapQueueBrowseScenario {
 
   def generate(duration: Duration, users: Seq[Future[User]], webadmin: JamesWebAdministrationQuery): ScenarioBuilder = {
     scenario("JmapSendMessages")
-    .exec(CommonSteps.provisionSystemMailboxes(users))
+    .exec(CommonSteps.provisionSystemMailboxes())
     .during(duration) {
       exec(
         randomSwitch(

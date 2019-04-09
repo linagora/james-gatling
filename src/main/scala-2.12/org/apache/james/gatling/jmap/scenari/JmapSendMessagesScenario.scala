@@ -12,7 +12,7 @@ class JmapSendMessagesScenario {
 
   def generate(duration: Duration, users: Seq[Future[User]]): ScenarioBuilder =
     scenario("JmapSendMessages")
-      .exec(CommonSteps.provisionSystemMailboxes(users))
+      .exec(CommonSteps.provisionSystemMailboxes())
       .during(duration) {
         exec(JmapMessages.sendMessagesRandomlyWithRetryAuthentication(users))
           .pause(1 second , 2 seconds)

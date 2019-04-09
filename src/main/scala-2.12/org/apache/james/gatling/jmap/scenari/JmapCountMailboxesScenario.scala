@@ -15,9 +15,9 @@ import scala.concurrent.duration.{Duration, DurationInt}
 class JmapCountMailboxesScenario {
 
 
-  def generate(duration: Duration, users: Seq[Future[User]]): ScenarioBuilder =
+  def generate(duration: Duration): ScenarioBuilder =
     scenario("JMAP scenario counting system mailboxes")
-      .exec(CommonSteps.authentication(users))
+      .exec(CommonSteps.authentication())
       .exec(execWithRetryAuthentication(JmapMailboxes.getMailboxes, JmapMailboxes.storeMailboxIds))
       .during(duration) {
         execWithRetryAuthentication(JmapMailboxes.getMailboxes, JmapMailboxes.checkSystemMailboxIdsHaveNotChanged)
