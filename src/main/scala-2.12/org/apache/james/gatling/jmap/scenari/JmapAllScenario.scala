@@ -13,7 +13,7 @@ class JmapAllScenario {
 
   def generate(duration: Duration, users: Seq[Future[User]]): ScenarioBuilder =
     scenario("JmapAllScenarios")
-      .exec(CommonSteps.provisionSystemMailboxes(users))
+      .exec(CommonSteps.provisionSystemMailboxes())
       .during(duration) {
         exec(JmapMessages.sendMessagesRandomlyWithRetryAuthentication(users))
         .pause(1 second, 5 seconds)

@@ -10,9 +10,9 @@ import scala.concurrent.duration._
 
 class JmapGetMailboxesScenario {
 
-  def generate(duration: Duration, users: Seq[Future[User]]): ScenarioBuilder =
+  def generate(duration: Duration): ScenarioBuilder =
     scenario("JmapGetMailboxes")
-      .exec(CommonSteps.authentication(users))
+      .exec(CommonSteps.authentication())
       .during(duration) {
         JmapMailboxes.getSystemMailboxesWithRetryAuthentication
           .pause(1 second , 2 seconds)
