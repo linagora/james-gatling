@@ -5,12 +5,9 @@ import io.gatling.core.session.Session
 import io.gatling.http.Predef._
 import io.gatling.http.check.HttpCheck
 import org.apache.james.gatling.control.User
+import org.apache.james.gatling.jmap.CommonSteps.UserPicker
 import org.apache.james.gatling.jmap.RetryAuthentication._
 import org.apache.james.gatling.utils.RandomStringGenerator
-
-import scala.concurrent.duration.Duration.Inf
-import scala.concurrent.{Await, Future}
-import scala.util.Random
 
 case class MessageId(id: String = RandomStringGenerator.randomString) extends AnyVal
 case class RecipientAddress(address: String) extends AnyVal
@@ -19,6 +16,11 @@ case class TextBody(text: String = RandomStringGenerator.randomString) extends A
 
 case class RequestTitle(title: String) extends AnyVal
 case class Property(name: String) extends AnyVal
+
+object RecipientAddress {
+  def apply(user: User): RecipientAddress =
+    RecipientAddress(user.username.value)
+}
 
 object JmapMessages {
 
@@ -94,16 +96,12 @@ object JmapMessages {
     execWithRetryAuthentication(sendMessages(messageId, recipientAddress, subject, textBody), sendMessagesChecks(messageId))
 
 
-  def sendMessagesRandomlyWithRetryAuthentication(users: Seq[Future[User]]) =
+  def sendMessagesToUserWithRetryAuthentication(userPicker: UserPicker) =
     sendMessagesWithRetryAuthentication(
       messageId = MessageId(),
-      recipientAddress = selectRecipientAtRandom(users),
+      recipientAddress = RecipientAddress(userPicker.pick()),
       subject = Subject(),
       textBody = TextBody())
-
-  def selectRecipientAtRandom(users: Seq[Future[User]]) =
-    RecipientAddress(
-      Await.result(users(Random.nextInt(users.length)), Inf).username.value)
 
   def listMessages() =
     JmapAuthentication.authenticatedQuery("listMessages", "/jmap")

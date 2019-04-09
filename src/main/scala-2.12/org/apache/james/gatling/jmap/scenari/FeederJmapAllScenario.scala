@@ -2,20 +2,19 @@ package org.apache.james.gatling.jmap.scenari
 
 import io.gatling.core.Predef._
 import io.gatling.core.structure.ScenarioBuilder
-import org.apache.james.gatling.control.{Password, User, Username}
+import org.apache.james.gatling.jmap.CommonSteps.UserPicker
 import org.apache.james.gatling.jmap.{CommonSteps, JmapMailboxes, JmapMessages}
 
-import scala.concurrent.Future
 import scala.concurrent.duration._
 
 class FeederJmapAllScenario {
   private val loopVariableName = "any"
 
-  def generate(duration: Duration, users: Seq[Future[User]]): ScenarioBuilder =
+  def generate(duration: Duration, userPicker: UserPicker): ScenarioBuilder =
     scenario("FeederJmapAllScenarios")
       .during(duration) {
         exec(CommonSteps.authentication())
-        .exec(JmapMessages.sendMessagesRandomlyWithRetryAuthentication(users))
+        .exec(JmapMessages.sendMessagesToUserWithRetryAuthentication(userPicker))
         .pause(1 second, 5 seconds)
         .exec(JmapMailboxes.getSystemMailboxesWithRetryAuthentication)
         .exec(JmapMessages.listMessagesWithRetryAuthentication())

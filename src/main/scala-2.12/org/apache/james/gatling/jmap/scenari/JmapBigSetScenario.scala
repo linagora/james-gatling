@@ -2,12 +2,11 @@ package org.apache.james.gatling.jmap.scenari
 
 import io.gatling.core.Predef._
 import io.gatling.core.structure.ScenarioBuilder
-import org.apache.james.gatling.control.User
+import org.apache.james.gatling.jmap.CommonSteps.UserPicker
 import org.apache.james.gatling.jmap.JmapMailboxes.numberOfSystemMailboxes
 import org.apache.james.gatling.jmap.RetryAuthentication._
 import org.apache.james.gatling.jmap.{CommonSteps, JmapMailboxes, JmapMessages}
 
-import scala.concurrent.Future
 import scala.concurrent.duration.{Duration, DurationInt}
 
 /*
@@ -16,11 +15,11 @@ import scala.concurrent.duration.{Duration, DurationInt}
  */
 class JmapBigSetScenario {
 
-  def generate(duration: Duration, numberOfMailboxes: Int, numberOfMessages: Int, users: Seq[Future[User]]): ScenarioBuilder = {
+  def generate(duration: Duration, numberOfMailboxes: Int, numberOfMessages: Int, userPicker: UserPicker): ScenarioBuilder = {
     def numberOfMailboxesPerUser: Int = numberOfMailboxes + numberOfSystemMailboxes
 
     scenario("JMAP scenario on multiple mailboxes containing multiple messages")
-      .exec(CommonSteps.provisionUsersWithMailboxesAndMessages(users, numberOfMailboxes, numberOfMessages))
+      .exec(CommonSteps.provisionUsersWithMailboxesAndMessages(userPicker, numberOfMailboxes, numberOfMessages))
       .during(duration) {
         execWithRetryAuthentication(JmapMailboxes.getMailboxes, JmapMailboxes.getMailboxesChecks(numberOfMailboxesPerUser))
           .exec(execWithRetryAuthentication(JmapMessages.listMessages, JmapMessages.listMessagesChecks))
