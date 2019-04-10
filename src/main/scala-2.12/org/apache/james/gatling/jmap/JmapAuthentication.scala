@@ -12,6 +12,7 @@ object JmapAuthentication {
     exec(
       http("obtainContinuationToken")
         .post("/authentication")
+        .headers(Map("Content-Type"-> "application/json; charset=UTF-8", "Accept"->"application/json"))
         .body(StringBody("""{"username": "${username}",
           "clientName": "Mozilla Thunderbird",
           "clientVersion": "42.0",
@@ -23,6 +24,7 @@ object JmapAuthentication {
     exec(
       http("obtainAccessToken")
         .post("/authentication")
+        .headers(Map("Content-Type"-> "application/json; charset=UTF-8", "Accept"->"application/json"))
         .body(StringBody("""{"token": "${continuationToken}",
           "method": "password",
           "password": "${password}"}"""))
@@ -42,5 +44,6 @@ object JmapAuthentication {
     http(requestName)
       .post(endPoint)
       .header("Authorization", "${accessToken}")
+      .header("Accept", "application/json")
 
 }
