@@ -6,7 +6,7 @@ import io.gatling.core.funspec.GatlingFunSpec
 import io.gatling.core.protocol.Protocol
 import io.gatling.core.structure.ScenarioBuilder
 import io.gatling.http.Predef._
-import org.apache.james.gatling.Fixture.bart
+import org.apache.james.gatling.Fixture.{bart, simpsonDomain}
 import org.apache.james.gatling.JamesServer.RunningServer
 import org.apache.james.gatling.control.UserFeeder
 import org.apache.james.gatling.jmap.scenari.JmapAuthenticationScenario
@@ -18,6 +18,7 @@ abstract class JmapIT extends GatlingFunSpec {
 
   private val server: RunningServer = JamesServer.start()
   lazy val protocolConf: Protocol = http.baseUrl(s"http://localhost:${server.mappedJmapPort}")
+  before(server.addDomain(simpsonDomain))
   before(server.addUser(bart))
   after(server.stop())
 

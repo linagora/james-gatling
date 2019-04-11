@@ -2,7 +2,7 @@ package org.apache.james.gatling
 
 import java.net.URL
 
-import org.apache.james.gatling.control.{JamesWebAdministration, User}
+import org.apache.james.gatling.control.{Domain, JamesWebAdministration, User}
 import org.slf4j.{Logger, LoggerFactory}
 import org.testcontainers.containers.GenericContainer
 
@@ -23,7 +23,10 @@ object JamesServer {
 
     def addUser(user: User): Unit = Await.result(administration.addUser(user), 30 seconds)
 
+    def addDomain(domain: Domain): Unit = Await.result(administration.addDomain(domain), 30 seconds)
+
     def stop(): Unit = container.stop()
+
   }
 
   def start(): RunningServer = {
