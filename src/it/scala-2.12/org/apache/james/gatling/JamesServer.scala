@@ -18,12 +18,17 @@ object JamesServer {
   class RunningServer(container: GenericContainer[_]) {
     lazy val mappedJmapPort: Integer = container.getMappedPort(jmapPort)
     lazy val mappedWebadminPort: Integer = container.getMappedPort(webadminPort)
+    lazy val mappedSmptPort: Integer = container.getMappedPort(587)
 
     private def administration = new JamesWebAdministration(new URL(s"http://localhost:$mappedWebadminPort"))
 
-    def addUser(user: User): Unit = Await.result(administration.addUser(user), 30 seconds)
+    def addUser(user: User): Unit =  {Await.result(administration.addUser(user), 30 seconds)
+    logger.debug(s"user $user created")
+    }
 
     def addDomain(domain: Domain): Unit = Await.result(administration.addDomain(domain), 30 seconds)
+
+    def containerId: String = container.getContainerId
 
     def stop(): Unit = container.stop()
 
@@ -31,7 +36,7 @@ object JamesServer {
 
   def start(): RunningServer = {
     val james = new GenericContainer("linagora/james-memory")
-    james.addExposedPorts(80, 8000)
+    james.addExposedPorts(25, 80, 8000)
     james.start()
     new RunningServer(james)
   }

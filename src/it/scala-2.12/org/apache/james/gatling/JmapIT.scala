@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory
 abstract class JmapIT extends GatlingFunSpec {
   val logger: slf4j.Logger = LoggerFactory.getLogger(this.getClass.getCanonicalName)
 
-  private val server: RunningServer = JamesServer.start()
+  protected val server: RunningServer = JamesServer.start()
   lazy val protocolConf: Protocol = http.baseUrl(s"http://localhost:${server.mappedJmapPort}")
 
   lazy val users = List(bart, homer)
@@ -25,7 +25,9 @@ abstract class JmapIT extends GatlingFunSpec {
     users.foreach(user => server.addUser(user))
   }
 
-  after(server.stop())
+  after {
+    server.stop()
+  }
 
   protected def scenario(scenarioFromFeeder: FeederBuilder => ScenarioBuilder) = {
     val feeder = UserFeeder.toFeeder(List(bart))
