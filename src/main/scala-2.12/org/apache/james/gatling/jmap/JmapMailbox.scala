@@ -5,22 +5,37 @@ import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import io.gatling.http.check.HttpCheck
 import org.apache.james.gatling.utils.RandomStringGenerator
+import play.api.libs.json.{JsResult, JsValue, Json, Reads}
 
-object Id {
-  def generate(): Id =
-    Id(RandomStringGenerator.randomString)
+object MailboxId {
+  implicit val reads = new Reads[MailboxId] {
+    override def reads(json: JsValue): JsResult[MailboxId] = json.validate[String].map(MailboxId.apply)
+  }
+
+  def generate(): MailboxId =
+    MailboxId(RandomStringGenerator.randomString)
 }
-case class Id private(id: String) extends AnyVal
 
-object Name {
+case class MailboxId(id: String) extends AnyVal
+
+object MailboxName {
+  implicit val reads = new Reads[MailboxName] {
+    override def reads(json: JsValue): JsResult[MailboxName] = json.validate[String].map(MailboxName.apply)
+  }
   private val words = Words()
-  
-  def generate(): Name =
-    Name(words.words(2).mkString("_"))
+
+  def generate(): MailboxName =
+    MailboxName(words.words(2).mkString("_"))
 }
-case class Name private(name: String) extends AnyVal
+
+case class MailboxName(name: String) extends AnyVal
+
+case class JmapMailbox(id: MailboxId, name: MailboxName)
 
 object JmapMailbox {
+
+  implicit val reads = Json.reads[JmapMailbox]
+
 
   private val mailboxListPath = "[0][1].list"
   private val inboxIdPath = s"$$$mailboxListPath[?(@.role == 'inbox')].id"
@@ -37,7 +52,8 @@ object JmapMailbox {
 
   def createMailbox() =
     JmapAuthentication.authenticatedQuery("setMailboxes", "/jmap")
-      .body(StringBody(s"""[["setMailboxes", 
+      .body(StringBody(
+        s"""[["setMailboxes",
             {
               "create": {
                 "$${createdId}": {
@@ -57,12 +73,12 @@ object JmapMailbox {
 
   def assertNumberOfMailboxes(numberOfMailboxes: Int): HttpCheck =
     jsonPath(s"$$$mailboxListPath[*].id").count.is(numberOfMailboxes)
-    
+
   def getMailboxesChecks(expectedNumberOfMailboxes: Int): Seq[HttpCheck] =
     getMailboxesChecks :+ assertNumberOfMailboxes(expectedNumberOfMailboxes)
 
   def checkSystemMailboxIdsHaveNotChanged: Seq[HttpCheck] =
-    getMailboxesChecks ++ List[HttpCheck] (
+    getMailboxesChecks ++ List[HttpCheck](
       jsonPath(inboxIdPath).is("${inboxMailboxId}"),
       jsonPath(outboxIdPath).is("${outboxMailboxId}"),
       jsonPath(sentIdPath).is("${sentMailboxId}"),

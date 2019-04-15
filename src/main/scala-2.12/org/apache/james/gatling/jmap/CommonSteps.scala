@@ -50,8 +50,8 @@ object CommonSteps {
 
 
   def provisionNewMailboxAndRememberItsIdAndName(): ChainBuilder =
-    exec((session: Session) => session.set("createdId", Id.generate().id))
-        .exec((session: Session) => session.set("mailboxName", Name.generate().name))
+    exec((session: Session) => session.set("createdId", MailboxId.generate().id))
+        .exec((session: Session) => session.set("mailboxName", MailboxName.generate().name))
         .exec(JmapMailbox.createMailbox())
 
   def provisionUsersWithMessageList(userPicker: UserPicker, numberOfMessages: Int): ChainBuilder =

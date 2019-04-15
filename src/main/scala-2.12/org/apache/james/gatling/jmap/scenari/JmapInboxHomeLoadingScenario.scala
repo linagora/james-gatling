@@ -10,32 +10,24 @@ import org.apache.james.gatling.jmap._
 
 class JmapInboxHomeLoadingScenario {
 
-  object Keys {
-
+  private object Keys {
     val inbox = "inboxID"
-
     val messageIds = "messageIds"
-
     val messagesDetailList = "messagesDetailList"
-
   }
 
-  val isSuccess: Seq[HttpCheck] = List(
+  private val isSuccess: Seq[HttpCheck] = List(
     status.is(200),
     JmapChecks.noError)
 
-
   private val mailboxListPath = "[0][1].list"
-  private val inboxIdPath = s"$$$mailboxListPath[?(@.role == 'inbox')].id"
 
-  val listAllMailboxesAndSelectFirstOne: HttpRequestBuilder =
+  private val inboxIdPath =s"$$$mailboxListPath[?(@.name == 'INBOX')].id"
+
+  private val listAllMailboxesAndSelectInbox: HttpRequestBuilder =
     JmapAuthentication.authenticatedQuery("getMailboxes", "/jmap")
       .body(StringBody("""[["getMailboxes",{},"#0"]]"""))
       .check(jsonPath(inboxIdPath).find.saveAs(Keys.inbox))
-
-  val getVacationResponse: HttpRequestBuilder =
-    JmapAuthentication.authenticatedQuery("getVacationResponse", "/jmap")
-      .body(StringBody(s"""[["getVacationResponse",{},"#0"]]"""))
 
   val listMessagesInInbox: HttpRequestBuilder =
     JmapAuthentication.authenticatedQuery("listMessagesInInbox", "/jmap")
@@ -47,11 +39,11 @@ class JmapInboxHomeLoadingScenario {
           |"collapseThreads":false,
           |"fetchMessages":false,
           |"position":0,
-          |"limit":200},"#0"]]""".stripMargin))
+          |"limit":30},"#0"]]""".stripMargin))
       .check(jsonPath("$[0][1].messageIds[*]").findAll.saveAs(Keys.messageIds))
 
 
-  private val getMessagesDetails: HttpRequestBuilder = JmapAuthentication.authenticatedQuery("getMessages", "/jmap")
+  private val getMessages: HttpRequestBuilder = JmapAuthentication.authenticatedQuery("getMessages", "/jmap")
     .body(StringBody(
       """[["getMessages",
         |{"properties": ["id","blobId","threadId","headers","subject","from","to","cc","bcc","replyTo","preview","date","isUnread",
@@ -70,10 +62,10 @@ class JmapInboxHomeLoadingScenario {
     scenario("JmapHomeLoadingScenario")
       .feed(feederBuilder)
       .exec(CommonSteps.authentication())
-      .exec(RetryAuthentication.execWithRetryAuthentication(listAllMailboxesAndSelectFirstOne, JmapMailbox.getMailboxesChecks))
-      .exec(RetryAuthentication.execWithRetryAuthentication(getVacationResponse, isSuccess))
-      .exec(RetryAuthentication.execWithRetryAuthentication(listMessagesInInbox, JmapMessages.listMessagesChecks))
-      .exec(RetryAuthentication.execWithRetryAuthentication(getMessagesDetails, isSuccess))
+      .group(InboxHomeLoading.name)(
+        exec(RetryAuthentication.execWithRetryAuthentication(listAllMailboxesAndSelectInbox, JmapMailbox.getMailboxesChecks))
+          .exec(RetryAuthentication.execWithRetryAuthentication(listMessagesInInbox, JmapMessages.listMessagesChecks))
+          .exec(RetryAuthentication.execWithRetryAuthentication(getMessages, isSuccess)))
 
   }
 
