@@ -11,6 +11,7 @@ import scala.concurrent.duration._
 
 object JamesServer {
 
+  private val WAIT_TIMEOUT = 30 seconds
   private val jmapPort = 80
   private val webadminPort = 8000
   private val logger: Logger = LoggerFactory.getLogger(JamesServer.getClass)
@@ -20,16 +21,30 @@ object JamesServer {
     lazy val mappedWebadminPort: Integer = container.getMappedPort(webadminPort)
     lazy val mappedSmptPort: Integer = container.getMappedPort(587)
 
-    private def administration = new JamesWebAdministration(new URL(s"http://localhost:$mappedWebadminPort"))
+    private lazy val administration = new JamesWebAdministration(new URL(s"http://localhost:$mappedWebadminPort"))
 
     def addUser(user: User): Unit = {
-      Await.result(administration.addUser(user), 30 seconds)
-      logger.debug(s"user $user created")
+      Await.result(administration.addUser(user), WAIT_TIMEOUT)
     }
 
-    def addDomain(domain: Domain): Unit = Await.result(administration.addDomain(domain), 30 seconds)
+    def addDomain(domain: Domain): Unit = Await.result(administration.addDomain(domain), WAIT_TIMEOUT)
 
-    def containerId: String = container.getContainerId
+    def importMessages() = {
+      val emlPath = getClass.getResource("/message.eml").getPath
+      val shPath = getClass.getResource("/add_mail.sh").getPath
+
+      execCommand(s"docker cp  $emlPath $containerId:/message.eml")
+      execCommand(s"docker cp $shPath $containerId:/add_mail.sh")
+      execCommand(s"docker exec $containerId  /add_mail.sh")
+    }
+
+    private def execCommand(command: String) = {
+      val rt = Runtime.getRuntime
+      val copyPr = rt.exec(command)
+      copyPr.waitFor()
+    }
+
+    private def containerId: String = container.getContainerId
 
     def stop(): Unit = container.stop()
 
