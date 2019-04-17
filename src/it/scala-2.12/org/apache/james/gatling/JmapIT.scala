@@ -10,7 +10,6 @@ import org.apache.james.gatling.Fixture.bart
 import org.apache.james.gatling.JamesServer.RunningServer
 import org.apache.james.gatling.control.UserFeeder
 import org.apache.james.gatling.jmap.scenari.JmapAuthenticationScenario
-import org.apache.james.gatling.{Fixture, JamesServer}
 import org.slf4j
 import org.slf4j.LoggerFactory
 
@@ -22,13 +21,14 @@ abstract class JmapIT extends GatlingFunSpec {
   before(server.addUser(bart))
   after(server.stop())
 
-  protected def scenario(scenario: FeederBuilder => ScenarioBuilder) = {
-    scenario(UserFeeder.toFeeder(Seq(bart))).actionBuilders.reverse.foreach(
-      spec _
-    )
+  protected def scenario(scenarioFromFeeder: FeederBuilder => ScenarioBuilder) = {
+    val feeder = UserFeeder.toFeeder(Seq(bart))
+    scenarioFromFeeder(feeder).actionBuilders.reverse.foreach { actionBuilder =>
+      spec(actionBuilder)
+    }
   }
 }
 
 class JmapAuthenticationScenarioIT extends JmapIT {
-  scenario(feederBuilder => new JmapAuthenticationScenario().generate().feed(feederBuilder))
+  scenario(feederBuilder => new JmapAuthenticationScenario().generate(feederBuilder))
 }

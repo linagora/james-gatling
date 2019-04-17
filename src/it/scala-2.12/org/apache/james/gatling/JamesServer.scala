@@ -11,12 +11,12 @@ import scala.concurrent.duration._
 
 object JamesServer {
 
-  private val imapPort = 80
+  private val jmapPort = 80
   private val webadminPort = 8000
   private val logger: Logger = LoggerFactory.getLogger(JamesServer.getClass)
 
   class RunningServer(container: GenericContainer[_]) {
-    lazy val mappedJmapPort: Integer = container.getMappedPort(imapPort)
+    lazy val mappedJmapPort: Integer = container.getMappedPort(jmapPort)
     lazy val mappedWebadminPort: Integer = container.getMappedPort(webadminPort)
 
     private def administration = new JamesWebAdministration(new URL(s"http://localhost:$mappedWebadminPort"))
