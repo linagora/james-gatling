@@ -26,7 +26,10 @@ object RecipientAddress {
 object JmapMessages {
 
   private val messageIdsPath = "$[0][1].messageIds[*]"
-  
+
+  type JmapParameters = Map[String, Any]
+  val NO_PARAMETERS : JmapParameters = Map()
+
   def sendMessages(messageId: MessageId, recipientAddress: RecipientAddress, subject: Subject, textBody: TextBody) =
     JmapAuthentication.authenticatedQuery("sendMessages", "/jmap")
       .body(StringBody(
@@ -45,7 +48,7 @@ object JmapMessages {
           },
           "#0"
           ]]"""))
-  
+
   def retrieveSentMessageIds() = {
     JmapAuthentication.authenticatedQuery("retrieveMessageIds", "/jmap")
       .body(StringBody(
@@ -69,7 +72,7 @@ object JmapMessages {
 
   def moveMessagesToMailboxId =
     exec((session: Session) => session.set("update", {
-        session("messageIds").as[Vector[String]].map(x =>s""" 
+        session("messageIds").as[Vector[String]].map(x =>s"""
             "$x" : { "mailboxIds": [ "${session("mailboxId").as[Vector[String]].head}" ] }"""
           )
           .mkString(",")
@@ -85,9 +88,9 @@ object JmapMessages {
                 ]]"""))
             .check(hasBeenUpdated))
 
-  def hasBeenUpdated = 
+  def hasBeenUpdated =
     jsonPath("$..updated[*]").count.gt(0)
-        
+
   def sendMessagesChecks(messageId: MessageId): Seq[HttpCheck] = List(
     status.is(200),
     JmapChecks.noError,
@@ -104,11 +107,33 @@ object JmapMessages {
       subject = Subject(),
       textBody = TextBody())
 
-  def listMessages() =
+  def openpaasListMessageFilter(mailboxesKey: List[String]): JmapParameters = {
+    val mailboxes = mailboxesKey.map(key => s"$${$key}")
+    Map(
+      "inMailboxes" -> mailboxes,
+      "text" -> null)
+  }
+
+  def openpaasListMessageParameters(mailboxKey: String = "inboxID"): JmapParameters =
+    openpaasListMessageParameters(List(mailboxKey))
+
+
+  def openpaasListMessageParameters(mailboxesKey: List[String]): JmapParameters =
+    Map("filter" -> openpaasListMessageFilter(mailboxesKey),
+      "sort" -> Seq("date desc"),
+      "collapseThreads" -> false,
+      "fetchMessages" -> false,
+      "position" -> 0,
+      "limit" -> 30
+    )
+
+  def listMessages(queryParameters: JmapParameters = NO_PARAMETERS) =
     JmapAuthentication.authenticatedQuery("listMessages", "/jmap")
       .body(StringBody(
-        """[[
-          "getMessageList", { },
+        s"""[[
+          "getMessageList",
+            ${Json.stringify(queryParameters)}
+           ,
           "#0"
           ]]"""))
 
@@ -118,23 +143,42 @@ object JmapMessages {
       jsonPath("$[0][1].messageIds[*]").findAll.saveAs("messageIds"))
 
   def listMessagesWithRetryAuthentication() =
-    execWithRetryAuthentication(listMessages, listMessagesChecks)
+    execWithRetryAuthentication(listMessages(), listMessagesChecks)
 
   def getMessagesWithRetryAuthentication() =
     execWithRetryAuthentication(getRandomMessage(), getRandomMessageChecks)
 
-  val typicalMessageProperties = List("bcc", "cc", "date", "from", "hasAttachment", "htmlBody", "id", "isAnswered", "isDraft", "isFlagged", "isUnread", "mailboxIds", "size", "subject", "textBody", "to")
+  val typicalMessageProperties: List[String] = List("bcc", "cc", "date", "from", "hasAttachment", "htmlBody", "id", "isAnswered", "isDraft", "isFlagged", "isUnread", "mailboxIds", "size", "subject", "textBody", "to")
 
-  def getRandomMessage(properties: List[String] = typicalMessageProperties) =
+  val previewMessageProperties: List[String] = List("bcc", "blobId", "cc", "date", "from", "hasAttachment", "headers", "id", "isAnswered", "isDraft", "isFlagged", "isForwarded", "isUnread", "mailboxIds", "preview", "replyTo", "subject", "threadId", "to")
+
+  val openpaasInboxOpenMessageProperties: List[String] = List("attachments", "bcc", "blobId", "cc", "date", "from", "hasAttachment", "headers", "htmlBody", "id", "isDraft", "isFlagged", "isUnread", "mailboxIds", "preview", "replyTo", "subject", "textBody", "threadId", "to")
+
+
+
+
+
+  def getRandomMessage(properties: List[String] = typicalMessageProperties, messageIdsKey: String = "messageIds") =
     JmapAuthentication.authenticatedQuery("getMessages", "/jmap")
       .body(StringBody(
         s"""[[
           "getMessages",
           {
-            "ids": ["$${messageIds.random()}"],
-            "properties": [
-              ${Json.stringify(properties)}
-            ]
+            "ids": ["$${$messageIdsKey.random()}"],
+            "properties": [ ${Json.stringify(properties)} ]
+          },
+          "#0"
+          ]]"""))
+
+
+  def getMessages(properties: List[String], messageIdsKey: String = "messageIds") =
+    JmapAuthentication.authenticatedQuery("getMessages", "/jmap")
+      .body(StringBody(
+        s"""[[
+          "getMessages",
+          {
+            "ids": $${$messageIdsKey.jsonStringify()},
+            "properties": [ ${Json.stringify(properties)} ]
           },
           "#0"
           ]]"""))

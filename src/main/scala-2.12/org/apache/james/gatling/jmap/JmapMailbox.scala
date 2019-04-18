@@ -87,13 +87,17 @@ object JmapMailbox {
       jsonPath(spamIdPath).is("${spamMailboxId}")
     )
 
-  val getSystemMailboxesChecks: Seq[HttpCheck] = getMailboxesChecks ++ List[HttpCheck](
-    jsonPath(inboxIdPath).saveAs("inboxMailboxId"),
-    jsonPath(outboxIdPath).saveAs("outboxMailboxId"),
-    jsonPath(sentIdPath).saveAs("sentMailboxId"),
-    jsonPath(draftsIdPath).saveAs("draftMailboxId"),
-    jsonPath(trashIdPath).saveAs("trashMailboxId"),
-    jsonPath(spamIdPath).saveAs("spamMailboxId"))
+  def saveInboxAs(key: String): Seq[HttpCheck] = List(jsonPath(inboxIdPath).saveAs(key))
+
+  val getSystemMailboxesChecks: Seq[HttpCheck] = getMailboxesChecks ++
+    saveInboxAs("inboxMailboxId") ++
+    List[HttpCheck](
+      jsonPath(inboxIdPath).saveAs("inboxMailboxId"),
+      jsonPath(outboxIdPath).saveAs("outboxMailboxId"),
+      jsonPath(sentIdPath).saveAs("sentMailboxId"),
+      jsonPath(draftsIdPath).saveAs("draftMailboxId"),
+      jsonPath(trashIdPath).saveAs("trashMailboxId"),
+      jsonPath(spamIdPath).saveAs("spamMailboxId"))
 
   def storeMailboxIds: Seq[HttpCheck] = getSystemMailboxesChecks
 

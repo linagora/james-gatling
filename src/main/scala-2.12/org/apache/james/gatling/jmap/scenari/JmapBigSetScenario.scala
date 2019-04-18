@@ -22,7 +22,7 @@ class JmapBigSetScenario {
       .exec(CommonSteps.provisionUsersWithMailboxesAndMessages(userPicker, numberOfMailboxes, numberOfMessages))
       .during(duration) {
         execWithRetryAuthentication(JmapMailbox.getMailboxes, JmapMailbox.getMailboxesChecks(numberOfMailboxesPerUser))
-          .exec(execWithRetryAuthentication(JmapMessages.listMessages, JmapMessages.listMessagesChecks))
+          .exec(execWithRetryAuthentication(JmapMessages.listMessages(), JmapMessages.listMessagesChecks))
           .pause(1 second, 2 seconds)
       }
   }
