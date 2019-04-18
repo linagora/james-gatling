@@ -12,10 +12,10 @@ import org.apache.james.gatling.control.UserFeeder
 import org.slf4j
 import org.slf4j.LoggerFactory
 
-abstract class JmapIT(importMessages: Boolean = false) extends GatlingFunSpec {
+abstract class JmapIT extends GatlingFunSpec {
   protected val logger: slf4j.Logger = LoggerFactory.getLogger(this.getClass.getCanonicalName)
 
-  private val server: RunningServer = JamesServer.start()
+  protected val server: RunningServer = JamesServer.start()
   lazy val protocolConf: Protocol = http.baseUrl(s"http://localhost:${server.mappedJmapPort}")
 
   protected def mappedJmapPort = server.mappedJmapPort
@@ -24,10 +24,7 @@ abstract class JmapIT(importMessages: Boolean = false) extends GatlingFunSpec {
 
   before {
     server.addDomain(simpsonDomain)
-    users.foreach(user => server.addUser(user))
-    if (importMessages) {
-      server.importMessages()
-    }
+    users.foreach(server.addUser)
   }
 
   after {

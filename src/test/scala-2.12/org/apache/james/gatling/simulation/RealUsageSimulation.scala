@@ -17,9 +17,6 @@ class RealUsageSimulation extends Simulation {
 
   private val NB_USERS = 100
 
-  private val JMAP_PORT = 80
-
-  private val jmapUrl = s"http://localhost:$JMAP_PORT"
   private val getUsers: Seq[User] = (0 until NB_USERS).map(i => User(Username(s"user$i@open-paas.org"), Password("secret")))
 
   private val feeder: SourceFeederBuilder[String] = UserFeeder.toFeeder(getUsers).circular
