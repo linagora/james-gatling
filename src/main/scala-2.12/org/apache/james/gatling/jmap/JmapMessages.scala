@@ -1,6 +1,7 @@
 package org.apache.james.gatling.jmap
 
 import io.gatling.core.Predef._
+import io.gatling.core.json.Json
 import io.gatling.core.session.Session
 import io.gatling.http.Predef._
 import io.gatling.http.check.HttpCheck
@@ -122,30 +123,17 @@ object JmapMessages {
   def getMessagesWithRetryAuthentication() =
     execWithRetryAuthentication(getRandomMessage(), getRandomMessageChecks)
 
-  def getRandomMessage() =
+  val typicalMessageProperties = List("bcc", "cc", "date", "from", "hasAttachment", "htmlBody", "id", "isAnswered", "isDraft", "isFlagged", "isUnread", "mailboxIds", "size", "subject", "textBody", "to")
+
+  def getRandomMessage(properties: List[String] = typicalMessageProperties) =
     JmapAuthentication.authenticatedQuery("getMessages", "/jmap")
       .body(StringBody(
-        """[[
+        s"""[[
           "getMessages",
           {
-            "ids": ["${messageIds.random()}"],
+            "ids": ["$${messageIds.random()}"],
             "properties": [
-              "id",
-              "mailboxIds",
-              "isUnread",
-              "isFlagged",
-              "isAnswered",
-              "isDraft",
-              "hasAttachment",
-              "from",
-              "to",
-              "cc",
-              "bcc",
-              "subject",
-              "date",
-              "size",
-              "textBody",
-              "htmlBody"
+              ${Json.stringify(properties)}
             ]
           },
           "#0"
