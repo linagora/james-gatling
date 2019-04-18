@@ -24,7 +24,7 @@ object CommonSteps {
   def provisionSystemMailboxes(): ChainBuilder =
     exec(authentication())
       .pause(1 second)
-      .exec(JmapMailboxes.getSystemMailboxesWithRetryAuthentication)
+      .exec(JmapMailbox.getSystemMailboxesWithRetryAuthentication)
       .pause(1 second)
 
   def provisionUsersWithMessages(userPicker: UserPicker, numberOfMessages: Int): ChainBuilder =
@@ -52,7 +52,7 @@ object CommonSteps {
   def provisionNewMailboxAndRememberItsIdAndName(): ChainBuilder =
     exec((session: Session) => session.set("createdId", Id.generate().id))
         .exec((session: Session) => session.set("mailboxName", Name.generate().name))
-        .exec(JmapMailboxes.createMailbox())
+        .exec(JmapMailbox.createMailbox())
 
   def provisionUsersWithMessageList(userPicker: UserPicker, numberOfMessages: Int): ChainBuilder =
     exec(provisionUsersWithMessages(userPicker, numberOfMessages))

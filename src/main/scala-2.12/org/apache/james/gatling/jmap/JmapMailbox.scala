@@ -20,7 +20,7 @@ object Name {
 }
 case class Name private(name: String) extends AnyVal
 
-object JmapMailboxes {
+object JmapMailbox {
 
   private val mailboxListPath = "[0][1].list"
   private val inboxIdPath = s"$$$mailboxListPath[?(@.role == 'inbox')].id"

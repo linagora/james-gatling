@@ -4,7 +4,7 @@ import io.gatling.core.Predef._
 import io.gatling.core.structure.ScenarioBuilder
 import org.apache.james.gatling.control.User
 import org.apache.james.gatling.jmap.RetryAuthentication._
-import org.apache.james.gatling.jmap.{CommonSteps, JmapMailboxes}
+import org.apache.james.gatling.jmap.{CommonSteps, JmapMailbox}
 
 import scala.concurrent.Future
 import scala.concurrent.duration.{Duration, DurationInt}
@@ -18,9 +18,9 @@ class JmapCountMailboxesScenario {
   def generate(duration: Duration): ScenarioBuilder =
     scenario("JMAP scenario counting system mailboxes")
       .exec(CommonSteps.authentication())
-      .exec(execWithRetryAuthentication(JmapMailboxes.getMailboxes, JmapMailboxes.storeMailboxIds))
+      .exec(execWithRetryAuthentication(JmapMailbox.getMailboxes, JmapMailbox.storeMailboxIds))
       .during(duration) {
-        execWithRetryAuthentication(JmapMailboxes.getMailboxes, JmapMailboxes.checkSystemMailboxIdsHaveNotChanged)
+        execWithRetryAuthentication(JmapMailbox.getMailboxes, JmapMailbox.checkSystemMailboxIdsHaveNotChanged)
           .pause(1 second , 2 seconds)
       }
 

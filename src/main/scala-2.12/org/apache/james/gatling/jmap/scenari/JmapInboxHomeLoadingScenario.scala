@@ -70,7 +70,7 @@ class JmapInboxHomeLoadingScenario {
     scenario("JmapHomeLoadingScenario")
       .feed(feederBuilder)
       .exec(CommonSteps.authentication())
-      .exec(RetryAuthentication.execWithRetryAuthentication(listAllMailboxesAndSelectFirstOne, JmapMailboxes.getMailboxesChecks))
+      .exec(RetryAuthentication.execWithRetryAuthentication(listAllMailboxesAndSelectFirstOne, JmapMailbox.getMailboxesChecks))
       .exec(RetryAuthentication.execWithRetryAuthentication(getVacationResponse, isSuccess))
       .exec(RetryAuthentication.execWithRetryAuthentication(listMessagesInInbox, JmapMessages.listMessagesChecks))
       .exec(RetryAuthentication.execWithRetryAuthentication(getMessagesDetails, isSuccess))
