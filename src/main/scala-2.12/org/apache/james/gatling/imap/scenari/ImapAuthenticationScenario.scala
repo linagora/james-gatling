@@ -19,7 +19,7 @@ class ImapAuthenticationScenario {
 
   def generate(duration: Duration, users: Seq[Future[User]]): ScenarioBuilder =
     scenario("ImapAuthentication")
-      .exec(CommonSteps.provisionSystemMailboxes(users))
+      .exec(CommonSteps.provisionSystemMailboxes())
       .pause(1.second)
       .during(duration) {
         exec(imap("Connect").connect()).exitHereIfFailed
