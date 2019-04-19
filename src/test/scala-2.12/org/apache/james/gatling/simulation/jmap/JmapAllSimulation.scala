@@ -19,8 +19,7 @@ class JmapAllSimulation extends Simulation {
 
   private val scenario = new JmapAllScenario()
 
-  setUp(scenario.generate(Configuration.ScenarioDuration, RandomUserPicker(users))
-      .feed(UserFeeder.toFeeder(users))
+  setUp(scenario.generate(UserFeeder.toFeeder(users), Configuration.ScenarioDuration, RandomUserPicker(users))
       .inject(atOnceUsers(Configuration.UserCount)))
     .protocols(HttpSettings.httpProtocol)
 }
