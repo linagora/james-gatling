@@ -47,7 +47,7 @@ object JmapMessages {
             }
           },
           "#0"
-          ]]"""))
+          ]"""))
 
   def retrieveSentMessageIds() = {
     JmapAuthentication.authenticatedQuery("retrieveMessageIds", "/jmap")
