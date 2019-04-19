@@ -2,6 +2,7 @@ package org.apache.james.gatling.jmap.scenari
 
 import io.gatling.core.Predef._
 import io.gatling.core.structure.ScenarioBuilder
+import org.apache.james.gatling.control.UserFeeder.UserFeeder
 import org.apache.james.gatling.jmap.CommonSteps.UserPicker
 import org.apache.james.gatling.jmap.{CommonSteps, JmapMessages}
 
@@ -9,8 +10,9 @@ import scala.concurrent.duration._
 
 class JmapMessageUpdateScenario {
 
-  def generate(duration: Duration, userPicker: UserPicker, randomlySentMails: Int): ScenarioBuilder =
+  def generate(duration: Duration, userFeeder: UserFeeder, userPicker: UserPicker, randomlySentMails: Int): ScenarioBuilder =
     scenario("JmapUpdateMessages")
+      .feed(userFeeder)
       .exec(CommonSteps.provisionUsersWithMessageList(userPicker, randomlySentMails))
       .during(duration) {
         randomSwitch(

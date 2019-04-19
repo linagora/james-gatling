@@ -19,8 +19,7 @@ class JmapCountMailboxesSimulation extends Simulation {
 
   private val scenario = new JmapCountMailboxesScenario()
 
-  setUp(scenario.generate(Configuration.ScenarioDuration)
-      .feed(UserFeeder.toFeeder(users))
+  setUp(scenario.generate(Configuration.ScenarioDuration, UserFeeder.toFeeder(users))
       .inject(atOnceUsers(Configuration.UserCount)))
     .protocols(HttpSettings.httpProtocol)
 }
