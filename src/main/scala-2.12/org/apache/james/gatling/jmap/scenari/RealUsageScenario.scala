@@ -7,3 +7,7 @@ sealed trait RealUsageScenario {
 case object InboxHomeLoading extends RealUsageScenario {
   def name = "InboxHomeLoading"
 }
+
+case object OpenMessage extends RealUsageScenario {
+  def name = "OpenMessage"
+}
