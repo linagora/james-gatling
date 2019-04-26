@@ -2,6 +2,7 @@ package org.apache.james.gatling
 
 import java.net.URL
 
+import courier.{Envelope, Mailer, Text}
 import javax.mail.internet.InternetAddress
 import org.apache.james.gatling.control.{Domain, JamesWebAdministration, User}
 import org.slf4j.{Logger, LoggerFactory}
@@ -28,17 +29,16 @@ object JamesServer {
 
     def addDomain(domain: Domain): Unit = Await.result(administration.addDomain(domain), WAIT_TIMEOUT)
 
-    private def userToInternetAddress(user : User) = {
+    private def userToInternetAddress(user: User) = {
       new InternetAddress(user.username.value)
     }
 
     private val MAIL_SUBJECT = "D'oh!"
     private val MAIL_CONTENT = "Trying is the first step towards failure"
-    import courier._
-    import Defaults._
     private val mailerBuilder = Mailer("localhost", container.getMappedPort(587))
 
     def sendMessage(from: User)(to: User): Unit = {
+      import courier.Defaults._
       val mailer = mailerBuilder.as(from.username.value, from.password.value)()
       Await.result(mailer(Envelope.from(userToInternetAddress(from))
         .to(userToInternetAddress(to))

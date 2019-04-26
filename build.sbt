@@ -10,7 +10,6 @@ lazy val root = (project in file("."))
       libraryDependencies += "io.gatling" % "gatling-test-framework" % gatlingVersion,
       libraryDependencies += "io.gatling.highcharts" % "gatling-charts-highcharts" % gatlingVersion,
       libraryDependencies += "org.testcontainers" % "testcontainers" % "1.11.0" % "it",
-      libraryDependencies += "com.github.daddykotex" %% "courier" % "1.0.0" % "it",
 
       libraryDependencies += "com.github.azakordonets" %% "fabricator" % "2.1.5",
 
