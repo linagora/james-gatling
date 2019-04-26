@@ -4,7 +4,7 @@ import java.net.URL
 
 import courier.{Envelope, Mailer, Text}
 import javax.mail.internet.InternetAddress
-import org.apache.james.gatling.control.{Domain, JamesWebAdministration, User}
+import org.apache.james.gatling.control.{Domain, JamesWebAdministration, User, Username}
 import org.slf4j.{Logger, LoggerFactory}
 import org.testcontainers.containers.GenericContainer
 
@@ -29,19 +29,19 @@ object JamesServer {
 
     def addDomain(domain: Domain): Unit = Await.result(administration.addDomain(domain), WAIT_TIMEOUT)
 
-    private def userToInternetAddress(user: User) = {
-      new InternetAddress(user.username.value)
+    private def userNameToInternetAddress(username: Username) = {
+      new InternetAddress(username.value)
     }
 
     private val MAIL_SUBJECT = "D'oh!"
     private val MAIL_CONTENT = "Trying is the first step towards failure"
     private val mailerBuilder = Mailer("localhost", container.getMappedPort(587))
 
-    def sendMessage(from: User)(to: User): Unit = {
+    def sendMessage(from: User)(to: Username): Unit = {
       import courier.Defaults._
       val mailer = mailerBuilder.as(from.username.value, from.password.value)()
-      Await.result(mailer(Envelope.from(userToInternetAddress(from))
-        .to(userToInternetAddress(to))
+      Await.result(mailer(Envelope.from(userNameToInternetAddress(from.username))
+        .to(userNameToInternetAddress(to))
         .subject(MAIL_SUBJECT)
         .content(Text(MAIL_CONTENT))), 1 second)
     }
