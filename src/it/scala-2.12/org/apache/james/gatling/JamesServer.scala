@@ -2,10 +2,10 @@ package org.apache.james.gatling
 
 import java.net.URL
 
+import javax.mail.internet.InternetAddress
 import org.apache.james.gatling.control.{Domain, JamesWebAdministration, User}
 import org.slf4j.{Logger, LoggerFactory}
 import org.testcontainers.containers.GenericContainer
-import org.testcontainers.utility.MountableFile
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -28,16 +28,22 @@ object JamesServer {
 
     def addDomain(domain: Domain): Unit = Await.result(administration.addDomain(domain), WAIT_TIMEOUT)
 
-    def importMessages(from: User)(to: User): Unit = {
-      container.copyFileToContainer(MountableFile.forClasspathResource("/message.eml"), "/message.eml")
-      container.execInContainer(
-        "curl",
-        "--url", "smtp://localhost:587",
-        "--mail-from", from.username.value,
-        "--mail-rcpt", to.username.value,
-        "--upload-file", "/message.eml",
-        "--user", s"${from.username.value}:${from.password.value}",
-        "--insecure")
+    private def userToInternetAddress(user : User) = {
+      new InternetAddress(user.username.value)
+    }
+
+    private val MAIL_SUBJECT = "D'oh!"
+    private val MAIL_CONTENT = "Trying is the first step towards failure"
+    import courier._
+    import Defaults._
+    private val mailerBuilder = Mailer("localhost", container.getMappedPort(587))
+
+    def sendMessage(from: User)(to: User): Unit = {
+      val mailer = mailerBuilder.as(from.username.value, from.password.value)()
+      Await.result(mailer(Envelope.from(userToInternetAddress(from))
+        .to(userToInternetAddress(to))
+        .subject(MAIL_SUBJECT)
+        .content(Text(MAIL_CONTENT))), 1 second)
     }
 
     def stop(): Unit = container.stop()

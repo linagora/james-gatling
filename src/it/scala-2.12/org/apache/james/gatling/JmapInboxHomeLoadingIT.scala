@@ -5,7 +5,7 @@ import org.apache.james.gatling.jmap.scenari.JmapInboxHomeLoadingScenario
 class JmapInboxHomeLoadingIT extends JmapIT {
 
   before {
-    users.foreach(server.importMessages(Fixture.homer))
+    users.foreach(server.sendMessage(Fixture.homer))
   }
 
   scenario(feederBuilder => {
