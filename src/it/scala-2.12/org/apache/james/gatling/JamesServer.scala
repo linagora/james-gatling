@@ -15,13 +15,16 @@ object JamesServer {
 
   private val WAIT_TIMEOUT = 30 seconds
   private val jmapPort = 80
+  private val imapPort = 143
+  private val smtpPort = 587
   private val webadminPort = 8000
   private val logger: Logger = LoggerFactory.getLogger(JamesServer.getClass)
 
   class RunningServer(container: GenericContainer[_]) {
     lazy val mappedJmapPort: Integer = container.getMappedPort(jmapPort)
     lazy val mappedWebadminPort: Integer = container.getMappedPort(webadminPort)
-    lazy val mappedSmptPort: Integer = container.getMappedPort(587)
+    lazy val mappedSmtpPort: Integer = container.getMappedPort(smtpPort)
+    lazy val mappedImapPort: Integer = container.getMappedPort(imapPort)
 
     private lazy val administration = new JamesWebAdministration(new URL(s"http://localhost:$mappedWebadminPort"))
 
@@ -52,7 +55,7 @@ object JamesServer {
 
   def start(): RunningServer = {
     val james = new GenericContainer("linagora/james-memory")
-    james.addExposedPorts(25, 80, 8000)
+    james.addExposedPorts(jmapPort, imapPort, smtpPort, webadminPort)
     james.start()
     new RunningServer(james)
   }
