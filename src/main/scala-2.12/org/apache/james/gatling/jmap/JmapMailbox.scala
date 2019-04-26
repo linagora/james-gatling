@@ -38,6 +38,7 @@ object JmapMailbox {
 
 
   private val mailboxListPath = "[0][1].list"
+  private def mailboxesIdPathForMailboxesWithAtLeastMessages(nbMessages : Int) = s"$$$mailboxListPath[?(@.totalMessages >= $nbMessages)].id"
   private val inboxIdPath = s"$$$mailboxListPath[?(@.role == 'inbox')].id"
   private val outboxIdPath = s"$$$mailboxListPath[?(@.role == 'outbox')].id"
   private val sentIdPath = s"$$$mailboxListPath[?(@.role == 'sent')].id"
@@ -58,7 +59,7 @@ object JmapMailbox {
               "create": {
                 "$${createdId}": {
                   "name": "$${mailboxName}"
-                } 
+                }
               }
             }, "#0"]]"""))
       .check(saveMailboxId())
@@ -88,6 +89,10 @@ object JmapMailbox {
     )
 
   def saveInboxAs(key: String): Seq[HttpCheck] = List(jsonPath(inboxIdPath).saveAs(key))
+
+  def saveRandomMailboxWithAtLeastMessagesAs(key: String, atLeastMessages : Int): Seq[HttpCheck] = List(jsonPath(mailboxesIdPathForMailboxesWithAtLeastMessages(atLeastMessages))
+    .findRandom
+    .saveAs(key))
 
   val getSystemMailboxesChecks: Seq[HttpCheck] = getMailboxesChecks ++
     saveInboxAs("inboxMailboxId") ++
