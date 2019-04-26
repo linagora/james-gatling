@@ -1,14 +1,16 @@
 package org.apache.james.gatling
 
 import java.net.URL
+import java.nio.charset.StandardCharsets
 
-import courier.{Envelope, Mailer, Text}
 import javax.mail.internet.InternetAddress
 import org.apache.james.gatling.control.{Domain, JamesWebAdministration, User, Username}
+import org.apache.james.gatling.jmap.MailboxName
 import org.slf4j.{Logger, LoggerFactory}
 import org.testcontainers.containers.GenericContainer
+import play.api.libs.ws.StandaloneWSRequest
 
-import scala.concurrent.Await
+import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
 
 object JamesServer {
@@ -36,17 +38,44 @@ object JamesServer {
       new InternetAddress(username.value)
     }
 
+    private val MAIL_AUTHOR = Username("moe@simpson.cartoon")
     private val MAIL_SUBJECT = "D'oh!"
     private val MAIL_CONTENT = "Trying is the first step towards failure"
-    private val mailerBuilder = Mailer("localhost", container.getMappedPort(587))
+    private val INBOX = MailboxName("INBOX")
 
-    def sendMessage(from: User)(to: Username): Unit = {
-      import courier.Defaults._
-      val mailer = mailerBuilder.as(from.username.value, from.password.value)()
-      Await.result(mailer(Envelope.from(userNameToInternetAddress(from.username))
-        .to(userNameToInternetAddress(to))
-        .subject(MAIL_SUBJECT)
-        .content(Text(MAIL_CONTENT))), 1 second)
+    def sendMessage(from: Username)(to: User): Unit =
+      putMessage(from)(to)(INBOX)
+
+    def createMailbox(username: Username)(mailboxName: MailboxName): Future[StandaloneWSRequest#Response] =
+      administration.createMailbox(username, mailboxName)
+
+
+    def addMessage(user: User): MailboxName => Unit =
+      putMessage(MAIL_AUTHOR)(user)
+
+    private def putMessage(from: Username)(to: User)(mailboxName: MailboxName): Unit = {
+      import javax.mail.Session
+      import javax.mail.internet.MimeMessage
+      val session = Session.getDefaultInstance(System.getProperties, null)
+      val store = session.getStore("imap")
+      store.connect(s"localhost", mappedImapPort, to.username.value, to.password.value)
+
+      // Get default folder
+      val folder = store.getFolder(mailboxName.name)
+      val message = makeMessage(from.value, to.username.value, MAIL_SUBJECT, MAIL_CONTENT)
+      folder.appendMessages(Array(new MimeMessage(session, message)))
+    }
+
+    private def makeMessage(author: String, recipient: String, subject: String, content: String) = {
+      import java.io.ByteArrayInputStream
+      import java.nio.charset.Charset
+      val body =
+        s"""From: $author
+           |To: $recipient
+           |Subject: $subject
+           |
+           |$content""".stripMargin
+      new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8))
     }
 
     def stop(): Unit = container.stop()

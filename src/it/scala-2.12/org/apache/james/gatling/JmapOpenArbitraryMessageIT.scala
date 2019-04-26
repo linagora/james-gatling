@@ -5,7 +5,7 @@ import org.apache.james.gatling.jmap.scenari.JmapOpenArbitraryMessageScenario
 class JmapOpenArbitraryMessageIT extends JmapIT {
 
   before {
-    users.foreach(user => server.sendMessage(Fixture.homer)(user.username))
+    users.foreach(server.sendMessage(Fixture.homer.username))
   }
 
   scenario(feederBuilder => {
