@@ -8,18 +8,16 @@ import com.linagora.gatling.imap.protocol.command.FetchAttributes.AttributeList
 import com.linagora.gatling.imap.protocol.command.MessageRange.{From, One, Range, To}
 import com.linagora.gatling.imap.protocol.command.MessageRanges
 import io.gatling.core.Predef._
+import io.gatling.core.feeder.FeederBuilder
 import io.gatling.core.structure.ScenarioBuilder
-import org.apache.james.gatling.control.User
-import org.apache.james.gatling.jmap.CommonSteps
 
-import scala.concurrent.Future
 import scala.concurrent.duration._
 
 class ImapAuthenticationScenario {
 
-  def generate(duration: Duration, users: Seq[Future[User]]): ScenarioBuilder =
+  def generate(duration: Duration, feeder: FeederBuilder): ScenarioBuilder =
     scenario("ImapAuthentication")
-      .exec(CommonSteps.provisionSystemMailboxes())
+      .feed(feeder)
       .pause(1.second)
       .during(duration) {
         exec(imap("Connect").connect()).exitHereIfFailed

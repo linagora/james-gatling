@@ -7,13 +7,11 @@ import com.linagora.gatling.imap.protocol.command.MessageRange.{From, One}
 import com.linagora.gatling.imap.protocol.command.{MessageRanges, Silent, StoreFlags}
 import io.gatling.commons.validation.Validation
 import io.gatling.core.Predef._
+import io.gatling.core.feeder.FeederBuilder
 import io.gatling.core.session.Expression
 import io.gatling.core.session.el._
 import io.gatling.core.structure.ScenarioBuilder
-import org.apache.james.gatling.control.User
-import org.apache.james.gatling.jmap.CommonSteps
 
-import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.util.Random
 
@@ -40,9 +38,9 @@ class ImapStoreScenario {
   private val rangeFlagsUpdates = imap("storeAll").store(MessageRanges(From(1L)), StoreFlags.add(Silent.Enable(), "all${loopId}")).check(ok)
   private val singleFlagsUpdate = imap("storeOne").store(session => MessageRanges(One(1L + Random.nextInt(numberOfMailInInbox))), StoreFlags.add(Silent.Enable(), "one${loopId}")).check(ok)
 
-  def generate(duration: Duration, users: Seq[Future[User]]): ScenarioBuilder =
+  def generate(duration: Duration, feeder: FeederBuilder): ScenarioBuilder =
     scenario("imap store scenario")
-      .exec(CommonSteps.provisionSystemMailboxes())
+      .feed(feeder)
       .pause(1.second)
       .during(duration) {
         exec(imap("Connect").connect()).exitHereIfFailed
