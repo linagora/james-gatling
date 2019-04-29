@@ -38,16 +38,10 @@ class ImapFullScenario {
       .pause(1.second)
       .exec(imap("Connect").connect()).exitHereIfFailed
       .exec(imap("login").login("${username}", "${password}").check(ok))
-      .exec {
+      .during(duration) {
         randomSwitch(
-          75.0 -> during(duration) {
-            pace(5 minutes, 15 minutes)
-              .exec(lightUser)
-          },
-
-          25.0 -> during(duration) {
-            pace(30 seconds, 90 seconds)
-              .exec(heavyUser)
-          })
+          75.0 -> exec(lightUser),
+          25.0 -> exec(heavyUser)
+        )
       }
 }
