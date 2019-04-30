@@ -8,11 +8,14 @@ import scala.concurrent.duration._
 
 object JmapAuthentication {
 
+
   def obtainContinuationToken() =
     exec(
       http("obtainContinuationToken")
         .post("/authentication")
-        .body(StringBody("""{"username": "${username}",
+        .headers(JmapHttp.HEADERS_JSON)
+        .body(StringBody(
+          """{"username": "${username}",
           "clientName": "Mozilla Thunderbird",
           "clientVersion": "42.0",
           "deviceName": "Joe Blogg’s iPhone"}"""))
@@ -23,7 +26,9 @@ object JmapAuthentication {
     exec(
       http("obtainAccessToken")
         .post("/authentication")
-        .body(StringBody("""{"token": "${continuationToken}",
+        .headers(JmapHttp.HEADERS_JSON)
+        .body(StringBody(
+          """{"token": "${continuationToken}",
           "method": "password",
           "password": "${password}"}"""))
         .check(status.is(201))
@@ -42,5 +47,6 @@ object JmapAuthentication {
     http(requestName)
       .post(endPoint)
       .header("Authorization", "${accessToken}")
+      .header(JmapHttp.ACCEPT_JSON_KEY, JmapHttp.ACCEPT_JSON_VALUE)
 
 }

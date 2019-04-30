@@ -19,8 +19,7 @@ class JmapAuthenticationSimulation extends Simulation {
 
   private val scenario = new JmapAuthenticationScenario()
 
-  setUp(scenario.generate()
-      .feed(UserFeeder.toFeeder(users))
+  setUp(scenario.generate(UserFeeder.toFeeder(users))
       .inject(atOnceUsers(Configuration.UserCount)))
     .protocols(HttpSettings.httpProtocol)
 }

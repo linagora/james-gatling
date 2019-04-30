@@ -17,14 +17,14 @@ object CommonSteps {
 
   def authentication(): ChainBuilder =
     exec(
-      pause(1 second, 30 second)
+      pause(1 second, 5 second)
       .exec(JmapAuthentication.authentication())
       .pause(1 second))
 
   def provisionSystemMailboxes(): ChainBuilder =
     exec(authentication())
       .pause(1 second)
-      .exec(JmapMailboxes.getSystemMailboxesWithRetryAuthentication)
+      .exec(JmapMailbox.getSystemMailboxesWithRetryAuthentication)
       .pause(1 second)
 
   def provisionUsersWithMessages(userPicker: UserPicker, numberOfMessages: Int): ChainBuilder =
@@ -33,7 +33,7 @@ object CommonSteps {
         exec(JmapMessages.sendMessagesToUserWithRetryAuthentication(userPicker))
           .pause(1 second, 2 seconds)
       }
-      .pause(30 second)
+      .pause(5 second)
 
   def provisionUsersWithMailboxesAndMessages(userPicker: UserPicker, numberOfMailboxes: Int, numberOfMessages: Int): ChainBuilder =
     exec(provisionSystemMailboxes())
@@ -46,13 +46,13 @@ object CommonSteps {
         .exec(JmapMessages.retrieveSentMessageIds())
         .exec(JmapMessages.moveMessagesToMailboxId)
       }
-      .pause(30 second)
+      .pause(5 second)
 
 
   def provisionNewMailboxAndRememberItsIdAndName(): ChainBuilder =
-    exec((session: Session) => session.set("createdId", Id.generate().id))
-        .exec((session: Session) => session.set("mailboxName", Name.generate().name))
-        .exec(JmapMailboxes.createMailbox())
+    exec((session: Session) => session.set("createdId", MailboxId.generate().id))
+        .exec((session: Session) => session.set("mailboxName", MailboxName.generate().name))
+        .exec(JmapMailbox.createMailbox())
 
   def provisionUsersWithMessageList(userPicker: UserPicker, numberOfMessages: Int): ChainBuilder =
     exec(provisionUsersWithMessages(userPicker, numberOfMessages))
