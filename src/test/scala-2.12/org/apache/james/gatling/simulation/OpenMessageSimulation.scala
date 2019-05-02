@@ -7,8 +7,7 @@ import scala.concurrent.duration._
 
 class OpenMessageSimulation extends Simulation with SimulationOnMailCorpus {
 
-  setUp(
-    injectUsersInScenario(new JmapOpenArbitraryMessageScenario().generate(feeder))
-  ).assertions(buildMaxScenarioResponseTimeAssertion(OpenMessage, 500 millis))
+  setUp(injectUsersInScenario(new JmapOpenArbitraryMessageScenario().generate(feeder)))
+    .assertions(buildMaxScenarioResponseTimeAssertion(OpenMessage, 500 millis))
 
 }
