@@ -31,7 +31,7 @@ class JmapSelectArbitraryMaiboxScenario(minMessagesInMailbox: Int) {
       .exec(CommonSteps.authentication())
       .group("prepare")(
         exec(RetryAuthentication.execWithRetryAuthentication(getMailboxes, isSuccess ++ JmapMailbox.saveRandomMailboxWithAtLeastMessagesAs(Keys.randomMailbox, minMessagesInMailbox))))
-      .group("select mailbox")(
+      .group(SelectMailbox.name)(
         exec(RetryAuthentication.execWithRetryAuthentication(
           JmapMessages.listMessages(openpaasListMessageParameters(Keys.randomMailbox)),
           JmapMessages.listMessagesChecks))
