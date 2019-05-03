@@ -11,3 +11,6 @@ case object InboxHomeLoading extends RealUsageScenario {
 case object OpenMessage extends RealUsageScenario {
   def name = "OpenMessage"
 }
+case object SelectMailbox extends RealUsageScenario {
+  def name = "SelectMailbox"
+}
