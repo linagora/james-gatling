@@ -4,6 +4,7 @@ import java.net.URL
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
+import org.apache.james.gatling.jmap.MailboxName
 import org.apache.james.gatling.utils.RandomStringGenerator
 import play.api.libs.ws.DefaultBodyWritables._
 import play.api.libs.ws.ahc.StandaloneAhcWSClient
@@ -57,18 +58,19 @@ class JamesWebAdministration(val baseUrl: URL) {
     new URL(s"$baseUrl/users/${username.value}/mailboxes")
 
   def createInbox(username: Username) = {
-    val mailboxesUrl = getMailboxesUrl(username)
-    wsClient.url(s"$mailboxesUrl/INBOX").put("")
+    createMailbox(username, MailboxName("INBOX"))
   }
 
   def createOutbox(username: Username) = {
-    val mailboxesUrl = getMailboxesUrl(username)
-    wsClient.url(s"$mailboxesUrl/Outbox").put("")
+    createMailbox(username, MailboxName("Outbox"))
   }
 
   def createSentBox(username: Username) = {
-    val mailboxesUrl = getMailboxesUrl(username)
-    wsClient.url(s"$mailboxesUrl/Sent").put("")
+    createMailbox(username, MailboxName("Sent"))
   }
 
+  def createMailbox(username: Username, mailboxName: MailboxName) = {
+    val mailboxesUrl = getMailboxesUrl(username)
+    wsClient.url(s"$mailboxesUrl/${mailboxName.name}").put("")
+  }
 }
