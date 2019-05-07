@@ -27,12 +27,11 @@ object JamesServer {
     lazy val mappedWebadminPort: Integer = container.getMappedPort(webadminPort)
     lazy val mappedSmtpPort: Integer = container.getMappedPort(smtpPort)
     lazy val mappedImapPort: Integer = container.getMappedPort(imapPort)
+    lazy val mappedWebadmin = new JamesWebAdministration(new URL(s"http://localhost:$mappedWebadminPort"))
 
-    private lazy val administration = new JamesWebAdministration(new URL(s"http://localhost:$mappedWebadminPort"))
+    def addUser(user: User): Unit = Await.result(mappedWebadmin.addUser(user), WAIT_TIMEOUT)
 
-    def addUser(user: User): Unit = Await.result(administration.addUser(user), WAIT_TIMEOUT)
-
-    def addDomain(domain: Domain): Unit = Await.result(administration.addDomain(domain), WAIT_TIMEOUT)
+    def addDomain(domain: Domain): Unit = Await.result(mappedWebadmin.addDomain(domain), WAIT_TIMEOUT)
 
     private def userNameToInternetAddress(username: Username) = {
       new InternetAddress(username.value)
