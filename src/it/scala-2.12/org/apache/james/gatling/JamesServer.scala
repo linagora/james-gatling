@@ -46,10 +46,10 @@ object JamesServer {
       putMessage(from)(to)(INBOX)
 
     def createMailbox(username: Username)(mailboxName: MailboxName): Future[StandaloneWSRequest#Response] =
-      administration.createMailbox(username, mailboxName)
+      mappedWebadmin.createMailbox(username, mailboxName)
 
 
-    def addMessage(user: User): MailboxName => Unit =
+    def sendMessage(user: User): MailboxName => Unit =
       putMessage(MAIL_AUTHOR)(user)
 
     private def putMessage(from: Username)(to: User)(mailboxName: MailboxName): Unit = {

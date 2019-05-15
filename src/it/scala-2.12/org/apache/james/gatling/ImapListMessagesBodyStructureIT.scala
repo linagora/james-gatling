@@ -16,7 +16,7 @@ class ImapListMessagesBodyStructureIT extends ImapIT {
     users.foreach(server.sendMessage(Fixture.homer.username))
     val mailboxCreations = users.flatMap(user => mailboxes.map(server.createMailbox(user.username)))
     Await.result(Future.sequence(mailboxCreations), 30 seconds)
-    users.flatMap(user => mailboxes.map(server.addMessage(user)))
+    users.flatMap(user => mailboxes.map(server.sendMessage(user)))
   }
 
   scenario(feederBuilder => {

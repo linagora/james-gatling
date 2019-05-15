@@ -6,7 +6,7 @@ import scala.concurrent.duration._
 class ImapStoreIT extends ImapIT {
 
   before {
-    users.foreach(server.importMessages(Fixture.homer))
+    users.foreach(server.sendMessage(Fixture.homer.username))
   }
 
   scenario(feederBuilder => {

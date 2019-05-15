@@ -11,7 +11,7 @@ class JmapBigSetIT extends JmapIT {
   private val MESSAGE_NUMBER = 10
 
   before {
-    users.foreach(server.importMessages(Fixture.homer))
+    users.foreach(server.sendMessage(Fixture.homer.username))
   }
 
   scenario(feederBuilder => {
