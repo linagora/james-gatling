@@ -5,6 +5,8 @@ import io.gatling.core.config.GatlingConfiguration
 import io.gatling.core.protocol.{Protocol, ProtocolComponents, ProtocolKey}
 import io.gatling.core.session.Session
 
+import scala.util.Properties
+
 object SmtpProtocol {
 
   val SmtpProtocolKey = new ProtocolKey[SmtpProtocol, SmtpComponents] {
@@ -24,12 +26,13 @@ object SmtpProtocol {
     override def onExit: Session => Unit = s => ()
   }
 
-  val DEFAULT_PORT = 25
-  val DEFAULT_PORT_SSL = 465
+  val PORT = Properties.envOrElse("SMTP_PORT", "25").toInt
+  val PORT_SSL = Properties.envOrElse("SMTP_SSL_PORT", "465").toInt
+  val HOSTNAME = Properties.envOrElse("TARGET_HOSTNAME", "localhost")
 
-  val default = new SmtpProtocol("localhost", false, DEFAULT_PORT, false)
+  val default = new SmtpProtocol(HOSTNAME, false, PORT, false)
 
-  def defaultPort(ssl: Boolean) = if (ssl) SmtpProtocol.DEFAULT_PORT_SSL else SmtpProtocol.DEFAULT_PORT
+  def defaultPort(ssl: Boolean) = if (ssl) SmtpProtocol.PORT_SSL else SmtpProtocol.PORT
 
   val smtp = SmtpProtocol.default
 
