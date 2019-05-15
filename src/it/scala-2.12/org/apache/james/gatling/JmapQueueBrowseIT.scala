@@ -10,7 +10,7 @@ class JmapQueueBrowseIT extends JmapIT {
   var webAdmin = new JamesWebAdministrationQuery(server.mappedWebadmin.baseUrl)
 
   before {
-    users.foreach(server.importMessages(Fixture.homer))
+    users.foreach(server.sendMessage(Fixture.homer.username))
   }
 
   scenario(feederBuilder => {
