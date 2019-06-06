@@ -25,7 +25,10 @@ class ImapFullScenario {
 
   val readLastEmail = exec(imap("list").list("", "*").check(ok, hasFolder("INBOX")))
     .exec(imap("select").select("INBOX").check(ok))
-    .exec(imap("fetch").fetch(MessageRanges(Last()), AttributeList("BODY[HEADER]", "UID", "BODY[TEXT]")).check(ok))
+    // The imapnio library fail to parse the attributes BODY[TEXT] and BODY[HEADER]
+    // so for the time being we will only fetch the BODYSTRUCTURE
+    // the corresponding issue can be found at :  https://github.com/linagora/gatling-imap/issues/38
+    .exec(imap("fetch").fetch(MessageRanges(Last()), AttributeList("UID", "BODYSTRUCTURE")).check(ok))
 
   val heavyUser = repeat(3)(receiveEmail)
     .repeat(2)(readLastEmail)
