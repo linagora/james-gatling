@@ -25,7 +25,7 @@ class ImapFullScenario {
 
   val readLastEmail = exec(imap("list").list("", "*").check(ok, hasFolder("INBOX")))
     .exec(imap("select").select("INBOX").check(ok))
-    .exec(imap("fetch").fetch(MessageRanges(Last()), AttributeList("BODY[HEADER]", "UID", "BODY[TEXT]")).check(ok))
+    .exec(imap("fetch").fetch(MessageRanges(Last()), AttributeList("UID", "BODYSTRUCTURE")).check(ok))
 
   val heavyUser = repeat(3)(receiveEmail)
     .repeat(2)(readLastEmail)
