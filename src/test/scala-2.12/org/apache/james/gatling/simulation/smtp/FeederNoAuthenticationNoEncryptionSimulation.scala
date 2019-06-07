@@ -13,7 +13,7 @@ class FeederNoAuthenticationNoEncryptionSimulation extends Simulation {
 
   private val scenario = new FeederNoAuthenticationNoEncryptionScenario()
 
-  setUp(scenario.generate(Configuration.ScenarioDuration, feeder)
+  setUp(scenario.generate(Configuration.ScenarioDuration, feeder.circular)
     .inject(nothingFor(10 seconds), rampUsers(Configuration.UserCount) during(10 seconds)))
     .protocols(smtp)
 }

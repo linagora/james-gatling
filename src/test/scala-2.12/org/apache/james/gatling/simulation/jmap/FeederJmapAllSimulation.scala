@@ -22,7 +22,7 @@ class FeederJmapAllSimulation extends Simulation {
   private val scenario = new FeederJmapAllScenario()
 
   setUp(scenario
-    .generate(Configuration.ScenarioDuration, UserFeeder.toFeeder(users), RandomUserPicker(users))
+    .generate(Configuration.ScenarioDuration, UserFeeder.toFeeder(users).circular, RandomUserPicker(users))
     .inject(atOnceUsers(Configuration.UserCount)))
     .protocols(HttpSettings.httpProtocol)
 }
