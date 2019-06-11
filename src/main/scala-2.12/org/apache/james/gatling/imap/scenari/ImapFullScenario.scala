@@ -27,7 +27,7 @@ class ImapFullScenario {
     .exec(imap("select").select("INBOX").check(ok))
     // The imapnio library fail to parse the attributes BODY[TEXT] and BODY[HEADER]
     // so for the time being we will only fetch the BODYSTRUCTURE
-    // the corresponding issue can be found at :  https://ci.linagora.com/linagora/lgs/openpaas/james/issues/1243
+    // the corresponding issue can be found at :  https://github.com/linagora/gatling-imap/issues/38
     .exec(imap("fetch").fetch(MessageRanges(Last()), AttributeList("UID", "BODYSTRUCTURE")).check(ok))
 
   val heavyUser = repeat(3)(receiveEmail)
