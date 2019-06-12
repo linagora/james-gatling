@@ -1,5 +1,6 @@
 = Gatling tests for James server
-[![Build Status](https://travis-ci.org/linagora/james-gatling.svg?branch=master)](https://travis-ci.org/linagora/james-gatling)
+
+image:https://travis-ci.org/linagora/james-gatling.svg?branch=master["Build Status", link="https://travis-ci.org/linagora/james-gatling"]
 
 For now, you need to have a running dockerized James JMAP server running on the same computer than your Gatling host. It needs to export the webAdmin over port 8000.
 
