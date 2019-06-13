@@ -10,7 +10,9 @@ Alternativly you can set up the following system properties:
  * `SMTP_PORT` which is set to `25` by default
  * `SMTP_SSL_PORT` which is set to `465` by default
  * `JMAP_PORT` which is set to `1080` by default
+ * `JMAP_PROTOCOL` which is set to `http` by default (you can use `https` instead for example)
  * `WEBADMIN_PORT` which is set to `8000` by default
+ * `WEBADMIN_PROTOCOL` which is set to `http` by default (you can use `https` instead for example)
 
 You can run all the scenari via sbt :
 
