@@ -2,7 +2,8 @@ package org.apache.james.gatling.simulation.jmap
 
 import io.gatling.core.Predef._
 import io.gatling.core.scenario.Simulation
-import org.apache.james.gatling.control.{Password, RandomUserPicker, User, UserFeeder, Username}
+import org.apache.james.gatling.control._
+import org.apache.james.gatling.jmap.RecipientAddress
 import org.apache.james.gatling.jmap.scenari.JmapAllScenario
 import org.apache.james.gatling.simulation.{Configuration, HttpSettings}
 
@@ -21,8 +22,12 @@ class FeederJmapAllSimulation extends Simulation {
 
   private val scenario = new JmapAllScenario()
 
+  private val recipients: Seq[RecipientAddress] = csv("users.csv").readRecords
+    .map(record =>
+      RecipientAddress(recordValueToString(record("username"))))
+
   setUp(scenario
-    .generate(UserFeeder.toFeeder(users).circular, Configuration.ScenarioDuration, RandomUserPicker(users))
+    .generate(UserFeeder.toFeeder(users).circular, Configuration.ScenarioDuration, RecipientFeeder.toFeeder(recipients).random)
     .inject(atOnceUsers(Configuration.UserCount)))
     .protocols(HttpSettings.httpProtocol)
 }

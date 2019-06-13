@@ -10,7 +10,7 @@ class JmapCountMailboxesIT extends JmapIT {
     users.foreach(server.sendMessage(Fixture.homer.username))
   }
 
-  scenario(feederBuilder => {
+  scenario((feederBuilder, _) => {
     new JmapCountMailboxesScenario().generate(10 seconds, feederBuilder)
   })
 }
