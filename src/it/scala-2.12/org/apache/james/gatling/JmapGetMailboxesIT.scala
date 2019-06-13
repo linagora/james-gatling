@@ -10,7 +10,7 @@ class JmapGetMailboxesIT extends JmapIT {
     users.foreach(server.sendMessage(Fixture.homer.username))
   }
 
-  scenario(feederBuilder => {
+  scenario((feederBuilder, _) => {
     new JmapGetMailboxesScenario().generate(10 seconds, feederBuilder)
   })
 }

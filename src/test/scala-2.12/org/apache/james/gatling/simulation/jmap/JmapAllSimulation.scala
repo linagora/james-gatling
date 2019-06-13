@@ -2,7 +2,7 @@ package org.apache.james.gatling.simulation.jmap
 
 import io.gatling.core.Predef._
 import io.gatling.core.scenario.Simulation
-import org.apache.james.gatling.control.{RandomUserPicker, UserCreator, UserFeeder}
+import org.apache.james.gatling.control.{RecipientFeeder, UserCreator, UserFeeder}
 import org.apache.james.gatling.jmap.scenari.JmapAllScenario
 import org.apache.james.gatling.simulation.{Configuration, HttpSettings}
 
@@ -19,7 +19,7 @@ class JmapAllSimulation extends Simulation {
 
   private val scenario = new JmapAllScenario()
 
-  setUp(scenario.generate(UserFeeder.toFeeder(users), Configuration.ScenarioDuration, RandomUserPicker(users))
+  setUp(scenario.generate(UserFeeder.toFeeder(users), Configuration.ScenarioDuration, RecipientFeeder.usersToFeeder(users))
       .inject(atOnceUsers(Configuration.UserCount)))
     .protocols(HttpSettings.httpProtocol)
 }

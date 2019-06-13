@@ -6,7 +6,6 @@ import io.gatling.core.session.Session
 import io.gatling.http.Predef._
 import io.gatling.http.check.HttpCheck
 import org.apache.james.gatling.control.User
-import org.apache.james.gatling.jmap.CommonSteps.UserPicker
 import org.apache.james.gatling.jmap.RetryAuthentication._
 import org.apache.james.gatling.utils.RandomStringGenerator
 
@@ -30,7 +29,7 @@ object JmapMessages {
   type JmapParameters = Map[String, Any]
   val NO_PARAMETERS : JmapParameters = Map()
 
-  def sendMessages(messageId: MessageId, recipientAddress: RecipientAddress, subject: Subject, textBody: TextBody) =
+  def sendMessages(messageId: MessageId, subject: Subject, textBody: TextBody) =
     JmapAuthentication.authenticatedQuery("sendMessages", "/jmap")
       .body(StringBody(
         s"""[[
@@ -39,7 +38,7 @@ object JmapMessages {
             "create": {
               "${messageId.id}" : {
                 "from": {"name":"$${username}", "email": "$${username}"},
-                "to":  [{"name":"${recipientAddress.address}", "email": "${recipientAddress.address}"}],
+                "to":  [{"name":"$${recipient}", "email": "$${recipient}"}],
                 "textBody": "${textBody.text}",
                 "subject": "${subject.subject}",
                 "mailboxIds": ["$${outboxMailboxId}"]
@@ -96,14 +95,13 @@ object JmapMessages {
     JmapChecks.noError,
     JmapChecks.created(messageId))
 
-  def sendMessagesWithRetryAuthentication(messageId: MessageId, recipientAddress: RecipientAddress, subject: Subject, textBody: TextBody) =
-    execWithRetryAuthentication(sendMessages(messageId, recipientAddress, subject, textBody), sendMessagesChecks(messageId))
+  def sendMessagesWithRetryAuthentication(messageId: MessageId, subject: Subject, textBody: TextBody) =
+    execWithRetryAuthentication(sendMessages(messageId, subject, textBody), sendMessagesChecks(messageId))
 
 
-  def sendMessagesToUserWithRetryAuthentication(userPicker: UserPicker) =
+  def sendMessagesToUserWithRetryAuthentication() =
     sendMessagesWithRetryAuthentication(
       messageId = MessageId(),
-      recipientAddress = RecipientAddress(userPicker.pick()),
       subject = Subject(),
       textBody = TextBody())
 

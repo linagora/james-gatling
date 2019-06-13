@@ -26,20 +26,20 @@ object CommonSteps {
       .exec(JmapMailbox.getSystemMailboxesWithRetryAuthentication)
       .pause(1 second)
 
-  def provisionUsersWithMessages(userPicker: UserPicker, numberOfMessages: Int): ChainBuilder =
+  def provisionUsersWithMessages(numberOfMessages: Int): ChainBuilder =
     exec(provisionSystemMailboxes())
       .repeat(numberOfMessages, loopVariableName) {
-        exec(JmapMessages.sendMessagesToUserWithRetryAuthentication(userPicker))
+        exec(JmapMessages.sendMessagesToUserWithRetryAuthentication())
           .pause(1 second, 2 seconds)
       }
       .pause(5 second)
 
-  def provisionUsersWithMailboxesAndMessages(userPicker: UserPicker, numberOfMailboxes: Int, numberOfMessages: Int): ChainBuilder =
+  def provisionUsersWithMailboxesAndMessages(numberOfMailboxes: Int, numberOfMessages: Int): ChainBuilder =
     exec(provisionSystemMailboxes())
       .repeat(numberOfMailboxes) {
         provisionNewMailboxAndRememberItsIdAndName()
         .repeat(numberOfMessages) {
-          exec(JmapMessages.sendMessagesToUserWithRetryAuthentication(userPicker))
+          exec(JmapMessages.sendMessagesToUserWithRetryAuthentication())
         }
         .pause(1 second, 2 seconds)
         .exec(JmapMessages.retrieveSentMessageIds())
@@ -53,8 +53,8 @@ object CommonSteps {
         .exec((session: Session) => session.set("mailboxName", MailboxName.generate().name))
         .exec(JmapMailbox.createMailbox())
 
-  def provisionUsersWithMessageList(userPicker: UserPicker, numberOfMessages: Int): ChainBuilder =
-    exec(provisionUsersWithMessages(userPicker, numberOfMessages))
+  def provisionUsersWithMessageList(numberOfMessages: Int): ChainBuilder =
+    exec(provisionUsersWithMessages(numberOfMessages))
       .exec(JmapMessages.listMessagesWithRetryAuthentication())
       .pause(1 second)
 }

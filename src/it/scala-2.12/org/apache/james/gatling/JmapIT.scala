@@ -8,7 +8,7 @@ import io.gatling.core.structure.ScenarioBuilder
 import io.gatling.http.Predef._
 import org.apache.james.gatling.Fixture.{bart, simpsonDomain}
 import org.apache.james.gatling.JamesServer.RunningServer
-import org.apache.james.gatling.control.UserFeeder
+import org.apache.james.gatling.control.{RecipientFeeder, UserFeeder}
 import org.slf4j
 import org.slf4j.LoggerFactory
 
@@ -31,9 +31,10 @@ abstract class JmapIT extends GatlingFunSpec {
     server.stop()
   }
 
-  protected def scenario(scenarioFromFeeder: FeederBuilder => ScenarioBuilder) = {
+  protected def scenario(scenarioFromFeeder: (FeederBuilder, FeederBuilder) => ScenarioBuilder) = {
     val feeder = UserFeeder.toFeeder(users)
-    scenarioFromFeeder(feeder).actionBuilders.reverse.foreach { actionBuilder =>
+    val recipientFeeder = RecipientFeeder.usersToFeeder(users).random
+    scenarioFromFeeder(feeder, recipientFeeder).actionBuilders.reverse.foreach { actionBuilder =>
       spec(actionBuilder)
     }
   }
