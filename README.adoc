@@ -12,6 +12,12 @@ Alternativly you can set up the following system properties:
  * `WEBADMIN_PORT` which is set to `8000` by default
  * `WEBADMIN_PROTOCOL` which is set to `http` by default (you can use `https` instead for example)
 
+In some cases you could want to specify target hostname per protocol, the following properties can help you:
+ * `SMTP_TARGET_HOSTNAME` which is set to `TARGET_HOSTNAME` by default
+ * `JMAP_TARGET_HOSTNAME` which is set to `TARGET_HOSTNAME` by default
+ * `IMAP_SERVER_HOSTNAME` which is set to `TARGET_HOSTNAME` by default
+ * `WEBADMIN_SERVER_HOSTNAME` which is set to `TARGET_HOSTNAME` by default
+
 You can run all the scenari via sbt :
 
 .bash
