@@ -28,7 +28,7 @@ object SmtpProtocol {
 
   val PORT = Properties.envOrElse("SMTP_PORT", "25").toInt
   val PORT_SSL = Properties.envOrElse("SMTP_SSL_PORT", "465").toInt
-  val HOSTNAME = Properties.envOrElse("TARGET_HOSTNAME", "localhost")
+  val HOSTNAME = Properties.envOrElse("SMTP_TARGET_HOSTNAME", Properties.envOrElse("TARGET_HOSTNAME", "localhost"))
 
   val default = new SmtpProtocol(HOSTNAME, false, PORT, false)
 

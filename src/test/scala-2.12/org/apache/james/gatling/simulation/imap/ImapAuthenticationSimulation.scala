@@ -20,6 +20,6 @@ class ImapAuthenticationSimulation extends Simulation {
 
   setUp(scenario.generate(Configuration.ScenarioDuration, usersFeeder)
     .inject(atOnceUsers(Configuration.UserCount)))
-    .protocols(HttpSettings.httpProtocol, imap.host(Configuration.ServerHostName).build())
+    .protocols(HttpSettings.httpProtocol, imap.host(Configuration.ImapServerHostName).build())
 
 }
