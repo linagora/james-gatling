@@ -29,18 +29,18 @@ object JmapMessages {
   type JmapParameters = Map[String, Any]
   val NO_PARAMETERS : JmapParameters = Map()
 
-  def sendMessages(messageId: MessageId, subject: Subject, textBody: TextBody) =
+  def sendMessages() =
     JmapAuthentication.authenticatedQuery("sendMessages", "/jmap")
       .body(StringBody(
         s"""[[
           "setMessages",
           {
             "create": {
-              "${messageId.id}" : {
+              "$${messageId}" : {
                 "from": {"name":"$${username}", "email": "$${username}"},
                 "to":  [{"name":"$${recipient}", "email": "$${recipient}"}],
-                "textBody": "${textBody.text}",
-                "subject": "${subject.subject}",
+                "textBody": "$${textBody}",
+                "subject": "$${subject}",
                 "mailboxIds": ["$${outboxMailboxId}"]
               }
             }
@@ -90,20 +90,27 @@ object JmapMessages {
   def hasBeenUpdated =
     jsonPath("$..updated[*]").count.gt(0)
 
-  def sendMessagesChecks(messageId: MessageId): Seq[HttpCheck] = List(
+  def sendMessagesChecks(): Seq[HttpCheck] = List(
     status.is(200),
     JmapChecks.noError,
-    JmapChecks.created(messageId))
+    JmapChecks.created())
 
-  def sendMessagesWithRetryAuthentication(messageId: MessageId, subject: Subject, textBody: TextBody) =
-    execWithRetryAuthentication(sendMessages(messageId, subject, textBody), sendMessagesChecks(messageId))
+  def sendMessagesWithRetryAuthentication() = {
+    execWithRetryAuthentication(sendMessages(), sendMessagesChecks())
+  }
 
-
-  def sendMessagesToUserWithRetryAuthentication() =
-    sendMessagesWithRetryAuthentication(
-      messageId = MessageId(),
-      subject = Subject(),
-      textBody = TextBody())
+  def sendMessagesToUserWithRetryAuthentication() = {
+    val mailFeeder = Iterator.continually(
+      Map(
+        "messageId" -> MessageId().id,
+        "subject" -> Subject().subject,
+        "textBody" -> TextBody().text
+      )
+    )
+    feed(mailFeeder).exec(
+      sendMessagesWithRetryAuthentication()
+    )
+  }
 
   def openpaasListMessageFilter(mailboxesKey: List[String]): JmapParameters = {
     val mailboxes = mailboxesKey.map(key => s"$${$key}")
