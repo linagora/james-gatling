@@ -67,7 +67,6 @@ object JamesServer {
 
     private def makeMessage(author: String, recipient: String, subject: String, content: String) = {
       import java.io.ByteArrayInputStream
-      import java.nio.charset.Charset
       val body =
         s"""From: $author
            |To: $recipient

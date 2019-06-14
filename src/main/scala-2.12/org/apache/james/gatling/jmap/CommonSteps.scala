@@ -4,7 +4,6 @@ import io.gatling.core.Predef._
 import io.gatling.core.structure.ChainBuilder
 import org.apache.james.gatling.control.User
 
-import scala.concurrent.Future
 import scala.concurrent.duration._
 
 object CommonSteps {

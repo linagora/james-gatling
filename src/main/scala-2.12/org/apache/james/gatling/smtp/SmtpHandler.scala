@@ -8,7 +8,6 @@ import io.gatling.core.akka.BaseActor
 import io.gatling.core.session.Session
 import io.gatling.core.stats.message.ResponseTimings
 
-import scala.concurrent.ExecutionContext.global
 import scala.util.{Failure, Success}
 
 object SmtpHandler {
