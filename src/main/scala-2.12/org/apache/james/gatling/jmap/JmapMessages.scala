@@ -5,7 +5,7 @@ import io.gatling.core.json.Json
 import io.gatling.core.session.Session
 import io.gatling.http.Predef._
 import io.gatling.http.check.HttpCheck
-import org.apache.james.gatling.control.User
+import org.apache.james.gatling.control.{RecipientFeeder, User, UserFeeder}
 import org.apache.james.gatling.jmap.RetryAuthentication._
 import org.apache.james.gatling.utils.RandomStringGenerator
 
@@ -29,19 +29,23 @@ object JmapMessages {
   type JmapParameters = Map[String, Any]
   val NO_PARAMETERS : JmapParameters = Map()
 
+  val MessageIdSessionParam = "messageId"
+  val SubjectSessionParam = "subject"
+  val TextBodySessionParam = "textBody"
+
   def sendMessages() =
     JmapAuthentication.authenticatedQuery("sendMessages", "/jmap")
       .body(StringBody(
-        """[[
+        s"""[[
           "setMessages",
           {
             "create": {
-              "${messageId}" : {
-                "from": {"name":"${username}", "email": "${username}"},
-                "to":  [{"name":"${recipient}", "email": "${recipient}"}],
-                "textBody": "${textBody}",
-                "subject": "${subject}",
-                "mailboxIds": ["${outboxMailboxId}"]
+              "$${$MessageIdSessionParam}" : {
+                "from": {"name":"$${${UserFeeder.UsernameSessionParam}}", "email": "$${${UserFeeder.UsernameSessionParam}}"},
+                "to":  [{"name":"$${${RecipientFeeder.RecipientSessionParam}}", "email": "$${${RecipientFeeder.RecipientSessionParam}}"}],
+                "textBody": "$${$TextBodySessionParam}",
+                "subject": "$${$SubjectSessionParam}",
+                "mailboxIds": ["$${${JmapMailbox.OutboxMailboxIdSessionParam}}"]
               }
             }
           },
@@ -102,9 +106,9 @@ object JmapMessages {
   def sendMessagesToUserWithRetryAuthentication() = {
     val mailFeeder = Iterator.continually(
       Map(
-        "messageId" -> MessageId().id,
-        "subject" -> Subject().subject,
-        "textBody" -> TextBody().text
+        MessageIdSessionParam -> MessageId().id,
+        SubjectSessionParam -> Subject().subject,
+        TextBodySessionParam -> TextBody().text
       )
     )
     feed(mailFeeder).exec(
