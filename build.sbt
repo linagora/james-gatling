@@ -24,7 +24,7 @@ lazy val root = (project in file("."))
 val gatlingVersion = "3.0.3"
 val playWsVersion = "2.0.1"
 
-scalacOptions in ThisBuild ++= Seq("-unchecked", "-deprecation", "-feature", "-language:postfixOps")
+scalacOptions in ThisBuild ++= Seq("-unchecked", "-deprecation", "-feature", "-language:postfixOps", "-Ywarn-unused:imports")
 
 enablePlugins(GatlingPlugin)
 
