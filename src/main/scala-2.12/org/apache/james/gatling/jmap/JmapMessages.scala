@@ -32,16 +32,16 @@ object JmapMessages {
   def sendMessages() =
     JmapAuthentication.authenticatedQuery("sendMessages", "/jmap")
       .body(StringBody(
-        s"""[[
+        """[[
           "setMessages",
           {
             "create": {
-              "$${messageId}" : {
-                "from": {"name":"$${username}", "email": "$${username}"},
-                "to":  [{"name":"$${recipient}", "email": "$${recipient}"}],
-                "textBody": "$${textBody}",
-                "subject": "$${subject}",
-                "mailboxIds": ["$${outboxMailboxId}"]
+              "${messageId}" : {
+                "from": {"name":"${username}", "email": "${username}"},
+                "to":  [{"name":"${recipient}", "email": "${recipient}"}],
+                "textBody": "${textBody}",
+                "subject": "${subject}",
+                "mailboxIds": ["${outboxMailboxId}"]
               }
             }
           },
@@ -51,11 +51,11 @@ object JmapMessages {
   def retrieveSentMessageIds() = {
     JmapAuthentication.authenticatedQuery("retrieveMessageIds", "/jmap")
       .body(StringBody(
-        s"""[[
+        """[[
           "getMessageList",
           {
             "filter": {
-              "inMailboxes" : [ "$${sentMailboxId}" ]
+              "inMailboxes" : [ "${sentMailboxId}" ]
             }
           },
           "#0"
@@ -78,10 +78,10 @@ object JmapMessages {
       }))
     .exec(JmapAuthentication.authenticatedQuery("moveSentMessagesToMessageId", "/jmap")
             .body(StringBody(
-              s"""[[
+              """[[
                 "setMessages",
                 {
-                  "update": { $${update} }
+                  "update": { ${update} }
                 },
                 "#0"
                 ]]"""))
