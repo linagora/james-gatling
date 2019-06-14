@@ -6,6 +6,6 @@ object JmapChecks {
 
   val noError = jsonPath("$.error").notExists
 
-  def created() = jsonPath(s"$$[0][1].created['$${messageId}'].id").exists
+  def created() = jsonPath("$[0][1].created['${messageId}'].id").exists
 
 }
