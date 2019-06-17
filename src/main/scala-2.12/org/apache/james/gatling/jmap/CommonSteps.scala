@@ -3,15 +3,10 @@ package org.apache.james.gatling.jmap
 import io.gatling.core.Predef._
 import io.gatling.core.feeder.FeederBuilder
 import io.gatling.core.structure.ChainBuilder
-import org.apache.james.gatling.control.User
 
 import scala.concurrent.duration._
 
 object CommonSteps {
-
-  trait UserPicker {
-    def pick(): User
-  }
 
   private val loopVariableName = "any"
 
