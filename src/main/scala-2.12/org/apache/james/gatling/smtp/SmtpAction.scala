@@ -32,8 +32,8 @@ class SmtpAction(requestName: String,
       host = protocol.host,
       port = protocol.port,
       ssl = protocol.ssl,
-      from = readSession(UserFeeder.UsernameSessionParam),
-      to = readSession(UserFeeder.UsernameSessionParam),
+      from = readSession(UserFeeder.usernameSessionParam),
+      to = readSession(UserFeeder.usernameSessionParam),
       subject = subject,
       body = body,
       credentials = provideCredentialsIfNeeded(readSession)(protocol))
@@ -50,6 +50,6 @@ class SmtpAction(requestName: String,
 
   def provideCredentialsIfNeeded(sessionReader: String => String)(protocol: SmtpProtocol): Option[Credentials] = {
     if (protocol.auth) None
-    else Some(Credentials(sessionReader(UserFeeder.UsernameSessionParam), sessionReader(UserFeeder.PasswordSessionParam)))
+    else Some(Credentials(sessionReader(UserFeeder.usernameSessionParam), sessionReader(UserFeeder.passwordSessionParam)))
   }
 }

@@ -6,19 +6,19 @@ object RecipientFeeder {
 
   type RecipientFeeder = Array[Map[String, String]]
 
-  val RecipientSessionParam = "recipient"
+  val recipientSessionParam = "recipient"
 
   def toFeeder(recipients: Seq[RecipientAddress]): RecipientFeeder =
     recipients
       .map(recipient =>
         Map(
-          RecipientSessionParam -> recipient.address))
+          recipientSessionParam -> recipient.address))
       .toArray
 
   def usersToFeeder(users: Seq[User]): RecipientFeeder =
     users
       .map(user =>
         Map(
-          RecipientSessionParam -> user.username.value))
+          recipientSessionParam -> user.username.value))
       .toArray
 }

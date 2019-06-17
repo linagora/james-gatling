@@ -4,14 +4,14 @@ object UserFeeder {
 
   type UserFeeder = Array[Map[String, String]]
 
-  val UsernameSessionParam = "username"
-  val PasswordSessionParam = "password"
+  val usernameSessionParam = "username"
+  val passwordSessionParam = "password"
 
   def toFeeder(users: Seq[User]): UserFeeder =
     users
       .map(user =>
         Map(
-          UsernameSessionParam -> user.username.value,
-          PasswordSessionParam -> user.password.value))
+          usernameSessionParam -> user.username.value,
+          passwordSessionParam -> user.password.value))
       .toArray
 }
