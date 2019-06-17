@@ -12,6 +12,6 @@ class JmapMessageUpdateIT extends JmapIT {
   }
 
   scenario((feederBuilder, recipientFeederBuilder) => {
-    new JmapMessageUpdateScenario().generate(10 seconds, UserFeeder.toFeeder(users), recipientFeederBuilder, 10)
+    new JmapMessageUpdateScenario().generate(10 seconds, UserFeeder.toFeeder(users), recipientFeederBuilder, randomlySentMails = 10)
   })
 }
