@@ -1,6 +1,7 @@
 package org.apache.james.gatling.jmap
 
 import io.gatling.core.Predef._
+import io.gatling.core.feeder.FeederBuilder
 import io.gatling.core.json.Json
 import io.gatling.core.session.Session
 import io.gatling.http.Predef._
@@ -103,7 +104,7 @@ object JmapMessages {
     execWithRetryAuthentication(sendMessages(), sendMessagesChecks())
   }
 
-  def sendMessagesToUserWithRetryAuthentication() = {
+  def sendMessagesToUserWithRetryAuthentication(recipientFeeder: FeederBuilder) = {
     val mailFeeder = Iterator.continually(
       Map(
         MessageIdSessionParam -> MessageId().id,
@@ -111,9 +112,9 @@ object JmapMessages {
         TextBodySessionParam -> TextBody().text
       )
     )
-    feed(mailFeeder).exec(
-      sendMessagesWithRetryAuthentication()
-    )
+    feed(mailFeeder)
+      .feed(recipientFeeder)
+      .exec(sendMessagesWithRetryAuthentication())
   }
 
   def openpaasListMessageFilter(mailboxesKey: List[String]): JmapParameters = {

@@ -15,8 +15,7 @@ class JmapSendMessagesScenario {
       .feed(userFeeder)
       .exec(CommonSteps.provisionSystemMailboxes())
       .during(duration) {
-        feed(recipientFeeder)
-        .exec(JmapMessages.sendMessagesToUserWithRetryAuthentication())
+        exec(JmapMessages.sendMessagesToUserWithRetryAuthentication(recipientFeeder))
           .pause(1 second , 2 seconds)
       }
 

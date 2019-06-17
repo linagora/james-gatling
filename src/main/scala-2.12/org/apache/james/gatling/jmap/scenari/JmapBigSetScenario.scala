@@ -21,10 +21,9 @@ class JmapBigSetScenario {
 
     scenario("JMAP scenario on multiple mailboxes containing multiple messages")
       .feed(userFeeder)
-      .exec(CommonSteps.provisionUsersWithMailboxesAndMessages(numberOfMailboxes, numberOfMessages))
+      .exec(CommonSteps.provisionUsersWithMailboxesAndMessages(recipientFeeder, numberOfMailboxes, numberOfMessages))
       .during(duration) {
-        feed(recipientFeeder)
-        .exec(execWithRetryAuthentication(JmapMailbox.getMailboxes, JmapMailbox.getMailboxesChecks(numberOfMailboxesPerUser)))
+        exec(execWithRetryAuthentication(JmapMailbox.getMailboxes, JmapMailbox.getMailboxesChecks(numberOfMailboxesPerUser)))
         .exec(execWithRetryAuthentication(JmapMessages.listMessages(), JmapMessages.listMessagesChecks))
         .pause(1 second, 2 seconds)
       }
