@@ -16,10 +16,9 @@ class JmapQueueBrowseScenario {
     .feed(userFeeder)
     .exec(CommonSteps.provisionSystemMailboxes())
     .during(duration) {
-      feed(recipientFeeder)
-      .exec(
+      exec(
         randomSwitch(
-          99.0 -> JmapMessages.sendMessagesToUserWithRetryAuthentication(),
+          99.0 -> JmapMessages.sendMessagesToUserWithRetryAuthentication(recipientFeeder),
           1.0 -> webadmin.getMailQueueMails("spool")))
     }
   }

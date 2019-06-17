@@ -13,10 +13,9 @@ class JmapMessageUpdateScenario {
   def generate(duration: Duration, userFeeder: UserFeeder, recipientFeeder: FeederBuilder, randomlySentMails: Int): ScenarioBuilder =
     scenario("JmapUpdateMessages")
       .feed(userFeeder)
-      .exec(CommonSteps.provisionUsersWithMessageList(randomlySentMails))
+      .exec(CommonSteps.provisionUsersWithMessageList(recipientFeeder, randomlySentMails))
       .during(duration) {
-        feed(recipientFeeder)
-        .randomSwitch(
+        randomSwitch(
           70.0 -> exec(JmapMessages.markAsRead()),
           20.0 -> exec(JmapMessages.markAsAnswered()),
           10.0 -> exec(JmapMessages.markAsFlagged())

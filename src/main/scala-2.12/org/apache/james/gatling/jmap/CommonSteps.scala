@@ -1,6 +1,7 @@
 package org.apache.james.gatling.jmap
 
 import io.gatling.core.Predef._
+import io.gatling.core.feeder.FeederBuilder
 import io.gatling.core.structure.ChainBuilder
 import org.apache.james.gatling.control.User
 
@@ -26,20 +27,20 @@ object CommonSteps {
       .exec(JmapMailbox.getSystemMailboxesWithRetryAuthentication)
       .pause(1 second)
 
-  def provisionUsersWithMessages(numberOfMessages: Int): ChainBuilder =
+  def provisionUsersWithMessages(recipientFeeder: FeederBuilder, numberOfMessages: Int): ChainBuilder =
     exec(provisionSystemMailboxes())
       .repeat(numberOfMessages, loopVariableName) {
-        exec(JmapMessages.sendMessagesToUserWithRetryAuthentication())
+        exec(JmapMessages.sendMessagesToUserWithRetryAuthentication(recipientFeeder))
           .pause(1 second, 2 seconds)
       }
       .pause(5 second)
 
-  def provisionUsersWithMailboxesAndMessages(numberOfMailboxes: Int, numberOfMessages: Int): ChainBuilder =
+  def provisionUsersWithMailboxesAndMessages(recipientFeeder: FeederBuilder, numberOfMailboxes: Int, numberOfMessages: Int): ChainBuilder =
     exec(provisionSystemMailboxes())
       .repeat(numberOfMailboxes) {
         provisionNewMailboxAndRememberItsIdAndName()
         .repeat(numberOfMessages) {
-          exec(JmapMessages.sendMessagesToUserWithRetryAuthentication())
+          exec(JmapMessages.sendMessagesToUserWithRetryAuthentication(recipientFeeder))
         }
         .pause(1 second, 2 seconds)
         .exec(JmapMessages.retrieveSentMessageIds())
@@ -53,8 +54,8 @@ object CommonSteps {
         .exec((session: Session) => session.set("mailboxName", MailboxName.generate().name))
         .exec(JmapMailbox.createMailbox())
 
-  def provisionUsersWithMessageList(numberOfMessages: Int): ChainBuilder =
-    exec(provisionUsersWithMessages(numberOfMessages))
+  def provisionUsersWithMessageList(recipientFeeder: FeederBuilder, numberOfMessages: Int): ChainBuilder =
+    exec(provisionUsersWithMessages(recipientFeeder: FeederBuilder, numberOfMessages))
       .exec(JmapMessages.listMessagesWithRetryAuthentication())
       .pause(1 second)
 }

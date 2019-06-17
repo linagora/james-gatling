@@ -14,9 +14,8 @@ class JmapGetMessageListScenario {
   def generate(duration: Duration, userFeeder: UserFeeder, recipientFeeder: FeederBuilder, randomlySentMails: Int): ScenarioBuilder =
     scenario("JmapGetMessagesLists")
     .feed(userFeeder)
-    .exec(CommonSteps.provisionUsersWithMessages(randomlySentMails))
+    .exec(CommonSteps.provisionUsersWithMessages(recipientFeeder, randomlySentMails))
     .during(duration) {
-      feed(recipientFeeder)
       execWithRetryAuthentication(JmapMessages.listMessages(), JmapMessages.listMessagesChecks)
         .pause(1 second , 2 seconds)
     }
