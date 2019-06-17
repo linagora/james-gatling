@@ -36,7 +36,7 @@ object JmapMailbox {
 
   implicit val reads = Json.reads[JmapMailbox]
 
-  val OutboxMailboxIdSessionParam = "outboxMailboxId"
+  val outboxMailboxIdSessionParam = "outboxMailboxId"
 
   private val mailboxListPath = "[0][1].list"
   private def mailboxesIdPathForMailboxesWithAtLeastMessages(nbMessages : Int) = s"$$$mailboxListPath[?(@.totalMessages >= $nbMessages)].id"
@@ -82,7 +82,7 @@ object JmapMailbox {
   def checkSystemMailboxIdsHaveNotChanged: Seq[HttpCheck] =
     getMailboxesChecks ++ List[HttpCheck](
       jsonPath(inboxIdPath).is("${inboxMailboxId}"),
-      jsonPath(outboxIdPath).is(s"$${$OutboxMailboxIdSessionParam}"),
+      jsonPath(outboxIdPath).is(s"$${$outboxMailboxIdSessionParam}"),
       jsonPath(sentIdPath).is("${sentMailboxId}"),
       jsonPath(draftsIdPath).is("${draftMailboxId}"),
       jsonPath(trashIdPath).is("${trashMailboxId}"),
@@ -99,7 +99,7 @@ object JmapMailbox {
     saveInboxAs("inboxMailboxId") ++
     List[HttpCheck](
       jsonPath(inboxIdPath).saveAs("inboxMailboxId"),
-      jsonPath(outboxIdPath).saveAs(OutboxMailboxIdSessionParam),
+      jsonPath(outboxIdPath).saveAs(outboxMailboxIdSessionParam),
       jsonPath(sentIdPath).saveAs("sentMailboxId"),
       jsonPath(draftsIdPath).saveAs("draftMailboxId"),
       jsonPath(trashIdPath).saveAs("trashMailboxId"),

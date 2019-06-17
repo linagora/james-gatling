@@ -30,9 +30,9 @@ object JmapMessages {
   type JmapParameters = Map[String, Any]
   val NO_PARAMETERS : JmapParameters = Map()
 
-  val MessageIdSessionParam = "messageId"
-  val SubjectSessionParam = "subject"
-  val TextBodySessionParam = "textBody"
+  val messageIdSessionParam = "messageId"
+  val subjectSessionParam = "subject"
+  val textBodySessionParam = "textBody"
 
   def sendMessages() =
     JmapAuthentication.authenticatedQuery("sendMessages", "/jmap")
@@ -41,12 +41,12 @@ object JmapMessages {
           "setMessages",
           {
             "create": {
-              "$${$MessageIdSessionParam}" : {
-                "from": {"name":"$${${UserFeeder.UsernameSessionParam}}", "email": "$${${UserFeeder.UsernameSessionParam}}"},
-                "to":  [{"name":"$${${RecipientFeeder.RecipientSessionParam}}", "email": "$${${RecipientFeeder.RecipientSessionParam}}"}],
-                "textBody": "$${$TextBodySessionParam}",
-                "subject": "$${$SubjectSessionParam}",
-                "mailboxIds": ["$${${JmapMailbox.OutboxMailboxIdSessionParam}}"]
+              "$${$messageIdSessionParam}" : {
+                "from": {"name":"$${${UserFeeder.usernameSessionParam}}", "email": "$${${UserFeeder.usernameSessionParam}}"},
+                "to":  [{"name":"$${${RecipientFeeder.recipientSessionParam}}", "email": "$${${RecipientFeeder.recipientSessionParam}}"}],
+                "textBody": "$${$textBodySessionParam}",
+                "subject": "$${$subjectSessionParam}",
+                "mailboxIds": ["$${${JmapMailbox.outboxMailboxIdSessionParam}}"]
               }
             }
           },
@@ -107,9 +107,9 @@ object JmapMessages {
   def sendMessagesToUserWithRetryAuthentication(recipientFeeder: FeederBuilder) = {
     val mailFeeder = Iterator.continually(
       Map(
-        MessageIdSessionParam -> MessageId().id,
-        SubjectSessionParam -> Subject().subject,
-        TextBodySessionParam -> TextBody().text
+        messageIdSessionParam -> MessageId().id,
+        subjectSessionParam -> Subject().subject,
+        textBodySessionParam -> TextBody().text
       )
     )
     feed(mailFeeder)
