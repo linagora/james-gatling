@@ -1,11 +1,11 @@
 package org.apache.james.gatling.jmap
 
 import io.gatling.core.Predef._
-import io.gatling.core.feeder.FeederBuilder
 import io.gatling.core.json.Json
 import io.gatling.core.session.Session
 import io.gatling.http.Predef._
 import io.gatling.http.check.HttpCheck
+import org.apache.james.gatling.control.RecipientFeeder.RecipientFeederBuilder
 import org.apache.james.gatling.control.{RecipientFeeder, User, UserFeeder}
 import org.apache.james.gatling.jmap.RetryAuthentication._
 import org.apache.james.gatling.utils.RandomStringGenerator
@@ -104,7 +104,7 @@ object JmapMessages {
     execWithRetryAuthentication(sendMessages(), sendMessagesChecks())
   }
 
-  def sendMessagesToUserWithRetryAuthentication(recipientFeeder: FeederBuilder) = {
+  def sendMessagesToUserWithRetryAuthentication(recipientFeeder: RecipientFeederBuilder) = {
     val mailFeeder = Iterator.continually(
       Map(
         messageIdSessionParam -> MessageId().id,

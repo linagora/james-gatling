@@ -11,7 +11,7 @@ class JmapAllIT extends JmapIT {
     users.foreach(server.sendMessage(Fixture.homer.username))
   }
 
-  scenario((feederBuilder, recipientFeederBuilder) => {
-    new JmapAllScenario().generate(feederBuilder, 10 seconds, recipientFeederBuilder)
+  scenario((userFeederBuilder, recipientFeederBuilder) => {
+    new JmapAllScenario().generate(userFeederBuilder, 10 seconds, recipientFeederBuilder)
   })
 }

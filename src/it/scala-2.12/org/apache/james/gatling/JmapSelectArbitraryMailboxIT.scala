@@ -8,8 +8,8 @@ class JmapSelectArbitraryMailboxIT extends JmapIT {
     users.foreach(server.sendMessage(Fixture.homer.username))
   }
 
-  scenario((feederBuilder, _) => {
-    new JmapSelectArbitraryMaiboxScenario(MIN_MESSAGES_IN_MAILBOX_TO_SELECT).generate(feederBuilder)
+  scenario((userFeederBuilder, _) => {
+    new JmapSelectArbitraryMaiboxScenario(MIN_MESSAGES_IN_MAILBOX_TO_SELECT).generate(userFeederBuilder)
   })
 
 }

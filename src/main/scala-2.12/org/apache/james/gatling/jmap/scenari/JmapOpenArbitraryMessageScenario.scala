@@ -1,13 +1,13 @@
 package org.apache.james.gatling.jmap.scenari
 
 import io.gatling.core.Predef._
-import io.gatling.core.feeder.FeederBuilder
 import io.gatling.core.structure.ScenarioBuilder
 import io.gatling.http.Predef._
 import io.gatling.http.check.HttpCheck
 import io.gatling.http.request.builder.HttpRequestBuilder
-import org.apache.james.gatling.jmap.JmapMessages._
+import org.apache.james.gatling.control.UserFeeder.UserFeederBuilder
 import org.apache.james.gatling.jmap.JmapMailbox._
+import org.apache.james.gatling.jmap.JmapMessages._
 import org.apache.james.gatling.jmap._
 
 class JmapOpenArbitraryMessageScenario {
@@ -25,9 +25,9 @@ class JmapOpenArbitraryMessageScenario {
 
   private val openArbitraryMessage: HttpRequestBuilder = getRandomMessage(openpaasInboxOpenMessageProperties, Keys.messageIds)
 
-  def generate(feederBuilder: FeederBuilder): ScenarioBuilder = {
+  def generate(userFeeder: UserFeederBuilder): ScenarioBuilder = {
     scenario("JmapOpenArbitraryMessageScenario")
-      .feed(feederBuilder)
+      .feed(userFeeder)
       .exec(CommonSteps.authentication())
       .group("prepare")(
         exec(RetryAuthentication.execWithRetryAuthentication(getMailboxes, isSuccess ++ JmapMailbox.saveInboxAs(Keys.inbox)))

@@ -1,8 +1,8 @@
 package org.apache.james.gatling.jmap
 
 import io.gatling.core.Predef._
-import io.gatling.core.feeder.FeederBuilder
 import io.gatling.core.structure.ChainBuilder
+import org.apache.james.gatling.control.RecipientFeeder.RecipientFeederBuilder
 
 import scala.concurrent.duration._
 
@@ -22,7 +22,7 @@ object CommonSteps {
       .exec(JmapMailbox.getSystemMailboxesWithRetryAuthentication)
       .pause(1 second)
 
-  def provisionUsersWithMessages(recipientFeeder: FeederBuilder, numberOfMessages: Int): ChainBuilder =
+  def provisionUsersWithMessages(recipientFeeder: RecipientFeederBuilder, numberOfMessages: Int): ChainBuilder =
     exec(provisionSystemMailboxes())
       .repeat(numberOfMessages, loopVariableName) {
         exec(JmapMessages.sendMessagesToUserWithRetryAuthentication(recipientFeeder))
@@ -30,7 +30,7 @@ object CommonSteps {
       }
       .pause(5 second)
 
-  def provisionUsersWithMailboxesAndMessages(recipientFeeder: FeederBuilder, numberOfMailboxes: Int, numberOfMessages: Int): ChainBuilder =
+  def provisionUsersWithMailboxesAndMessages(recipientFeeder: RecipientFeederBuilder, numberOfMailboxes: Int, numberOfMessages: Int): ChainBuilder =
     exec(provisionSystemMailboxes())
       .repeat(numberOfMailboxes) {
         provisionNewMailboxAndRememberItsIdAndName()
@@ -49,8 +49,8 @@ object CommonSteps {
         .exec((session: Session) => session.set("mailboxName", MailboxName.generate().name))
         .exec(JmapMailbox.createMailbox())
 
-  def provisionUsersWithMessageList(recipientFeeder: FeederBuilder, numberOfMessages: Int): ChainBuilder =
-    exec(provisionUsersWithMessages(recipientFeeder: FeederBuilder, numberOfMessages))
+  def provisionUsersWithMessageList(recipientFeeder: RecipientFeederBuilder, numberOfMessages: Int): ChainBuilder =
+    exec(provisionUsersWithMessages(recipientFeeder, numberOfMessages))
       .exec(JmapMessages.listMessagesWithRetryAuthentication())
       .pause(1 second)
 }

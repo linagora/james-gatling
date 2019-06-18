@@ -8,8 +8,8 @@ class JmapOpenArbitraryMessageIT extends JmapIT {
     users.foreach(server.sendMessage(Fixture.homer.username))
   }
 
-  scenario((feederBuilder, _) => {
-    new JmapOpenArbitraryMessageScenario().generate(feederBuilder)
+  scenario((userFeederBuilder, _) => {
+    new JmapOpenArbitraryMessageScenario().generate(userFeederBuilder)
   })
 
 }
