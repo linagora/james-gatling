@@ -1,9 +1,9 @@
 package org.apache.james.gatling.jmap.scenari
 
 import io.gatling.core.Predef._
-import io.gatling.core.feeder.FeederBuilder
 import io.gatling.core.structure.ScenarioBuilder
-import org.apache.james.gatling.control.UserFeeder.UserFeeder
+import org.apache.james.gatling.control.RecipientFeeder.RecipientFeederBuilder
+import org.apache.james.gatling.control.UserFeeder.UserFeederBuilder
 import org.apache.james.gatling.jmap.JmapMailbox.numberOfSystemMailboxes
 import org.apache.james.gatling.jmap.RetryAuthentication._
 import org.apache.james.gatling.jmap.{CommonSteps, JmapMailbox, JmapMessages}
@@ -16,7 +16,7 @@ import scala.concurrent.duration.{Duration, DurationInt}
  */
 class JmapBigSetScenario {
 
-  def generate(duration: Duration, numberOfMailboxes: Int, numberOfMessages: Int, userFeeder: UserFeeder, recipientFeeder: FeederBuilder): ScenarioBuilder = {
+  def generate(duration: Duration, numberOfMailboxes: Int, numberOfMessages: Int, userFeeder: UserFeederBuilder, recipientFeeder: RecipientFeederBuilder): ScenarioBuilder = {
     def numberOfMailboxesPerUser: Int = numberOfMailboxes + numberOfSystemMailboxes
 
     scenario("JMAP scenario on multiple mailboxes containing multiple messages")

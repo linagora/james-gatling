@@ -1,9 +1,9 @@
 package org.apache.james.gatling.jmap.scenari
 
 import io.gatling.core.Predef._
-import io.gatling.core.feeder.FeederBuilder
 import io.gatling.core.structure.ScenarioBuilder
-import org.apache.james.gatling.control.UserFeeder.UserFeeder
+import org.apache.james.gatling.control.RecipientFeeder.RecipientFeederBuilder
+import org.apache.james.gatling.control.UserFeeder.UserFeederBuilder
 import org.apache.james.gatling.jmap.RetryAuthentication._
 import org.apache.james.gatling.jmap.{CommonSteps, JmapMessages}
 
@@ -11,7 +11,7 @@ import scala.concurrent.duration._
 
 class JmapGetMessagesScenario {
 
-  def generate(duration: Duration, userFeeder : UserFeeder, recipientFeeder: FeederBuilder, randomlySentMails: Int): ScenarioBuilder =
+  def generate(duration: Duration, userFeeder : UserFeederBuilder, recipientFeeder: RecipientFeederBuilder, randomlySentMails: Int): ScenarioBuilder =
     scenario("JmapGetMessages")
       .feed(userFeeder)
       .exec(CommonSteps.provisionUsersWithMessageList(recipientFeeder, randomlySentMails))

@@ -8,7 +8,7 @@ class JmapInboxHomeLoadingIT extends JmapIT {
     users.foreach(server.sendMessage(Fixture.homer.username))
   }
 
-  scenario((feederBuilder, _) => {
-    new JmapInboxHomeLoadingScenario().generate(feederBuilder)
+  scenario((userFeederBuilder, _) => {
+    new JmapInboxHomeLoadingScenario().generate(userFeederBuilder)
   })
 }
