@@ -1,10 +1,11 @@
-package org.apache.james.gatling
+package org.apache.james.gatling.imap
 
+import org.apache.james.gatling.Fixture
 import org.apache.james.gatling.imap.scenari.ImapListMessagesBodyStructureScenario
 import org.apache.james.gatling.jmap.MailboxName
 
-import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
 
 

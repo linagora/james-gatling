@@ -1,24 +1,25 @@
-package org.apache.james.gatling
+package org.apache.james.gatling.imap
 
+import com.linagora.gatling.imap.protocol.ImapProtocolBuilder
 import io.gatling.core.Predef._
 import io.gatling.core.feeder.FeederBuilder
 import io.gatling.core.funspec.GatlingFunSpec
 import io.gatling.core.protocol.Protocol
 import io.gatling.core.structure.ScenarioBuilder
 import org.apache.james.gatling.Fixture.{bart, simpsonDomain}
+import org.apache.james.gatling.JamesServer
 import org.apache.james.gatling.JamesServer.RunningServer
 import org.apache.james.gatling.control.UserFeeder
-import org.apache.james.gatling.smtp.SmtpProtocol
 import org.slf4j
 import org.slf4j.LoggerFactory
 
-abstract class SmtpIT extends GatlingFunSpec {
+abstract class ImapIT extends GatlingFunSpec {
   protected val logger: slf4j.Logger = LoggerFactory.getLogger(this.getClass.getCanonicalName)
 
   protected val server: RunningServer = JamesServer.start()
-  lazy val protocolConf: Protocol = new SmtpProtocol("localhost", false, mappedSmtpPort, false)
+  lazy val protocolConf: Protocol = new ImapProtocolBuilder("localhost", mappedImapPort).build()
 
-  protected def mappedSmtpPort = server.mappedSmtpPort
+  protected def mappedImapPort = server.mappedImapPort
 
   protected lazy val users = List(bart)
 
