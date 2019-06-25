@@ -12,7 +12,7 @@ import io.gatling.core.structure.ScenarioBuilder
 
 import scala.concurrent.duration._
 
-class ImapFullScenario {
+class ImapFullHeavyUserScenario {
 
   val receiveEmail = exec(imap("append").append("INBOX", Some(scala.collection.immutable.Seq("\\Flagged")), Option.empty[Calendar],
     """From: expeditor@example.com
@@ -30,21 +30,12 @@ class ImapFullScenario {
     // the corresponding issue can be found at :  https://github.com/linagora/gatling-imap/issues/38
     .exec(imap("fetch").fetch(MessageRanges(Last()), AttributeList("UID", "BODYSTRUCTURE")).check(ok))
 
-  val heavyUser = repeat(3)(receiveEmail)
-    .repeat(2)(readLastEmail)
-  val lightUser = receiveEmail
-    .exec(readLastEmail)
-
   def generate(duration: Duration, feeder: FeederBuilder): ScenarioBuilder =
-    scenario("Imap")
+    scenario("ImapFullHeavyUserScenario")
       .feed(feeder)
-      .pause(1.second)
       .exec(imap("Connect").connect()).exitHereIfFailed
       .exec(imap("login").login("${username}", "${password}").check(ok))
-      .during(duration) {
-        randomSwitch(
-          75.0 -> exec(lightUser),
-          25.0 -> exec(heavyUser)
-        )
-      }
+      .exec(repeat(3)(receiveEmail))
+      .exec(repeat(2)(readLastEmail))
 }
+
