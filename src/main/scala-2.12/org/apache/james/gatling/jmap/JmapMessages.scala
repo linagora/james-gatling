@@ -175,7 +175,7 @@ object JmapMessages {
           "getMessages",
           {
             "ids": ["$${$messageIdsKey.random()}"],
-            "properties": [ ${Json.stringify(properties)} ]
+            "properties": ${Json.stringify(properties)}
           },
           "#0"
           ]]"""))
@@ -188,7 +188,7 @@ object JmapMessages {
           "getMessages",
           {
             "ids": $${$messageIdsKey.jsonStringify()},
-            "properties": [ ${Json.stringify(properties)} ]
+            "properties": ${Json.stringify(properties)}
           },
           "#0"
           ]]"""))
