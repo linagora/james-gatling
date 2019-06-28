@@ -20,7 +20,7 @@ class JmapSendMessagesSimulation extends Simulation {
   private val scenario = new JmapSendMessagesScenario()
 
   setUp(scenario
-    .generate(Configuration.ScenarioDuration, UserFeeder.toFeeder(users), RecipientFeeder.usersToFeeder(users))
+    .generate(Configuration.ScenarioDuration, UserFeeder.toFeeder(users), RecipientFeeder.usersToFeeder(users).random)
       .inject(atOnceUsers(Configuration.UserCount)))
     .protocols(HttpSettings.httpProtocol)
 }

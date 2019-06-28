@@ -20,7 +20,7 @@ class JmapGetMessageListSimulation extends Simulation {
   private val scenario = new JmapGetMessageListScenario()
 
   setUp(scenario
-    .generate(Configuration.ScenarioDuration, UserFeeder.toFeeder(users), RecipientFeeder.usersToFeeder(users), Configuration.RandomlySentMails)
+    .generate(Configuration.ScenarioDuration, UserFeeder.toFeeder(users), RecipientFeeder.usersToFeeder(users).random, Configuration.RandomlySentMails)
       .inject(atOnceUsers(Configuration.UserCount)))
     .protocols(HttpSettings.httpProtocol)
 }
