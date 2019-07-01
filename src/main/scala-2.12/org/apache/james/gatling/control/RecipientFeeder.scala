@@ -1,5 +1,6 @@
 package org.apache.james.gatling.control
 
+import io.gatling.core.Predef._
 import io.gatling.core.feeder.Feeder
 import org.apache.james.gatling.jmap.RecipientAddress
 
@@ -18,11 +19,11 @@ object RecipientFeeder {
           recipientSessionParam -> recipient.address))
       .toArray
 
-  def usersToFeeder(users: Seq[User]): RecipientFeeder =
+  def usersToFeeder(users: Seq[User]): RecipientFeederBuilder =
     users
       .map(user =>
         Map(
           recipientSessionParam -> user.username.value))
       .toArray
       .random
-}
+  }
