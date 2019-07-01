@@ -20,7 +20,7 @@ class JmapBigSetSimulation extends Simulation {
   private val scenario = new JmapBigSetScenario()
 
   setUp(scenario
-    .generate(Configuration.ScenarioDuration, Configuration.NumberOfMailboxes, Configuration.NumberOfMessages, UserFeeder.toFeeder(users), RecipientFeeder.usersToFeeder(users).random)
+    .generate(Configuration.ScenarioDuration, Configuration.NumberOfMailboxes, Configuration.NumberOfMessages, UserFeeder.toFeeder(users), RecipientFeeder.usersToFeeder(users))
       .inject(atOnceUsers(Configuration.UserCount)))
     .protocols(HttpSettings.httpProtocol)
 }

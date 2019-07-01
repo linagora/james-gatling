@@ -24,4 +24,5 @@ object RecipientFeeder {
         Map(
           recipientSessionParam -> user.username.value))
       .toArray
+      .random
 }

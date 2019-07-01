@@ -22,7 +22,7 @@ class JmapQueueBrowseSimulation extends Simulation {
   private val scenario = new JmapQueueBrowseScenario()
 
   setUp(scenario
-    .generate(Configuration.ScenarioDuration, UserFeeder.toFeeder(users), RecipientFeeder.usersToFeeder(users).random, webAdmin)
+    .generate(Configuration.ScenarioDuration, UserFeeder.toFeeder(users), RecipientFeeder.usersToFeeder(users), webAdmin)
       .inject(atOnceUsers(Configuration.UserCount)))
     .protocols(HttpSettings.httpProtocol)
 }
