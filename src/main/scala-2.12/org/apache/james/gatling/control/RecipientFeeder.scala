@@ -26,4 +26,4 @@ object RecipientFeeder {
           recipientSessionParam -> user.username.value))
       .toArray
       .random
-  }
+}
