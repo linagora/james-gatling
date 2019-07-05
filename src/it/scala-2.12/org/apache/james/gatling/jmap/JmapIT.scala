@@ -35,7 +35,7 @@ abstract class JmapIT extends GatlingFunSpec {
 
   protected def scenario(scenarioFromFeeder: (UserFeederBuilder, RecipientFeederBuilder) => ScenarioBuilder) = {
     val userFeeder = UserFeeder.toFeeder(users)
-    val recipientFeeder = RecipientFeeder.usersToFeeder(users).random
+    val recipientFeeder = RecipientFeeder.usersToFeeder(users)
     scenarioFromFeeder(userFeeder, recipientFeeder).actionBuilders.reverse.foreach { actionBuilder =>
       spec(actionBuilder)
     }
