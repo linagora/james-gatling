@@ -8,6 +8,10 @@ case object InboxHomeLoading extends RealUsageScenario {
   def name = "InboxHomeLoading"
 }
 
+case object DefaultInboxSearchLoading extends RealUsageScenario {
+  def name = "DefaultInboxSearchLoading"
+}
+
 case object OpenMessage extends RealUsageScenario {
   def name = "OpenMessage"
 }
