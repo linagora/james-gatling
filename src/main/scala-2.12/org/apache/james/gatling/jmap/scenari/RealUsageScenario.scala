@@ -23,3 +23,7 @@ case object SelectMailbox extends RealUsageScenario {
 case object ListMessageBodyStructure extends RealUsageScenario {
   def name = "ListMessageBodyStructure"
 }
+
+case object MessageFlagUpdates extends RealUsageScenario {
+  def name = "MessageFlagUpdates"
+}
