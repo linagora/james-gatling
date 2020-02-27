@@ -7,7 +7,6 @@ import io.gatling.core.structure.ScenarioBuilder
 import org.apache.james.gatling.control.{Password, User, UserFeeder, Username}
 import org.apache.james.gatling.jmap.MailboxName
 import org.apache.james.gatling.jmap.scenari.RealUsageScenario
-import org.apache.james.gatling.simulation.Injection.constantUserPerHour
 
 import scala.concurrent.duration._
 
@@ -28,9 +27,9 @@ trait SimulationOnMailCorpus {
 
   protected val feeder: SourceFeederBuilder[String] = UserFeeder.toFeeder(getUsers).circular
 
-  protected def injectUsersInScenario(scenario: ScenarioBuilder, nbUsers: Int = 50000) = {
+  protected def injectUsersInScenario(scenario: ScenarioBuilder, nbUsers: UsersDensity = UsersPerHour(50000)) = {
     scenario
-      .inject(constantUserPerHour(nbUsers) during 1.hour)
+      .inject(nbUsers.constantUserPerHour during 1.hour)
       .protocols(HttpSettings.httpProtocol)
   }
 

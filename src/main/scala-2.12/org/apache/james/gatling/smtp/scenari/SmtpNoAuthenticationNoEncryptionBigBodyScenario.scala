@@ -20,7 +20,7 @@ class SmtpNoAuthenticationNoEncryptionBigBodyScenario {
     .feed(feeder)
     .pause(1.second)
     .during(duration) {
-      exec(smtp("sendMail")
+      exec(smtp("sendBigMail")
         .subject("subject")
         .body(generateMessage()))
         .pause(1.second)
