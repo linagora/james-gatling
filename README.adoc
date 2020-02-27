@@ -20,7 +20,7 @@ In some cases you could want to specify target hostname per protocol, the follow
  * `IMAP_SERVER_HOSTNAME` which is set to `TARGET_HOSTNAME` by default
  * `WEBADMIN_SERVER_HOSTNAME` which is set to `TARGET_HOSTNAME` by default
 
-You can run all the scenari via sbt :
+You can run all the simulations via sbt :
 
 .bash
 ----
@@ -28,78 +28,78 @@ $ sbt
  > gatling:test
 ----
 
-Run a specific scenario via sbt :
+Run a specific simulation via sbt :
 
 .bash
 ----
 $ sbt
- > gatling:testOnly SCENARIO_FQDN
+ > gatling:testOnly SIMULATION_FQDN
 ----
 
-== Available scenario
+== Available simulations
 
-=== JmapAuthenticationScenario
+=== JmapAuthenticationSimulation
 
 FQDN :
 
 .scala
 ----
-org.apache.james.gatling.jmap.scenari.JmapAuthenticationScenario
+org.apache.james.gatling.simulation.jmap.JmapAuthenticationSimulation
 ----
 
 Authenticate 10 JMAP users, one time. Demonstrate user auto-provisioning through James WebAdmin server.
 
-=== JmapSendMessagesScenario
+=== JmapSendMessagesSimulation
 
 FQDN :
 
 .scala
 ----
-org.apache.james.gatling.jmap.scenari.JmapSendMessagesScenario
+org.apache.james.gatling.simulation.jmap.JmapSendMessagesSimulation
 ----
 
 Authenticate 100 JMAP users, one time. Then they all retrieve their mailboxes, and then sends messages 360 messages each to other recipients.
 
-=== JmapGetMailboxesScenario
+=== JmapGetMailboxesSimulation
 
 FQDN :
 
 .scala
 ----
-org.apache.james.gatling.jmap.scenari.JmapGetMailboxesScenario
+org.apache.james.gatling.simulation.jmap.JmapGetMailboxesSimulation
 ----
 
 Authenticate 200 JMAP users, one time. Then they all retrieve 360 times their mailboxes each.
 
-=== JmapGetMessageListScenario
+=== JmapGetMessageListSimulation
 
 FQDN :
 
 .scala
 ----
-org.apache.james.gatling.jmap.scenari.JmapGetMessageListScenario
+org.apache.james.gatling.simulation.jmap.JmapGetMessageListSimulation
 ----
 
 Authenticate 100 JMAP users, one time. Then they all retrieve their system mailboxes. Then they send each other 10 mails each at random. Then wait 30 seconds for mails to be delivered. Finally they retrieve 250 times each their mails list using GetMessagesList.
 
-=== JmapGetMessagesScenario
+=== JmapGetMessagesSimulation
 
 FQDN :
 
 .scala
 ----
-org.apache.james.gatling.jmap.scenari.JmapGetMessagesScenario
+org.apache.james.gatling.simulation.jmap.JmapGetMessagesSimulation
 ----
 
 Authenticate 100 JMAP users, one time. Then they all retrieve their system mailboxes. Then they send each other 10 mails each at random. Then wait 30 seconds for mails to be delivered. They retrieve their mails list using GetMessagesList. Then they retrieve their mails 250 times, at random.
 
-=== JmapMessageUpdateScenario
+=== JmapMessageUpdateSimulation
 
 FQDN :
 
 .scala
 ----
-org.apache.james.gatling.jmap.scenari.JmapMessageUpdateScenario
+org.apache.james.gatling.simulation.jmap.JmapMessageUpdateSimulation
 ----
 
 Authenticate 100 JMAP users, one time. Then they all retrieve their system mailboxes. Then they send each other 10 mails each at random. Then wait 30 seconds for mails to be delivered. They retrieve their mails list using GetMessagesList. Then they update their mail 250 times with the following properties :.
@@ -108,13 +108,13 @@ Authenticate 100 JMAP users, one time. Then they all retrieve their system mailb
  - 20% mark mails as ANSWERED
  - 10% mark mails as FLAGGED
 
-=== NoAuthenticationNoEncryptionScenario
+=== SmtpNoAuthenticationNoEncryptionSimulation
 
 FQDN :
 
 .scala
 ----
-org.apache.james.gatling.smtp.scenari.NoAuthenticationNoEncryptionScenario
+org.apache.james.gatling.simulation.smtp.SmtpNoAuthenticationNoEncryptionSimulation
 ----
 
 Create 100 users, one time. Then they all send mails to their self, every seconds, using SMTP, without encryption and without authentication.
