@@ -8,7 +8,7 @@ import scala.concurrent.duration._
 object Injection {
 
   private def toUserPerSec(userPerHour: Double): Double = userPerHour / 1.hour.toSeconds
-  def toUsersPerHour(userPerHour: Double): Double = userPerHour * 1.hour.toSeconds
+  def toUsersPerHour(userPerSecond: Double): Double = userPerSecond * 1.hour.toSeconds
 
   def constantUserPerHour(nb: Double): Predef.ConstantRateBuilder = constantUsersPerSec(toUserPerSec(nb))
 
