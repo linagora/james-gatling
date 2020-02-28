@@ -1,17 +1,17 @@
 package org.apache.james.gatling.simulation
 
-import io.gatling.core.Predef
-import io.gatling.core.Predef.constantUsersPerSec
+import io.gatling.core.Predef._
+import io.gatling.core.controller.inject.open._
 
 import scala.concurrent.duration._
 
 abstract sealed class UsersDensity {
-  def constantUserPerHour: Predef.ConstantRateBuilder
+  def injectDuring(givenDuring: FiniteDuration): OpenInjectionStep
 }
 case class UsersPerHour(nb: Double) extends UsersDensity {
-  private def toUserPerSec(userPerHour: Double): Double = userPerHour / 1.hour.toSeconds
-  override def constantUserPerHour: Predef.ConstantRateBuilder = constantUsersPerSec(toUserPerSec(nb))
+  private def usersPerSecForDuration(givenDuring: FiniteDuration): Double = nb * givenDuring.toSeconds / 1.hour.toSeconds
+  override def injectDuring(givenDuring: FiniteDuration): ConstantRateOpenInjection = constantUsersPerSec(usersPerSecForDuration(givenDuring)) during givenDuring
 }
-case class UsersPerSecond(nb: Double) extends UsersDensity {
-  override def constantUserPerHour: Predef.ConstantRateBuilder = constantUsersPerSec(nb)
+case class UsersTotal(nb: Double) extends UsersDensity {
+  override def injectDuring(givenDuring: FiniteDuration): RampOpenInjection = rampUsers(nb.toInt) during givenDuring
 }
