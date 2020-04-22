@@ -108,13 +108,13 @@ Authenticate 100 JMAP users, one time. Then they all retrieve their system mailb
  - 20% mark mails as ANSWERED
  - 10% mark mails as FLAGGED
 
-=== SmtpNoAuthenticationNoEncryptionSimulation
+=== SmtpNoAuthenticationNoEncryptionMixedBodySimulation
 
 FQDN :
 
 .scala
 ----
-org.apache.james.gatling.simulation.smtp.SmtpNoAuthenticationNoEncryptionSimulation
+org.apache.james.gatling.simulation.smtp.SmtpNoAuthenticationNoEncryptionMixedBodySimulation
 ----
 
 Create 100 users, one time. Then they all send mails to their self, every seconds, using SMTP, without encryption and without authentication.
