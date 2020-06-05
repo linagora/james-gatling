@@ -39,7 +39,7 @@ class JmapVerifyNoErrorCheckBehaviourIT extends JmapIT {
     io.gatling.core.Predef.scenario("JmapGetMessages")
       .feed(userFeeder)
       .exec(CommonSteps.provisionUsersWithMessageList(recipientFeeder, randomlySentMails))
-      .exec(execWithRetryAuthentication(JmapMessages.getRandomMessage(), noErrorCheck))
+      .exec(execWithRetryAuthentication(JmapMessages.getRandomMessages(), noErrorCheck))
       .exec(execWithRetryAuthentication(bogusGetRandomMessage(), hasErrorCheck))
   }
 

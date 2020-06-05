@@ -19,7 +19,7 @@ class JmapAllScenario {
         .pause(1 second, 5 seconds)
         .exec(JmapMailbox.getSystemMailboxesWithRetryAuthentication)
         .exec(JmapMessages.listMessagesWithRetryAuthentication())
-        .exec(JmapMessages.getMessagesWithRetryAuthentication())
+        .exec(JmapMessages.getRandomMessagesWithRetryAuthentication())
         .pause(1 second, 5 seconds)
         .randomSwitch(
           70.0 -> exec(JmapMessages.markAsRead()),

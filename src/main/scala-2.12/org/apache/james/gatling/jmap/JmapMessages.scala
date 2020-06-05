@@ -168,8 +168,11 @@ object JmapMessages {
   def listMessagesWithRetryAuthentication() =
     execWithRetryAuthentication(listMessages(), nonEmptyListMessagesChecks)
 
-  def getMessagesWithRetryAuthentication() =
-    execWithRetryAuthentication(getRandomMessage(), getRandomMessageChecks)
+  def getMessagesWithRetryAuthentication(properties: List[String], messageIdsKey: String = "messageIds") =
+    execWithRetryAuthentication(getMessages(properties, messageIdsKey), getRandomMessageChecks)
+
+  def getRandomMessagesWithRetryAuthentication() =
+    execWithRetryAuthentication(getRandomMessages(), getRandomMessageChecks)
 
   val typicalMessageProperties: List[String] = List("bcc", "cc", "date", "from", "hasAttachment", "htmlBody", "id", "isAnswered", "isDraft", "isFlagged", "isUnread", "mailboxIds", "size", "subject", "textBody", "to")
 
@@ -181,7 +184,7 @@ object JmapMessages {
 
 
 
-  def getRandomMessage(properties: List[String] = typicalMessageProperties, messageIdsKey: String = "messageIds") =
+  def getRandomMessages(properties: List[String] = typicalMessageProperties, messageIdsKey: String = "messageIds") =
     JmapAuthentication.authenticatedQuery("getMessages", "/jmap")
       .body(StringBody(
         s"""[[
