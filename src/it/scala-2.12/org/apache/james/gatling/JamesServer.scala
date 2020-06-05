@@ -4,14 +4,16 @@ import java.net.URL
 import java.nio.charset.StandardCharsets
 
 import javax.mail.internet.InternetAddress
+
 import org.apache.james.gatling.control.{Domain, JamesWebAdministration, User, Username}
 import org.apache.james.gatling.jmap.MailboxName
 import org.slf4j.{Logger, LoggerFactory}
 import org.testcontainers.containers.GenericContainer
+
 import play.api.libs.ws.StandaloneWSRequest
 
-import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
+import scala.concurrent.{Await, Future}
 
 object JamesServer {
 
