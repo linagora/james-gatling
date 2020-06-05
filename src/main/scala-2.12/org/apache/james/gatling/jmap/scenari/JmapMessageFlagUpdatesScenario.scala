@@ -19,7 +19,7 @@ class JmapMessageFlagUpdatesScenario {
       .exec(CommonSteps.authentication())
       .group(MessageFlagUpdates.name)(
         exec(RetryAuthentication.execWithRetryAuthentication(JmapMailbox.getMailboxes, JmapMailbox.getMailboxesChecks ++ JmapMailbox.saveInboxAs(Keys.inbox)))
-          .exec(RetryAuthentication.execWithRetryAuthentication(JmapMessages.listMessages(openpaasListMessageParameters(Keys.inbox)), JmapMessages.listMessagesChecks))
+          .exec(RetryAuthentication.execWithRetryAuthentication(JmapMessages.listMessages(openpaasListMessageParameters(Keys.inbox)), JmapMessages.nonEmptyListMessagesChecks))
           .randomSwitch(
             70.0 -> exec(JmapMessages.markAsRead()),
             20.0 -> exec(JmapMessages.markAsAnswered()),

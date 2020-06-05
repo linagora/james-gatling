@@ -10,6 +10,8 @@ import org.apache.james.gatling.control.{RecipientFeeder, User, UserFeeder}
 import org.apache.james.gatling.jmap.RetryAuthentication._
 import org.apache.james.gatling.utils.RandomStringGenerator
 
+import play.api.libs.json.{JsArray, JsString, Json => PlayJson}
+
 case class MessageId(id: String = RandomStringGenerator.randomString) extends AnyVal
 case class RecipientAddress(address: String) extends AnyVal
 case class Subject(subject: String = RandomStringGenerator.randomString) extends AnyVal
@@ -147,13 +149,24 @@ object JmapMessages {
           "#0"
           ]]"""))
 
+  val nonEmptyListMessagesChecks: Seq[HttpCheck] = List(
+    status.is(200),
+    JmapChecks.noError,
+    jsonPath("$[0][1].messageIds[*]").findAll.saveAs("messageIds"))
+
   val listMessagesChecks: Seq[HttpCheck] = List(
       status.is(200),
       JmapChecks.noError,
-      jsonPath("$[0][1].messageIds[*]").findAll.saveAs("messageIds"))
+      jsonPath("$[0][1].messageIds")
+        .find
+        .transform(rawMessageIds => PlayJson.parse(rawMessageIds)
+          .as[JsArray]
+          .value
+          .map(_.as[JsString].value))
+        .saveAs("messageIds"))
 
   def listMessagesWithRetryAuthentication() =
-    execWithRetryAuthentication(listMessages(), listMessagesChecks)
+    execWithRetryAuthentication(listMessages(), nonEmptyListMessagesChecks)
 
   def getMessagesWithRetryAuthentication() =
     execWithRetryAuthentication(getRandomMessage(), getRandomMessageChecks)
