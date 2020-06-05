@@ -31,7 +31,7 @@ class JmapOpenArbitraryMessageScenario {
       .exec(CommonSteps.authentication())
       .group("prepare")(
         exec(RetryAuthentication.execWithRetryAuthentication(getMailboxes, isSuccess ++ JmapMailbox.saveInboxAs(Keys.inbox)))
-          .exec(RetryAuthentication.execWithRetryAuthentication(JmapMessages.listMessages(openpaasListMessageParameters(Keys.inbox)), JmapMessages.listMessagesChecks))
+          .exec(RetryAuthentication.execWithRetryAuthentication(JmapMessages.listMessages(openpaasListMessageParameters(Keys.inbox)), JmapMessages.nonEmptyListMessagesChecks))
       )
       .group(OpenMessage.name)(
         exec(RetryAuthentication.execWithRetryAuthentication(openArbitraryMessage, isSuccess)))
