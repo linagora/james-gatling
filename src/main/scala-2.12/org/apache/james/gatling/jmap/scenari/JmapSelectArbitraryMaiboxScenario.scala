@@ -23,7 +23,7 @@ class JmapSelectArbitraryMaiboxScenario(minMessagesInMailbox: Int) {
     JmapChecks.noError)
 
 
-  private val openArbitraryMailboxes: HttpRequestBuilder = getRandomMessage(openpaasInboxOpenMessageProperties, Keys.messageIds)
+  private val openArbitraryMailboxes: HttpRequestBuilder = getRandomMessages(openpaasInboxOpenMessageProperties, Keys.messageIds)
 
   def generate(userFeeder: UserFeederBuilder): ScenarioBuilder = {
     scenario("JmapOpenArbitraryMessageScenario")

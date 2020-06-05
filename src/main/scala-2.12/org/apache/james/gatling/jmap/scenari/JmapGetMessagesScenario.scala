@@ -16,7 +16,7 @@ class JmapGetMessagesScenario {
       .feed(userFeeder)
       .exec(CommonSteps.provisionUsersWithMessageList(recipientFeeder, randomlySentMails))
       .during(duration) {
-        exec(execWithRetryAuthentication(JmapMessages.getRandomMessage(), JmapMessages.getRandomMessageChecks))
+        exec(execWithRetryAuthentication(JmapMessages.getRandomMessages(), JmapMessages.getRandomMessageChecks))
         .pause(1 second , 2 seconds)
       }
 
