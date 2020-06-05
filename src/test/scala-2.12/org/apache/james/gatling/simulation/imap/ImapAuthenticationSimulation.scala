@@ -13,7 +13,7 @@ import scala.concurrent.{Await, Future}
 
 class ImapAuthenticationSimulation extends Simulation {
 
-  private val users = new UserCreator(Configuration.BaseJamesWebAdministrationUrl).createUsersWithInboxAndOutbox(Configuration.UserCount)
+  private val users = new UserCreator(Configuration.BaseJamesWebAdministrationUrl, Configuration.BaseJmapUrl).createUsersWithInboxAndOutbox(Configuration.UserCount)
   private val usersFeeder = UserFeeder.toFeeder(Await.result(Future.sequence(users), 30 seconds))
 
   private val scenario = new ImapAuthenticationScenario()

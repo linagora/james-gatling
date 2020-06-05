@@ -13,7 +13,7 @@ import scala.concurrent.{Await, Future}
 
 class ImapFullSimulation extends Simulation {
 
-  private val users = new UserCreator(Configuration.BaseJamesWebAdministrationUrl).createUsersWithInboxAndOutbox(Configuration.UserCount)
+  private val users = new UserCreator(Configuration.BaseJamesWebAdministrationUrl, Configuration.BaseJmapUrl).createUsersWithInboxAndOutbox(Configuration.UserCount)
   private val usersFeeder = UserFeeder.toFeeder(Await.result(Future.sequence(users), 90 seconds))
 
   private val lightScenario = new ImapFullLightUserScenario()

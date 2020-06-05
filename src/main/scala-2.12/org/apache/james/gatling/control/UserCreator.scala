@@ -7,8 +7,9 @@ import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
 import scala.util.Success
 
-class UserCreator(val baseJamesWebAdministrationUrl: URL) {
+class UserCreator(val baseJamesWebAdministrationUrl: URL, val baseJamesJmap: URL) {
   private val jamesWebAdministration = new JamesWebAdministration(baseJamesWebAdministrationUrl)
+  private val jamesJmap = new JamesJmap(baseJamesJmap)
 
   def createUsersWithInboxAndOutbox(userCount: Int): Seq[Future[User]] =
     createUsers(userCount)
@@ -34,4 +35,8 @@ class UserCreator(val baseJamesWebAdministrationUrl: URL) {
         jamesWebAdministration.createOutbox(user.username),
         jamesWebAdministration.createSentBox(user.username)))
       .map(responseList => user)
+
+  def authenticateUser(user: User): Future[AuthenticatedUser] = {
+    jamesJmap.authenticateUser(user)
+  }
 }

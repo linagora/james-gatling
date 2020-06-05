@@ -19,3 +19,20 @@ object UserFeeder {
           passwordSessionParam -> user.password.value))
       .toArray
 }
+
+object AuthenticatedUserFeeder {
+
+  type AuthenticatedUserFeeder = Iterator[Map[String, String]]
+
+  type AuthenticatedUserFeederBuilder = () => Feeder[Any]
+
+  val usernameSessionParam = "username"
+  val accessTokenSessionParam = "accessToken"
+
+  def toFeeder(users: Iterator[AuthenticatedUser]): AuthenticatedUserFeeder =
+    users
+      .map(user =>
+        Map(
+          usernameSessionParam -> user.username.value,
+          accessTokenSessionParam -> user.accessToken.value))
+}
