@@ -18,7 +18,14 @@ case class Username(value: String) extends AnyVal
 
 case class Password(value: String) extends AnyVal
 
-case class User(username: Username, password: Password)
+case class User(username: Username, password: Password) {
+  def authenticate(accessToken: AccessToken): AuthenticatedUser =
+    AuthenticatedUser(username, accessToken)
+}
+
+case class AccessToken(value: String) extends AnyVal
+
+case class AuthenticatedUser(username: Username, accessToken: AccessToken)
 
 object User {
   def random(domain: Domain) = {

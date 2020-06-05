@@ -7,7 +7,7 @@ import org.apache.james.gatling.jmap.JmapHttp
 object HttpSettings {
 
   def httpProtocol = http
-    .baseUrl(Configuration.BaseJmapUrl)
+    .baseUrl(Configuration.BaseJmapUrl.toString)
     .acceptHeader(JmapHttp.ACCEPT_JSON_VALUE)
     .contentTypeHeader(JmapHttp.CONTENT_TYPE_JSON_VALUE)
 
