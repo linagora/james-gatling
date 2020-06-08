@@ -37,6 +37,6 @@ class JamesJmap(val baseUrl: URL) {
             "method": "password",
             "password": "${user.password.value}"}"""))
       .map(response => (Json.parse(response.body) \ "accessToken").validate[String].get)
-      .map(accessToken => user.authenticate(AccessToken(accessToken)))
+      .map(jwtAccessToken => user.authenticate(JwtAccessToken(jwtAccessToken)))
   }
 }
