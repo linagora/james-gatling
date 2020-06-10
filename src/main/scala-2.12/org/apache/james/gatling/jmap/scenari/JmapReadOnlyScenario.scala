@@ -68,7 +68,8 @@ class JmapReadOnlyScenario {
       .feed(userFeeder)
       .during(duration) {
         group(InboxHomeLoading.name)(
-          doIf(shouldPoll) {
+          pause(1 second)
+          .doIf(shouldPoll) {
             exec(poll)
           }
             .exec(Queries.getMailboxes)
