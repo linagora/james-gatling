@@ -1,8 +1,9 @@
-package org.apache.james.gatling.simulation
+package org.apache.james.gatling.simulation.jmap
 
-import org.apache.james.gatling.control._
 import org.apache.james.gatling.control.AuthenticatedUserFeeder._
+import org.apache.james.gatling.control._
 import org.apache.james.gatling.jmap.scenari.JmapReadOnlyScenario
+import org.apache.james.gatling.simulation.{Configuration, HttpSettings, UsersTotal}
 
 import io.gatling.core.Predef._
 import io.gatling.core.scenario.Simulation
