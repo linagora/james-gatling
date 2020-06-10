@@ -25,9 +25,10 @@ import io.gatling.http.check.HttpCheck
 import io.gatling.core.structure.{ChainBuilder, ScenarioBuilder}
 import org.apache.james.gatling.control.AuthenticatedUserFeeder.AuthenticatedUserFeederBuilder
 import org.apache.james.gatling.jmap.JmapMessages.openpaasListMessageParameters
-import org.apache.james.gatling.jmap.{JmapChecks, JmapMailbox, JmapMessages, RetryAuthentication}
+import org.apache.james.gatling.jmap.{JmapChecks, JmapMailbox, JmapMessages}
 
 import io.gatling.core.session.Expression
+import io.gatling.http.request.builder.HttpRequestBuilder
 
 import scala.concurrent.duration._
 
@@ -39,14 +40,17 @@ class JmapReadOnlyScenario {
   }
 
   private object Queries {
-    val getMailboxes: ChainBuilder =
-      RetryAuthentication.execWithRetryAuthentication(JmapMailbox.getMailboxes, JmapMailbox.getMailboxesChecks ++ JmapMailbox.saveInboxAs(Keys.inbox))
+    val getMailboxes: HttpRequestBuilder =
+      JmapMailbox.getMailboxes
+        .check((JmapMailbox.getMailboxesChecks ++ JmapMailbox.saveInboxAs(Keys.inbox)) : _*)
 
-    val getMessagesList: ChainBuilder =
-      RetryAuthentication.execWithRetryAuthentication(JmapMessages.listMessages(openpaasListMessageParameters(Keys.inbox)), JmapMessages.listMessagesChecks)
+    val getMessagesList: HttpRequestBuilder =
+      JmapMessages.listMessages(openpaasListMessageParameters(Keys.inbox))
+        .check(JmapMessages.listMessagesChecks: _*)
 
-    val getMessages: ChainBuilder =
-      RetryAuthentication.execWithRetryAuthentication(JmapMessages.getMessages(JmapMessages.previewMessageProperties, Keys.messageIds), isSuccess)
+    val getMessages: HttpRequestBuilder =
+      JmapMessages.getMessages(JmapMessages.previewMessageProperties, Keys.messageIds)
+        .check(isSuccess: _*)
   }
 
   private val isSuccess: Seq[HttpCheck] = Seq(
