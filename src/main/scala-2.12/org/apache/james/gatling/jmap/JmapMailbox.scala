@@ -5,6 +5,11 @@ import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import io.gatling.http.check.HttpCheck
 import org.apache.james.gatling.utils.RandomStringGenerator
+
+import io.gatling.core.check.CheckBuilder
+import io.gatling.core.check.extractor.jsonpath.JsonPathCheckType
+import io.gatling.core.structure.ChainBuilder
+import io.gatling.http.request.builder.HttpRequestBuilder
 import play.api.libs.json.{JsResult, JsValue, Json, Reads}
 
 object MailboxId {
@@ -48,11 +53,11 @@ object JmapMailbox {
   private val spamIdPath = s"$$$mailboxListPath[?(@.role == 'spam')].id"
   val numberOfSystemMailboxes = 6
 
-  def getMailboxes =
+  def getMailboxes(): HttpRequestBuilder =
     JmapAuthentication.authenticatedQuery("getMailboxes", "/jmap")
       .body(StringBody("""[["getMailboxes", {}, "#0"]]"""))
 
-  def createMailbox() =
+  def createMailbox(): HttpRequestBuilder =
     JmapAuthentication.authenticatedQuery("setMailboxes", "/jmap")
       .body(StringBody(
         s"""[["setMailboxes",
@@ -65,7 +70,7 @@ object JmapMailbox {
             }, "#0"]]"""))
       .check(saveMailboxId())
 
-  def saveMailboxId() = {
+  def saveMailboxId(): CheckBuilder[JsonPathCheckType, Any, Seq[String]] = {
     jsonPath(s"""$$[0][1].created..$${createdId}.id""").findAll.saveAs("mailboxId")
   }
 
@@ -79,7 +84,7 @@ object JmapMailbox {
   def getMailboxesChecks(expectedNumberOfMailboxes: Int): Seq[HttpCheck] =
     getMailboxesChecks :+ assertNumberOfMailboxes(expectedNumberOfMailboxes)
 
-  def checkSystemMailboxIdsHaveNotChanged: Seq[HttpCheck] =
+  def checkSystemMailboxIdsHaveNotChanged(): Seq[HttpCheck] =
     getMailboxesChecks ++ List[HttpCheck](
       jsonPath(inboxIdPath).is("${inboxMailboxId}"),
       jsonPath(outboxIdPath).is(s"$${$outboxMailboxIdSessionParam}"),
@@ -105,11 +110,11 @@ object JmapMailbox {
       jsonPath(trashIdPath).saveAs("trashMailboxId"),
       jsonPath(spamIdPath).saveAs("spamMailboxId"))
 
-  def storeMailboxIds: Seq[HttpCheck] = getSystemMailboxesChecks
+  def storeMailboxIds(): Seq[HttpCheck] = getSystemMailboxesChecks
 
-  def getSystemMailboxes = getMailboxes
+  def getSystemMailboxes(): HttpRequestBuilder = getMailboxes
 
-  def getSystemMailboxesWithRetryAuthentication = RetryAuthentication.execWithRetryAuthentication(getSystemMailboxes, getSystemMailboxesChecks)
+  def getSystemMailboxesWithRetryAuthentication(): ChainBuilder = RetryAuthentication.execWithRetryAuthentication(getSystemMailboxes(), getSystemMailboxesChecks)
 
-  def getSystemMailboxesWithChecks = getSystemMailboxes.check(getSystemMailboxesChecks: _*)
+  def getSystemMailboxesWithChecks(): HttpRequestBuilder = getSystemMailboxes().check(getSystemMailboxesChecks: _*)
 }
