@@ -19,7 +19,7 @@ class JmapReadOnlySimulation extends Simulation {
     .map(record =>
       AuthenticatedUser(
         username = Username(recordValueToString(record("username"))),
-        jwtAccessToken = JwtAccessToken(recordValueToString(record("jwtAccessToken")))))
+        accessToken = BearerAccessToken(recordValueToString(record("bearerAccessToken")))))
 
   val feeder: AuthenticatedUserFeederBuilder = AuthenticatedUserFeeder.toFeeder(authenticatedUsers.toIterator)
 

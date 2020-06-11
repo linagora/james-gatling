@@ -32,7 +32,7 @@ object JmapAuthentication {
           "method": "password",
           "password": "${password}"}"""))
         .check(status.is(201))
-        .check(jsonPath("$.accessToken").saveAs("jwtAccessToken"))
+        .check(jsonPath("$.accessToken").saveAs("accessTokenHeader"))
         .check(jsonPath("$.api").saveAs("api"))
         .check(jsonPath("$.eventSource").saveAs("eventSource"))
         .check(jsonPath("$.upload").saveAs("upload"))
@@ -46,7 +46,7 @@ object JmapAuthentication {
   def authenticatedQuery(requestName: String, endPoint: String): HttpRequestBuilder =
     http(requestName)
       .post(endPoint)
-      .header("Authorization", "${jwtAccessToken}")
+      .header("Authorization", "${accessTokenHeader}")
       .header(JmapHttp.ACCEPT_JSON_KEY, JmapHttp.ACCEPT_JSON_VALUE)
 
 }

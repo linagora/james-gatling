@@ -27,12 +27,12 @@ object AuthenticatedUserFeeder {
   type AuthenticatedUserFeederBuilder = () => Feeder[Any]
 
   val usernameSessionParam = "username"
-  val jwtAccessTokenSessionParam = "jwtAccessToken"
+  val accessTokenHeaderSessionParam = "accessTokenHeader"
 
   def toFeeder(users: Iterator[AuthenticatedUser]): AuthenticatedUserFeeder =
     users
       .map(user =>
         Map(
           usernameSessionParam -> user.username.value,
-          jwtAccessTokenSessionParam -> user.jwtAccessToken.value))
+          accessTokenHeaderSessionParam -> user.accessToken.authorizationHeader))
 }
