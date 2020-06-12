@@ -19,13 +19,23 @@ case class Username(value: String) extends AnyVal
 case class Password(value: String) extends AnyVal
 
 case class User(username: Username, password: Password) {
-  def authenticate(jwtAccessToken: JwtAccessToken): AuthenticatedUser =
-    AuthenticatedUser(username, jwtAccessToken)
+  def authenticate(accessToken: AccessToken): AuthenticatedUser =
+    AuthenticatedUser(username, accessToken)
 }
 
-case class JwtAccessToken(value: String) extends AnyVal
+trait AccessToken {
+  def authorizationHeader: String
+}
 
-case class AuthenticatedUser(username: Username, jwtAccessToken: JwtAccessToken)
+case class JwtAccessToken(private val value: String) extends AccessToken {
+  override def authorizationHeader: String = value
+}
+
+case class BearerAccessToken(private val value: String) extends AccessToken {
+  override def authorizationHeader: String = "Bearer " + value
+}
+
+case class AuthenticatedUser(username: Username, accessToken: AccessToken)
 
 object User {
   def random(domain: Domain) = {
