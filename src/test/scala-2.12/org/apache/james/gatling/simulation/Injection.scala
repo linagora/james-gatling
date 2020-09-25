@@ -8,7 +8,7 @@ import scala.concurrent.duration._
 abstract sealed class UsersDensity {
   def injectDuring(givenDuring: FiniteDuration): OpenInjectionStep
 }
-case class UsersPerHour(nb: Double) extends UsersDensity {
+case class UsersPerSecond(nb: Double) extends UsersDensity {
   private def usersPerSecForDuration(givenDuring: FiniteDuration): Double = nb / givenDuring.toSeconds
   override def injectDuring(givenDuring: FiniteDuration): ConstantRateOpenInjection = constantUsersPerSec(usersPerSecForDuration(givenDuring)) during givenDuring
 }
