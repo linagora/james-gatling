@@ -10,8 +10,8 @@ abstract sealed class UsersDensity {
 }
 case class UsersPerHour(nb: Double) extends UsersDensity {
   private val ONE_HOUR: Duration = 1 hour
-  private def usersPerSecForDuration: Double = nb / ONE_HOUR.toSeconds
-  override def injectDuring(givenDuring: FiniteDuration): ConstantRateOpenInjection = constantUsersPerSec(usersPerSecForDuration) during givenDuring
+  private val usersPerSec: Double = nb / ONE_HOUR.toSeconds
+  override def injectDuring(givenDuring: FiniteDuration): ConstantRateOpenInjection = constantUsersPerSec(usersPerSec) during givenDuring
 }
 case class UsersPerSecond(nb: Double) extends UsersDensity {
   override def injectDuring(givenDuring: FiniteDuration): ConstantRateOpenInjection = constantUsersPerSec(nb) during givenDuring
