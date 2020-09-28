@@ -27,7 +27,7 @@ trait SimulationOnMailCorpus {
 
   protected val feeder: SourceFeederBuilder[String] = UserFeeder.toFeeder(getUsers).circular
 
-  protected def injectUsersInScenario(scenario: ScenarioBuilder, nbUsers: UsersDensity = UsersPerSecond(5)) = {
+  protected def injectUsersInScenario(scenario: ScenarioBuilder, nbUsers: UsersDensity = UsersPerSecond(3)) = {
     scenario
       .inject(nbUsers.injectDuring(Configuration.InjectionDuration))
       .protocols(HttpSettings.httpProtocol)
