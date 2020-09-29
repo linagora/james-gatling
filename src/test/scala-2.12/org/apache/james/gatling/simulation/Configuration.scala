@@ -21,7 +21,7 @@ object Configuration {
   val BaseJamesWebAdministrationUrl = new URL(s"$WEBADMIN_PROTOCOL://$WebadminServerHostName:$WEBADMIN_PORT")
 
   val ScenarioDuration = 1 hour
-  val InjectionDuration = 5 minutes
+  val InjectionDuration = 1 hour
   val UserCount = 100
   val RandomlySentMails = 10
   val NumberOfMailboxes = 10

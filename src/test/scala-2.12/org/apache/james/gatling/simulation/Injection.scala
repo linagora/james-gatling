@@ -9,8 +9,12 @@ abstract sealed class UsersDensity {
   def injectDuring(givenDuring: FiniteDuration): OpenInjectionStep
 }
 case class UsersPerHour(nb: Double) extends UsersDensity {
-  private def usersPerSecForDuration(givenDuring: FiniteDuration): Double = nb / givenDuring.toSeconds
-  override def injectDuring(givenDuring: FiniteDuration): ConstantRateOpenInjection = constantUsersPerSec(usersPerSecForDuration(givenDuring)) during givenDuring
+  private val ONE_HOUR: Duration = 1 hour
+  private val usersPerSec: Double = nb / ONE_HOUR.toSeconds
+  override def injectDuring(givenDuring: FiniteDuration): ConstantRateOpenInjection = constantUsersPerSec(usersPerSec) during givenDuring
+}
+case class UsersPerSecond(nb: Double) extends UsersDensity {
+  override def injectDuring(givenDuring: FiniteDuration): ConstantRateOpenInjection = constantUsersPerSec(nb) during givenDuring
 }
 case class UsersTotal(nb: Double) extends UsersDensity {
   override def injectDuring(givenDuring: FiniteDuration): RampOpenInjection = rampUsers(nb.toInt) during givenDuring
