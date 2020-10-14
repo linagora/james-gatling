@@ -12,7 +12,7 @@ class RealUsageSimulation extends Simulation with SimulationOnMailCorpus {
   setUp(
     injectUsersInScenario(new JmapInboxHomeLoadingScenario().generate(feeder)),
     injectUsersInScenario(new JmapOpenArbitraryMessageScenario().generate(feeder)),
-    injectUsersInScenario(new JmapSelectArbitraryMaiboxScenario(MIN_MESSAGES_IN_MAILBOXES_TO_SELECT).generate(feeder))
+    injectUsersInScenario(new JmapSelectArbitraryMailboxScenario(MIN_MESSAGES_IN_MAILBOXES_TO_SELECT).generate(feeder))
   ).assertions(
     buildMaxScenarioResponseTimeAssertion(InboxHomeLoading, 2 seconds),
     buildMaxScenarioResponseTimeAssertion(OpenMessage, 500 millis),

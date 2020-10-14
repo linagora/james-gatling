@@ -10,7 +10,7 @@ import org.apache.james.gatling.jmap.JmapMailbox._
 import org.apache.james.gatling.jmap.JmapMessages._
 import org.apache.james.gatling.jmap._
 
-class JmapSelectArbitraryMaiboxScenario(minMessagesInMailbox: Int) {
+class JmapSelectArbitraryMailboxScenario(minMessagesInMailbox: Int) {
 
   private object Keys {
     val randomMailbox = "randomMailbox"
@@ -26,7 +26,7 @@ class JmapSelectArbitraryMaiboxScenario(minMessagesInMailbox: Int) {
   private val openArbitraryMailboxes: HttpRequestBuilder = getRandomMessages(openpaasInboxOpenMessageProperties, Keys.messageIds)
 
   def generate(userFeeder: UserFeederBuilder): ScenarioBuilder = {
-    scenario("JmapOpenArbitraryMessageScenario")
+    scenario("JmapSelectArbitraryMailboxScenario")
       .feed(userFeeder)
       .exec(CommonSteps.authentication())
       .group("prepare")(

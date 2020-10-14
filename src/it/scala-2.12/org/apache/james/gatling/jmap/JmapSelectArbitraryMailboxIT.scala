@@ -1,7 +1,7 @@
 package org.apache.james.gatling.jmap
 
 import org.apache.james.gatling.Fixture
-import org.apache.james.gatling.jmap.scenari.JmapSelectArbitraryMaiboxScenario
+import org.apache.james.gatling.jmap.scenari.JmapSelectArbitraryMailboxScenario
 
 class JmapSelectArbitraryMailboxIT extends JmapIT {
   private val MIN_MESSAGES_IN_MAILBOX_TO_SELECT = 1
@@ -10,7 +10,7 @@ class JmapSelectArbitraryMailboxIT extends JmapIT {
   }
 
   scenario((userFeederBuilder, _) => {
-    new JmapSelectArbitraryMaiboxScenario(MIN_MESSAGES_IN_MAILBOX_TO_SELECT).generate(userFeederBuilder)
+    new JmapSelectArbitraryMailboxScenario(MIN_MESSAGES_IN_MAILBOX_TO_SELECT).generate(userFeederBuilder)
   })
 
 }
