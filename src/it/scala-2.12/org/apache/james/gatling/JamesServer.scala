@@ -81,7 +81,7 @@ object JamesServer {
   }
 
   def start(): RunningServer = {
-    val james = new GenericContainer("linagora/james-memory")
+    val james = new GenericContainer("linagora/james-memory:branch-master")
     james.addExposedPorts(jmapPort, imapPort, smtpPort, webadminPort)
     james.start()
     new RunningServer(james)
