@@ -5,8 +5,8 @@ import io.gatling.core.assertion.AssertionWithPathAndTarget
 import io.gatling.core.feeder.SourceFeederBuilder
 import io.gatling.core.structure.ScenarioBuilder
 import org.apache.james.gatling.control.{Password, User, UserFeeder, Username}
-import org.apache.james.gatling.jmap.MailboxName
-import org.apache.james.gatling.jmap.scenari.RealUsageScenario
+import org.apache.james.gatling.jmap.draft.MailboxName
+import org.apache.james.gatling.jmap.draft.scenari.RealUsageScenario
 
 import scala.concurrent.duration._
 

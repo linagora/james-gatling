@@ -2,10 +2,9 @@ package org.apache.james.gatling.control
 
 import java.net.URL
 
-import org.apache.james.gatling.jmap.JmapHttp
-
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
+import org.apache.james.gatling.jmap.draft.JmapHttp
 import play.api.libs.json._
 import play.api.libs.ws.DefaultBodyWritables._
 import play.api.libs.ws.ahc.StandaloneAhcWSClient

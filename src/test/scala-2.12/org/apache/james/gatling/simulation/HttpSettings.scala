@@ -2,7 +2,7 @@ package org.apache.james.gatling.simulation
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef.http
-import org.apache.james.gatling.jmap.JmapHttp
+import org.apache.james.gatling.jmap.draft.JmapHttp
 
 object HttpSettings {
 

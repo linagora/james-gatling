@@ -38,68 +38,70 @@ $ sbt
 
 == Available simulations
 
-=== JmapAuthenticationSimulation
+=== JMAP draft
+
+==== JmapAuthenticationSimulation
 
 FQDN :
 
 .scala
 ----
-org.apache.james.gatling.simulation.jmap.JmapAuthenticationSimulation
+org.apache.james.gatling.simulation.jmap.draft.JmapAuthenticationSimulation
 ----
 
 Authenticate 10 JMAP users, one time. Demonstrate user auto-provisioning through James WebAdmin server.
 
-=== JmapSendMessagesSimulation
+==== JmapSendMessagesSimulation
 
 FQDN :
 
 .scala
 ----
-org.apache.james.gatling.simulation.jmap.JmapSendMessagesSimulation
+org.apache.james.gatling.simulation.jmap.draft.JmapSendMessagesSimulation
 ----
 
 Authenticate 100 JMAP users, one time. Then they all retrieve their mailboxes, and then sends messages 360 messages each to other recipients.
 
-=== JmapGetMailboxesSimulation
+==== JmapGetMailboxesSimulation
 
 FQDN :
 
 .scala
 ----
-org.apache.james.gatling.simulation.jmap.JmapGetMailboxesSimulation
+org.apache.james.gatling.simulation.jmap.draft.JmapGetMailboxesSimulation
 ----
 
 Authenticate 200 JMAP users, one time. Then they all retrieve 360 times their mailboxes each.
 
-=== JmapGetMessageListSimulation
+==== JmapGetMessageListSimulation
 
 FQDN :
 
 .scala
 ----
-org.apache.james.gatling.simulation.jmap.JmapGetMessageListSimulation
+org.apache.james.gatling.simulation.jmap.draft.JmapGetMessageListSimulation
 ----
 
 Authenticate 100 JMAP users, one time. Then they all retrieve their system mailboxes. Then they send each other 10 mails each at random. Then wait 30 seconds for mails to be delivered. Finally they retrieve 250 times each their mails list using GetMessagesList.
 
-=== JmapGetMessagesSimulation
+==== JmapGetMessagesSimulation
 
 FQDN :
 
 .scala
 ----
-org.apache.james.gatling.simulation.jmap.JmapGetMessagesSimulation
+org.apache.james.gatling.simulation.jmap.draft.JmapGetMessagesSimulation
 ----
 
 Authenticate 100 JMAP users, one time. Then they all retrieve their system mailboxes. Then they send each other 10 mails each at random. Then wait 30 seconds for mails to be delivered. They retrieve their mails list using GetMessagesList. Then they retrieve their mails 250 times, at random.
 
-=== JmapMessageUpdateSimulation
+==== JmapMessageUpdateSimulation
 
 FQDN :
 
 .scala
 ----
-org.apache.james.gatling.simulation.jmap.JmapMessageUpdateSimulation
+org.apache.james.gatling.simulation.jmap.draft.JmapMessageUpdateSimulation
 ----
 
 Authenticate 100 JMAP users, one time. Then they all retrieve their system mailboxes. Then they send each other 10 mails each at random. Then wait 30 seconds for mails to be delivered. They retrieve their mails list using GetMessagesList. Then they update their mail 250 times with the following properties :.
@@ -108,7 +110,22 @@ Authenticate 100 JMAP users, one time. Then they all retrieve their system mailb
  - 20% mark mails as ANSWERED
  - 10% mark mails as FLAGGED
 
-=== SmtpNoAuthenticationNoEncryptionMixedBodySimulation
+=== JMAP RFC-8621
+
+==== MailboxGetSimulation
+
+FQDN :
+
+.scala
+----
+org.apache.james.gatling.simulation.jmap.rfc8621.MailboxGetSimulation
+----
+
+Authenticate 200 JMAP users, one time. Then they all retrieve 360 times their mailboxes each.
+
+=== SMTP
+
+==== SmtpNoAuthenticationNoEncryptionMixedBodySimulation
 
 FQDN :
 

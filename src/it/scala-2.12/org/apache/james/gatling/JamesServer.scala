@@ -4,12 +4,10 @@ import java.net.URL
 import java.nio.charset.StandardCharsets
 
 import javax.mail.internet.InternetAddress
-
 import org.apache.james.gatling.control.{Domain, JamesWebAdministration, User, Username}
-import org.apache.james.gatling.jmap.MailboxName
+import org.apache.james.gatling.jmap.draft.MailboxName
 import org.slf4j.{Logger, LoggerFactory}
 import org.testcontainers.containers.GenericContainer
-
 import play.api.libs.ws.StandaloneWSRequest
 
 import scala.concurrent.duration._
@@ -83,7 +81,7 @@ object JamesServer {
   }
 
   def start(): RunningServer = {
-    val james = new GenericContainer("linagora/james-memory")
+    val james = new GenericContainer("linagora/james-memory:branch-master")
     james.addExposedPorts(jmapPort, imapPort, smtpPort, webadminPort)
     james.start()
     new RunningServer(james)
