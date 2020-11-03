@@ -25,4 +25,23 @@ object JmapEmail {
 
   val nonEmptyListMessagesChecks: HttpCheck =
     jsonPath("$.methodResponses[0][1].ids[*]").findAll.saveAs("emailIds")
+
+  val typicalMessageProperties: List[String] = List("bcc", "cc", "date", "from", "hasAttachment", "htmlBody", "id", "isAnswered", "isDraft", "isFlagged", "isUnread", "mailboxIds", "size", "subject", "textBody", "to")
+
+  def getRandomEmails(properties: List[String] = typicalMessageProperties, emailIdsKey: String = "emailIds",
+                      accountId: String = "accountId"): HttpRequestBuilder = {
+    JmapHttp.apiCall("emailGet")
+      .body(StringBody(
+        s"""{
+           |  "using": ["urn:ietf:params:jmap:core","urn:ietf:params:jmap:mail"],
+           |  "methodCalls": [[
+           |    "Email/get",
+           |    {
+           |      "accountId": "$${$accountId}",
+           |      "ids": ["$${$emailIdsKey.random()}"],
+           |      "properties": ${Json.stringify(properties)}
+           |    },
+           |    "c1"]]
+           |}""".stripMargin))
+  }
 }
