@@ -1,4 +1,4 @@
-package org.apache.james.gatling.jmap.draft.scenari
+package org.apache.james.gatling.jmap
 
 sealed trait RealUsageScenario {
   def name : String

@@ -1,7 +1,8 @@
 package org.apache.james.gatling.simulation.jmap.draft
 
 import io.gatling.core.scenario.Simulation
-import org.apache.james.gatling.jmap.draft.scenari.{InboxHomeLoading, JmapInboxHomeLoadingScenario}
+import org.apache.james.gatling.jmap.InboxHomeLoading
+import org.apache.james.gatling.jmap.draft.scenari.JmapInboxHomeLoadingScenario
 import org.apache.james.gatling.simulation.SimulationOnMailCorpus
 
 import scala.concurrent.duration._

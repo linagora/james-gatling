@@ -1,7 +1,8 @@
 package org.apache.james.gatling.simulation.jmap.draft
 
 import io.gatling.core.scenario.Simulation
-import org.apache.james.gatling.jmap.draft.scenari.{JmapMessageFlagUpdatesScenario, MessageFlagUpdates}
+import org.apache.james.gatling.jmap.MessageFlagUpdates
+import org.apache.james.gatling.jmap.draft.scenari.JmapMessageFlagUpdatesScenario
 import org.apache.james.gatling.simulation.SimulationOnMailCorpus
 
 import scala.concurrent.duration._

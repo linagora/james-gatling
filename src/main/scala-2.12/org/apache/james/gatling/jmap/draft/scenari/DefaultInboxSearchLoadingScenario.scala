@@ -3,6 +3,7 @@ package org.apache.james.gatling.jmap.draft.scenari
 import io.gatling.core.Predef._
 import io.gatling.core.feeder.FeederBuilder
 import io.gatling.core.structure.ScenarioBuilder
+import org.apache.james.gatling.jmap.InboxHomeLoading
 import org.apache.james.gatling.jmap.draft.JmapMessages.openpaasListMessageParameters
 import org.apache.james.gatling.jmap.draft.{CommonSteps, JmapMailbox, JmapMessages, RetryAuthentication}
 
