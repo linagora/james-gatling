@@ -7,8 +7,8 @@ import com.linagora.gatling.imap.protocol.command.MessageRanges
 import io.gatling.core.Predef._
 import io.gatling.core.feeder.FeederBuilder
 import io.gatling.core.structure.ScenarioBuilder
+import org.apache.james.gatling.jmap.ListMessageBodyStructure
 import org.apache.james.gatling.jmap.draft.MailboxName
-import org.apache.james.gatling.jmap.draft.scenari.ListMessageBodyStructure
 
 import scala.concurrent.duration._
 
