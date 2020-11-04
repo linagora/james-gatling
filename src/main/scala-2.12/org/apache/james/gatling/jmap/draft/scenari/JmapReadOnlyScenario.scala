@@ -26,6 +26,7 @@ import io.gatling.http.Predef._
 import io.gatling.http.check.HttpCheck
 import io.gatling.http.request.builder.HttpRequestBuilder
 import org.apache.james.gatling.control.AuthenticatedUserFeeder.AuthenticatedUserFeederBuilder
+import org.apache.james.gatling.jmap.InboxHomeLoading
 import org.apache.james.gatling.jmap.draft.JmapMessages.openpaasListMessageParameters
 import org.apache.james.gatling.jmap.draft.{JmapChecks, JmapMailbox, JmapMessages}
 

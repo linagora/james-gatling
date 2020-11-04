@@ -6,6 +6,7 @@ import io.gatling.http.Predef._
 import io.gatling.http.check.HttpCheck
 import io.gatling.http.request.builder.HttpRequestBuilder
 import org.apache.james.gatling.control.UserFeeder.UserFeederBuilder
+import org.apache.james.gatling.jmap.OpenMessage
 import org.apache.james.gatling.jmap.draft.JmapMailbox._
 import org.apache.james.gatling.jmap.draft.JmapMessages._
 import org.apache.james.gatling.jmap.draft.{CommonSteps, JmapChecks, JmapMailbox, JmapMessages, RetryAuthentication}

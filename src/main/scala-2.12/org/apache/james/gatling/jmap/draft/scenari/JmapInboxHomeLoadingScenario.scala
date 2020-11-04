@@ -5,6 +5,7 @@ import io.gatling.core.structure.ScenarioBuilder
 import io.gatling.http.Predef._
 import io.gatling.http.check.HttpCheck
 import org.apache.james.gatling.control.UserFeeder.UserFeederBuilder
+import org.apache.james.gatling.jmap.InboxHomeLoading
 import org.apache.james.gatling.jmap.draft.JmapMessages.openpaasListMessageParameters
 import org.apache.james.gatling.jmap.draft.{CommonSteps, JmapChecks, JmapMailbox, JmapMessages, RetryAuthentication}
 
