@@ -22,6 +22,12 @@ object JmapMailbox {
 
   private val mailboxListPath = "$.methodResponses[0][1].list"
   private val inboxIdPath = s"$mailboxListPath[?(@.role == 'inbox')].id"
+  private def mailboxesIdPathForMailboxesWithAtLeastMessages(nbMessages : Int) = s"$mailboxListPath[?(@.totalEmails >= $nbMessages)].id"
 
   def saveInboxAs(key: String): HttpCheck = jsonPath(inboxIdPath).saveAs(key)
+
+  def saveRandomMailboxWithAtLeastMessagesAs(key: String, atLeastMessages : Int): HttpCheck =
+    jsonPath(mailboxesIdPathForMailboxesWithAtLeastMessages(atLeastMessages))
+      .findRandom
+      .saveAs(key)
 }
