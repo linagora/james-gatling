@@ -1,11 +1,12 @@
 package org.apache.james.gatling.jmap.rfc8621
 
 import io.gatling.core.Predef.{StringBody, jsonPath, _}
+import io.gatling.core.check.extractor.jsonpath.{JsonPathCheckBuilder, JsonPathOfType}
 import io.gatling.core.json.Json
 import io.gatling.http.Predef._
 import io.gatling.http.check.HttpCheck
 import io.gatling.http.request.builder.HttpRequestBuilder
-import org.apache.james.gatling.jmap.draft.JmapMessages.NO_PARAMETERS
+import org.apache.james.gatling.jmap.draft.JmapMessages.{JmapParameters, NO_PARAMETERS, openpaasListMessageFilter}
 
 object JmapEmail {
   type JmapParameters = Map[String, Any]
@@ -23,12 +24,23 @@ object JmapEmail {
            |}""".stripMargin))
   }
 
-  val nonEmptyListMessagesChecks: HttpCheck =
-    jsonPath("$.methodResponses[0][1].ids[*]").findAll.saveAs("emailIds")
+  def openpaasEmailQueryParameters(mailboxKey: String = "inboxID"): JmapParameters =
+    Map("filter" -> Map("inMailbox" -> s"$${$mailboxKey}"),
+      "comparator" -> List(Map("property" -> "sentAt", "isAscending" -> false)),
+      "position" -> 0,
+      "limit" -> 30)
 
-  val typicalMessageProperties: List[String] = List("bcc", "cc", "date", "from", "hasAttachment", "htmlBody", "id", "isAnswered", "isDraft", "isFlagged", "isUnread", "mailboxIds", "size", "subject", "textBody", "to")
+  def nonEmptyListMessagesChecks(key: String = "emailIds"): HttpCheck =
+    jsonPath("$.methodResponses[0][1].ids[*]").findAll.saveAs(key)
 
-  def getRandomEmails(properties: List[String] = typicalMessageProperties, emailIdsKey: String = "emailIds",
+  private val emailsPath: JsonPathCheckBuilder[String] with JsonPathOfType = jsonPath("$.methodResponses[0][1].list[*]")
+  val nonEmptyEmailsChecks: HttpCheck = emailsPath.exists
+
+  val typicalMessageProperties: List[String] = List("bcc", "cc", "receivedAt", "sentAt", "from", "hasAttachment", "htmlBody", "id", "keywords", "mailboxIds", "size", "subject", "textBody", "to")
+  val previewMessageProperties: List[String] = List("bcc", "cc", "receivedAt", "sentAt", "from", "hasAttachment", "id", "keywords", "mailboxIds", "size", "subject", "to", "preview")
+
+  def getRandomEmails(properties: List[String] = typicalMessageProperties,
+                      emailIdsKey: String = "emailIds",
                       accountId: String = "accountId"): HttpRequestBuilder = {
     JmapHttp.apiCall("emailGet")
       .body(StringBody(
@@ -39,6 +51,24 @@ object JmapEmail {
            |    {
            |      "accountId": "$${$accountId}",
            |      "ids": ["$${$emailIdsKey.random()}"],
+           |      "properties": ${Json.stringify(properties)}
+           |    },
+           |    "c1"]]
+           |}""".stripMargin))
+  }
+
+  def getEmails(properties: List[String] = typicalMessageProperties,
+                emailIdsKey: String = "emailIds",
+                accountId: String = "accountId"): HttpRequestBuilder = {
+    JmapHttp.apiCall("emailGet")
+      .body(StringBody(
+        s"""{
+           |  "using": ["urn:ietf:params:jmap:core","urn:ietf:params:jmap:mail"],
+           |  "methodCalls": [[
+           |    "Email/get",
+           |    {
+           |      "accountId": "$${$accountId}",
+           |      "ids": $${$emailIdsKey.jsonStringify()},
            |      "properties": ${Json.stringify(properties)}
            |    },
            |    "c1"]]

@@ -1,6 +1,8 @@
 package org.apache.james.gatling.jmap.rfc8621
 
 import io.gatling.core.Predef._
+import io.gatling.http.Predef._
+import io.gatling.http.check.HttpCheck
 import io.gatling.http.request.builder.HttpRequestBuilder
 
 object JmapMailbox {
@@ -17,4 +19,9 @@ object JmapMailbox {
            |    },
            |    "c1"]]
            |}""".stripMargin))
+
+  private val mailboxListPath = "$.methodResponses[0][1].list"
+  private val inboxIdPath = s"$mailboxListPath[?(@.role == 'inbox')].id"
+
+  def saveInboxAs(key: String): HttpCheck = jsonPath(inboxIdPath).saveAs(key)
 }

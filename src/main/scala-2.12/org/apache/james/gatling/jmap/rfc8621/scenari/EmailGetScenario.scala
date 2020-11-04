@@ -18,10 +18,10 @@ class EmailGetScenario {
       .exec(SessionStep.retrieveAccountId)
       .during(duration) {
         exec(JmapEmail.queryEmails()
-            .check(JmapHttp.statusOk, JmapHttp.noError, JmapEmail.nonEmptyListMessagesChecks))
+            .check(JmapHttp.statusOk, JmapHttp.noError, JmapEmail.nonEmptyListMessagesChecks()))
           .pause(1 second)
           .exec(JmapEmail.getRandomEmails()
-            .check(JmapHttp.statusOk, JmapHttp.noError))
+            .check(JmapHttp.statusOk, JmapHttp.noError, JmapEmail.nonEmptyEmailsChecks))
           .pause(1 second)
       }
 }

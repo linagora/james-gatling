@@ -18,7 +18,7 @@ class EmailQueryScenario {
       .exec(SessionStep.retrieveAccountId)
       .during(duration) {
         exec(JmapEmail.queryEmails()
-          .check(JmapHttp.statusOk, JmapHttp.noError, JmapEmail.nonEmptyListMessagesChecks))
+          .check(JmapHttp.statusOk, JmapHttp.noError, JmapEmail.nonEmptyListMessagesChecks()))
           .pause(1 second)
       }
 }
