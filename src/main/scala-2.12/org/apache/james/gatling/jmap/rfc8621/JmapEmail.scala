@@ -6,7 +6,10 @@ import io.gatling.core.json.Json
 import io.gatling.http.Predef._
 import io.gatling.http.check.HttpCheck
 import io.gatling.http.request.builder.HttpRequestBuilder
-import org.apache.james.gatling.jmap.draft.JmapMessages.{JmapParameters, NO_PARAMETERS, openpaasListMessageFilter}
+import org.apache.james.gatling.jmap.draft.JmapMessages.NO_PARAMETERS
+
+case class RequestTitle(title: String) extends AnyVal
+case class KeywordName(name: String) extends AnyVal
 
 object JmapEmail {
   type JmapParameters = Map[String, Any]
@@ -70,6 +73,43 @@ object JmapEmail {
            |      "accountId": "$${$accountId}",
            |      "ids": $${$emailIdsKey.jsonStringify()},
            |      "properties": ${Json.stringify(properties)}
+           |    },
+           |    "c1"]]
+           |}""".stripMargin))
+  }
+
+  def markAsSeen(emailIdsKey: String = "emailIds",
+                 accountId: String = "accountId"): HttpRequestBuilder =
+    performUpdate(RequestTitle("markAsSeen"), KeywordName("$seen"),
+      emailIdsKey = emailIdsKey, accountId = accountId)
+
+  def markAsAnswered(emailIdsKey: String = "emailIds",
+                     accountId: String = "accountId"): HttpRequestBuilder =
+    performUpdate(RequestTitle("markAsAnswered"), KeywordName("$answered"),
+      emailIdsKey = emailIdsKey, accountId = accountId)
+
+  def markAsFlagged(emailIdsKey: String = "emailIds",
+                    accountId: String = "accountId"): HttpRequestBuilder =
+    performUpdate(RequestTitle("markAsFlagged"), KeywordName("$flagged"),
+      emailIdsKey = emailIdsKey, accountId = accountId)
+
+  def performUpdate(title: RequestTitle,
+                    keywordName: KeywordName,
+                    emailIdsKey: String = "emailIds",
+                    accountId: String = "accountId"): HttpRequestBuilder = {
+    JmapHttp.apiCall(title.title)
+      .body(StringBody(
+        s"""{
+           |  "using": ["urn:ietf:params:jmap:core","urn:ietf:params:jmap:mail"],
+           |  "methodCalls": [[
+           |    "Email/set",
+           |    {
+           |      "accountId": "$${$accountId}",
+           |      "update": {
+           |        "$${$emailIdsKey.random()}": {
+           |          "$keywordName": true
+           |        }
+           |      }
            |    },
            |    "c1"]]
            |}""".stripMargin))
