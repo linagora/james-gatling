@@ -33,7 +33,6 @@ trait SimulationOnMailCorpus {
       .protocols(HttpSettings.httpProtocol)
   }
 
-
   protected def buildMaxScenarioResponseTimeAssertion(scenario: RealUsageScenario, maxResponseTime: Duration) = {
     val _99Percentile: AssertionWithPathAndTarget[Int] = details(scenario.name).responseTime.percentile4
     _99Percentile.lt(maxResponseTime.toMillis.toInt)
