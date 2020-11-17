@@ -27,3 +27,7 @@ case object ListMessageBodyStructure extends RealUsageScenario {
 case object MessageFlagUpdates extends RealUsageScenario {
   def name = "MessageFlagUpdates"
 }
+
+case object MessageSubmission extends RealUsageScenario {
+  def name = "EmailSubmission"
+}
