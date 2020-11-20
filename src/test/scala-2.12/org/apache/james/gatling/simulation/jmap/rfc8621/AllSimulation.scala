@@ -6,10 +6,9 @@ import io.gatling.core.structure.ScenarioBuilder
 import org.apache.james.gatling.control.RecipientFeeder
 import org.apache.james.gatling.control.RecipientFeeder.RecipientFeederBuilder
 import org.apache.james.gatling.control.UserFeeder.UserFeederBuilder
-import org.apache.james.gatling.jmap.draft.CommonSteps
-import org.apache.james.gatling.jmap.rfc8621.JmapEmail
 import org.apache.james.gatling.jmap.rfc8621.SessionStep.retrieveAccountId
 import org.apache.james.gatling.jmap.rfc8621.scenari.{EmailKeywordsUpdatesScenario, InboxLoadingScenario, OpenEmailScenario, SelectMailboxScenario}
+import org.apache.james.gatling.jmap.rfc8621.{JmapEmail, JmapMailbox}
 import org.apache.james.gatling.jmap.{InboxHomeLoading, OpenMessage, SelectMailbox}
 import org.apache.james.gatling.simulation.SimulationOnMailCorpus
 
@@ -21,7 +20,7 @@ class AllSimulation extends Simulation with SimulationOnMailCorpus {
   def emailSubmissionScenario(userFeeder: UserFeederBuilder, recipientFeeder: RecipientFeederBuilder): ScenarioBuilder = scenario("EmailSubmissionScenario")
     .feed(userFeeder)
     .exec(retrieveAccountId)
-    .exec(CommonSteps.provisionSystemMailboxes())
+    .exec(JmapMailbox.provisionSystemMailboxes())
     .exec(JmapEmail.submitEmails(recipientFeeder))
 
   setUp(
