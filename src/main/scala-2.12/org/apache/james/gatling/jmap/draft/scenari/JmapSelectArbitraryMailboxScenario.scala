@@ -1,7 +1,7 @@
 package org.apache.james.gatling.jmap.draft.scenari
 
 import io.gatling.core.Predef._
-import io.gatling.core.structure.ScenarioBuilder
+import io.gatling.core.structure.{ChainBuilder, ScenarioBuilder}
 import io.gatling.http.Predef._
 import io.gatling.http.check.HttpCheck
 import io.gatling.http.request.builder.HttpRequestBuilder
@@ -26,18 +26,19 @@ class JmapSelectArbitraryMailboxScenario(minMessagesInMailbox: Int) {
 
   private val openArbitraryMailboxes: HttpRequestBuilder = getRandomMessages(openpaasInboxOpenMessageProperties, Keys.messageIds)
 
-  def generate(userFeeder: UserFeederBuilder): ScenarioBuilder = {
+  def generate(userFeeder: UserFeederBuilder): ScenarioBuilder =
     scenario("JmapSelectArbitraryMailboxScenario")
       .feed(userFeeder)
       .exec(CommonSteps.authentication())
-      .group("prepare")(
-        exec(RetryAuthentication.execWithRetryAuthentication(getMailboxes, isSuccess ++ JmapMailbox.saveRandomMailboxWithAtLeastMessagesAs(Keys.randomMailbox, minMessagesInMailbox))))
-      .group(SelectMailbox.name)(
-        exec(RetryAuthentication.execWithRetryAuthentication(
-          JmapMessages.listMessages(openpaasListMessageParameters(Keys.randomMailbox)),
-          JmapMessages.nonEmptyListMessagesChecks))
-          .exec(RetryAuthentication.execWithRetryAuthentication(JmapMessages.getMessages(JmapMessages.previewMessageProperties, Keys.messageIds), isSuccess))
-      )
+      .group("prepare")(prepare)
+      .group(SelectMailbox.name)(selectArbitrary)
 
-  }
+  def selectArbitrary: ChainBuilder =
+    exec(RetryAuthentication.execWithRetryAuthentication(
+      JmapMessages.listMessages(openpaasListMessageParameters(Keys.randomMailbox)),
+      JmapMessages.nonEmptyListMessagesChecks))
+      .exec(RetryAuthentication.execWithRetryAuthentication(JmapMessages.getMessages(JmapMessages.previewMessageProperties, Keys.messageIds), isSuccess))
+
+  def prepare: ChainBuilder =
+    exec(RetryAuthentication.execWithRetryAuthentication(getMailboxes, isSuccess ++ JmapMailbox.saveRandomMailboxWithAtLeastMessagesAs(Keys.randomMailbox, minMessagesInMailbox)))
 }
