@@ -10,7 +10,7 @@ import org.apache.james.gatling.jmap.rfc8621.SessionStep.retrieveAccountId
 import org.apache.james.gatling.jmap.rfc8621.scenari.{EmailKeywordsUpdatesScenario, InboxLoadingScenario, OpenEmailScenario, SelectMailboxScenario}
 import org.apache.james.gatling.jmap.rfc8621.{JmapEmail, JmapMailbox}
 import org.apache.james.gatling.jmap.{InboxHomeLoading, OpenMessage, SelectMailbox}
-import org.apache.james.gatling.simulation.SimulationOnMailCorpus
+import org.apache.james.gatling.simulation.{SimulationOnMailCorpus, UsersPerSecond}
 
 import scala.concurrent.duration._
 
@@ -24,11 +24,11 @@ class AllSimulation extends Simulation with SimulationOnMailCorpus {
     .exec(JmapEmail.submitEmails(recipientFeeder))
 
   setUp(
-      injectUsersInScenario(new InboxLoadingScenario().generate(feeder)),
-      injectUsersInScenario(new OpenEmailScenario().generate(feeder)),
-      injectUsersInScenario(new SelectMailboxScenario(MIN_MESSAGES_IN_MAILBOXES_TO_SELECT).generate(feeder)),
-      injectUsersInScenario(new EmailKeywordsUpdatesScenario().generate(feeder)),
-      injectUsersInScenario(emailSubmissionScenario(feeder, RecipientFeeder.usersToFeeder(getUsers))))
+      injectUsersInScenario(new InboxLoadingScenario().generate(feeder), UsersPerSecond(0.25)),
+      injectUsersInScenario(new OpenEmailScenario().generate(feeder), UsersPerSecond(0.25)),
+      injectUsersInScenario(new SelectMailboxScenario(MIN_MESSAGES_IN_MAILBOXES_TO_SELECT).generate(feeder), UsersPerSecond(0.25)),
+      injectUsersInScenario(new EmailKeywordsUpdatesScenario().generate(feeder), UsersPerSecond(0.25)),
+      injectUsersInScenario(emailSubmissionScenario(feeder, RecipientFeeder.usersToFeeder(getUsers)), UsersPerSecond(0.25)))
     .assertions(
       buildMaxScenarioResponseTimeAssertion(InboxHomeLoading, 2 seconds),
       buildMaxScenarioResponseTimeAssertion(OpenMessage, 1 second),
