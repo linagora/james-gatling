@@ -24,11 +24,11 @@ class AllSimulation extends Simulation with SimulationOnMailCorpus {
     .exec(JmapEmail.submitEmails(recipientFeeder))
 
   setUp(
-      injectUsersInScenario(new InboxLoadingScenario().generate(feeder), UsersPerSecond(0.25)),
-      injectUsersInScenario(new OpenEmailScenario().generate(feeder), UsersPerSecond(0.25)),
-      injectUsersInScenario(new SelectMailboxScenario(MIN_MESSAGES_IN_MAILBOXES_TO_SELECT).generate(feeder), UsersPerSecond(0.25)),
-      injectUsersInScenario(new EmailKeywordsUpdatesScenario().generate(feeder), UsersPerSecond(0.25)),
-      injectUsersInScenario(emailSubmissionScenario(feeder, RecipientFeeder.usersToFeeder(getUsers)), UsersPerSecond(0.25)))
+      injectUsersInScenario(new InboxLoadingScenario().generate(feeder), UsersPerSecond(0.5)),
+      injectUsersInScenario(new OpenEmailScenario().generate(feeder), UsersPerSecond(0.5)),
+      injectUsersInScenario(new SelectMailboxScenario(MIN_MESSAGES_IN_MAILBOXES_TO_SELECT).generate(feeder), UsersPerSecond(0.5)),
+      injectUsersInScenario(new EmailKeywordsUpdatesScenario().generate(feeder), UsersPerSecond(0.5)),
+      injectUsersInScenario(emailSubmissionScenario(feeder, RecipientFeeder.usersToFeeder(getUsers)), UsersPerSecond(0.5)))
     .assertions(
       buildMaxScenarioResponseTimeAssertion(InboxHomeLoading, 2 seconds),
       buildMaxScenarioResponseTimeAssertion(OpenMessage, 1 second),
