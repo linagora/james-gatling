@@ -1,6 +1,6 @@
 package org.apache.james.gatling.jmap.draft.scenari
 
-import io.gatling.core.Predef.{exec, scenario, _}
+import io.gatling.core.Predef._
 import io.gatling.core.structure.{ChainBuilder, ScenarioBuilder}
 import org.apache.james.gatling.control.RecipientFeeder.RecipientFeederBuilder
 import org.apache.james.gatling.control.UserFeeder.UserFeederBuilder
