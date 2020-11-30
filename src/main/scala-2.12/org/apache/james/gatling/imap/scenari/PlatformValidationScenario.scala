@@ -9,10 +9,9 @@ import scala.concurrent.duration.{Duration, _}
 
 class PlatformValidationScenario(minWaitDelay: Duration = 1 minute, maxWaitDelay: Duration = 5 minutes)  {
 
-  val lightScenario: ChainBuilder = exec(ImapCommonSteps.receiveEmail)
-    .exec(ImapCommonSteps.readLastEmail)
+  val lightScenario: ChainBuilder = exec(ImapCommonSteps.readLastEmail)
 
-  val heavyScenario: ChainBuilder = exec(repeat(3)(ImapCommonSteps.receiveEmail))
+  val heavyScenario: ChainBuilder = exec(ImapCommonSteps.receiveEmail)
     .exec(repeat(2)(ImapCommonSteps.readLastEmail))
 
   def generate(duration: Duration, userFeeder: UserFeederBuilder): ScenarioBuilder =
