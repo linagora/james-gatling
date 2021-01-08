@@ -2,9 +2,7 @@ package org.apache.james.gatling.jmap.rfc8621
 
 import org.apache.james.gatling.Fixture
 import org.apache.james.gatling.jmap.draft.JmapIT
-import org.apache.james.gatling.jmap.rfc8621.scenari.{EmailGetScenario, InboxLoadingScenario}
-
-import scala.concurrent.duration._
+import org.apache.james.gatling.jmap.rfc8621.scenari.{InboxLoadingScenario}
 
 class InboxLoadingIT extends JmapIT {
   before {
