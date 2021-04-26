@@ -10,5 +10,6 @@ object HttpSettings {
     .baseUrl(Configuration.BaseJmapUrl.toString)
     .acceptHeader(JmapHttp.ACCEPT_JSON_VALUE)
     .contentTypeHeader(JmapHttp.CONTENT_TYPE_JSON_VALUE)
+    .wsBaseUrl(Configuration.BaseJmapUrl.toString)
 
 }

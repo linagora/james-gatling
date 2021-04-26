@@ -13,7 +13,7 @@ object JmapMailbox {
   private val loopVariableName = "any"
 
   def getMailboxes: HttpRequestBuilder =
-      JmapHttp.apiCall("getMailboxes")
+    JmapHttp.apiCall("getMailboxes")
       .body(StringBody(
         s"""{
            |  "using": ["urn:ietf:params:jmap:core","urn:ietf:params:jmap:mail"],
@@ -27,7 +27,7 @@ object JmapMailbox {
            |}""".stripMargin))
 
   private val mailboxListPath = "$.methodResponses[0][1].list"
-  private val inboxIdPath = s"$mailboxListPath[?(@.role == 'inbox')].id"
+  val inboxIdPath = s"$mailboxListPath[?(@.role == 'inbox')].id"
   private val outboxIdPath = s"$mailboxListPath[?(@.role == 'outbox')].id"
   private val sentIdPath = s"$mailboxListPath[?(@.role == 'sent')].id"
   private val draftsIdPath = s"$mailboxListPath[?(@.role == 'drafts')].id"

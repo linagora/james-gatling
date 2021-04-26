@@ -1,7 +1,5 @@
 package org.apache.james.gatling.jmap.draft
 
-import java.net.URL
-
 import io.gatling.core.Predef._
 import io.gatling.core.funspec.GatlingFunSpec
 import io.gatling.core.protocol.Protocol
@@ -17,6 +15,7 @@ import org.apache.james.gatling.control.{AuthenticatedUser, AuthenticatedUserFee
 import org.slf4j
 import org.slf4j.LoggerFactory
 
+import java.net.URL
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
@@ -25,7 +24,9 @@ abstract class JmapIT extends GatlingFunSpec {
 
   protected val server: RunningServer = JamesServer.start()
   private val baseJamesJmap: String = s"http://localhost:${server.mappedJmapPort}"
+  private val baseJamesWebsocket: String = s"ws://localhost:${server.mappedJmapPort}"
   lazy val protocolConf: Protocol = http.baseUrl(baseJamesJmap)
+    .wsBaseUrl(baseJamesWebsocket)
   private lazy val jamesJmap: JamesJmap = new JamesJmap(new URL(baseJamesJmap))
 
   protected def mappedJmapPort = server.mappedJmapPort
