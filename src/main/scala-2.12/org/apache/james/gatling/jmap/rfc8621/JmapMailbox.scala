@@ -33,6 +33,8 @@ object JmapMailbox {
   private val draftsIdPath = s"$mailboxListPath[?(@.role == 'drafts')].id"
   private val trashIdPath = s"$mailboxListPath[?(@.role == 'trash')].id"
   private val spamIdPath = s"$mailboxListPath[?(@.role == 'spam')].id"
+  private val statePath = "$.methodResponses[0][1].state"
+  private val newStatePath = "$.methodResponses[0][1].newState"
 
   val getSystemMailboxesChecks: Seq[HttpCheck] = Seq[HttpCheck](JmapHttp.statusOk, JmapHttp.noError) ++
     Seq[HttpCheck](
@@ -64,4 +66,40 @@ object JmapMailbox {
           .pause(1 second, 2 seconds)
       }
       .pause(5 second)
+
+  def saveStateAs(key: String): HttpCheck = jsonPath(statePath).saveAs(key)
+
+  def saveNewStateAs(key: String): HttpCheck = jsonPath(newStatePath).saveAs(key)
+
+  def getNewState(accountId: String = "accountId", oldState: String = "oldState"): HttpRequestBuilder = {
+    JmapHttp.apiCall("mailboxChanges")
+      .body(StringBody(
+        s"""{
+           |  "using": ["urn:ietf:params:jmap:core", "urn:ietf:params:jmap:mail"],
+           |  "methodCalls": [
+           |    ["Mailbox/changes", {
+           |      "accountId": "$${$accountId}",
+           |      "sinceState": "$${$oldState}"
+           |    }, "c1"],
+           |    ["Mailbox/get", {
+           |      "accountId": "$${$accountId}",
+           |      "#ids": {
+           |        "resultOf": "c1",
+           |        "name": "Mailbox/changes",
+           |        "path": "/created"
+           |      }
+           |    }, "c2"],
+           |    ["Mailbox/get", {
+           |      "accountId": "$${$accountId}",
+           |      "#ids": {
+           |        "resultOf": "c1",
+           |        "name": "Mailbox/changes",
+           |        "path": "/updated"
+           |      }
+           |    }, "c3"]
+           |  ]
+           |}""".stripMargin))
+      .check(status.is(200))
+      .check(jsonPath("$.methodResponses[0][1].newState").saveAs("newState"))
+  }
 }
