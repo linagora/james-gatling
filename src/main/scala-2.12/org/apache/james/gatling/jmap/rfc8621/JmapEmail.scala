@@ -47,6 +47,9 @@ object JmapEmail {
     jsonPath("$.methodResponses[1][1].created").find.saveAs(key)
 
   private val emailsPath: JsonPathCheckBuilder[String] with JsonPathOfType = jsonPath("$.methodResponses[0][1].list[*]")
+  private val statePath = "$.methodResponses[0][1].state"
+  private val newStatePath = "$.methodResponses[0][1].newState"
+
   val nonEmptyEmailsChecks: HttpCheck = emailsPath.exists
 
   val typicalMessageProperties: List[String] = List("bcc", "cc", "receivedAt", "sentAt", "from", "hasAttachment", "htmlBody", "id", "keywords", "mailboxIds", "size", "subject", "textBody", "to")
@@ -189,6 +192,42 @@ object JmapEmail {
            |  ]
            |}""".stripMargin
       ))
+
+  def saveStateAs(key: String): HttpCheck = jsonPath(statePath).saveAs(key)
+
+  def saveNewStateAs(key: String): HttpCheck = jsonPath(newStatePath).saveAs(key)
+
+  def getNewState(accountId: String = "accountId", oldState: String = "oldState"): HttpRequestBuilder = {
+    JmapHttp.apiCall("emailChanges")
+      .body(StringBody(
+        s"""{
+           |  "using": ["urn:ietf:params:jmap:core", "urn:ietf:params:jmap:mail"],
+           |  "methodCalls": [
+           |    ["Email/changes", {
+           |      "accountId": "$${$accountId}",
+           |      "sinceState": "$${$oldState}"
+           |    }, "c1"],
+           |    ["Email/get", {
+           |      "accountId": "$${$accountId}",
+           |      "#ids": {
+           |        "resultOf": "c1",
+           |        "name": "Email/changes",
+           |        "path": "/created"
+           |      }
+           |    }, "c2"],
+           |    ["Email/get", {
+           |      "accountId": "$${$accountId}",
+           |      "#ids": {
+           |        "resultOf": "c1",
+           |        "name": "Email/changes",
+           |        "path": "/updated"
+           |      }
+           |    }, "c3"]
+           |  ]
+           |}""".stripMargin))
+      .check(status.is(200))
+      .check(jsonPath("$.methodResponses[0][1].newState").saveAs("newState"))
+  }
 }
 
 case class SubmissionId(id: String = RandomStringGenerator.randomString) extends AnyVal
