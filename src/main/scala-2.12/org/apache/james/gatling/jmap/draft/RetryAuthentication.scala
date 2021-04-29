@@ -11,7 +11,9 @@ import io.gatling.http.response.Response
 object RetryAuthentication {
 
   def execWithRetryAuthentication(scenario: HttpRequestBuilder, checks: Seq[HttpCheck]): ChainBuilder =
-    exec(scenario.check(status.in(200, 401).saveAs("statusCode")).check(checkIfOk(checks): _*))
+    doIf(session => !session.attributes.contains("accessTokenHeader")) {JmapAuthentication.authentication()}
+      .exec(session => session.set("statusCode", 900))
+      .exec(scenario.check(status.in(200, 401).saveAs("statusCode")).check(checkIfOk(checks): _*))
       .doIfEquals("${statusCode}", 401){
           JmapAuthentication.authentication()
             .exec(scenario.check(checks: _*))
