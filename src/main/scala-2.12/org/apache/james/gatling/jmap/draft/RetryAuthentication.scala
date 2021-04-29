@@ -9,9 +9,12 @@ import io.gatling.http.request.builder.HttpRequestBuilder.toActionBuilder
 import io.gatling.http.response.Response
 
 object RetryAuthentication {
+  val undefined = 900
 
   def execWithRetryAuthentication(scenario: HttpRequestBuilder, checks: Seq[HttpCheck]): ChainBuilder =
-    exec(scenario.check(status.in(200, 401).saveAs("statusCode")).check(checkIfOk(checks): _*))
+    doIf(session => !session.attributes.contains("accessTokenHeader")) {JmapAuthentication.authentication()}
+      .exec(session => session.set("statusCode", undefined)) // setup a default statusCode for it to be positioned in case of timeouts
+      .exec(scenario.check(status.in(200, 401).saveAs("statusCode")).check(checkIfOk(checks): _*))
       .doIfEquals("${statusCode}", 401){
           JmapAuthentication.authentication()
             .exec(scenario.check(checks: _*))
