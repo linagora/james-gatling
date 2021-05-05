@@ -22,7 +22,7 @@ class PushPlatformValidationSimulation extends Simulation {
 
   val feeder: AuthenticatedUserFeederBuilder = UserFeeder.toFeeder(authenticatedUsers)
 
-  setUp(new PushPlatformValidationScenario()
+  setUp(new PushPlatformValidationScenario(minMessagesInMailbox = 10)
     .generate(duration = ScenarioDuration, userFeeder = feeder, recipientFeeder = RecipientFeeder.usersToFeeder(authenticatedUsers))
     .inject(rampUsers(UserCount) during InjectionDuration)
     .protocols(HttpSettings.httpProtocol))
