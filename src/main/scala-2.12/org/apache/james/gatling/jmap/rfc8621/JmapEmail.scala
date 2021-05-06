@@ -91,6 +91,21 @@ object JmapEmail {
            |}""".stripMargin))
   }
 
+  def getState(accountId: String = "accountId"): HttpRequestBuilder = {
+    JmapHttp.apiCall("emailGetState")
+      .body(StringBody(
+        s"""{
+           |  "using": ["urn:ietf:params:jmap:core","urn:ietf:params:jmap:mail"],
+           |  "methodCalls": [[
+           |    "Email/get",
+           |    {
+           |      "accountId": "$${$accountId}",
+           |      "ids": []
+           |    },
+           |    "c1"]]
+           |}""".stripMargin))
+  }
+
   def markAsSeen(emailIdsKey: String = "emailIds",
                  accountId: String = "accountId"): HttpRequestBuilder =
     performUpdate(RequestTitle("markAsSeen"), KeywordName("$seen"),
