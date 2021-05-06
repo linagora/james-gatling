@@ -5,6 +5,7 @@ import io.gatling.core.structure.{ChainBuilder, ScenarioBuilder}
 import io.gatling.http.Predef._
 import org.apache.james.gatling.control.RecipientFeeder.RecipientFeederBuilder
 import org.apache.james.gatling.control.UserFeeder.UserFeederBuilder
+import org.apache.james.gatling.jmap.OpenMessage
 import org.apache.james.gatling.jmap.draft.scenari.{JmapInboxHomeLoadingScenario, JmapOpenArbitraryMessageScenario, JmapSelectArbitraryMailboxScenario}
 import org.apache.james.gatling.jmap.draft.{CommonSteps, JmapMessages}
 import org.apache.james.gatling.jmap.rfc8621.JmapEmail.{nonEmptyListMessagesChecks, openpaasEmailQueryParameters, queryEmails}
@@ -55,10 +56,11 @@ class PushPlatformValidationScenario(minMessagesInMailbox: Int) {
       .exec(websocketConnect().onConnected(
         exec(enablePush)
           .during(duration) {
-            randomSwitch(5.0 -> exec(JmapEmail.submitEmails(recipientFeeder)),
+            randomSwitch(
               2.0 -> inboxHomeLoading.inboxHomeLoading,
               8.0 -> selectArbitrary.selectArbitrary,
               5.0 -> sendMessage(recipientFeeder),
+              30.0 -> openArbitrary.openArbitrary,
               10.0 -> flagUpdate,
               15.0 -> exec(JmapMailbox.getNewState(PushPlatformValidationScenario.accountId, mailboxState))
                   .pause(1 second)
