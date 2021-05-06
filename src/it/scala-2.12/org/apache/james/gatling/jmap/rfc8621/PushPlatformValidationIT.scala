@@ -12,6 +12,7 @@ class PushPlatformValidationIT extends JmapIT {
   }
 
   scenario((userFeederBuilder, recipientFeederBuilder) => {
-    new PushPlatformValidationScenario(minMessagesInMailbox = 1).generate(duration = 10 seconds, userFeederBuilder, recipientFeederBuilder)
+    new PushPlatformValidationScenario(minMessagesInMailbox = 1, minWaitDelay = 1 second, maxWaitDelay = 1 second)
+      .generate(duration = 10 seconds, userFeederBuilder, recipientFeederBuilder)
   })
 }
