@@ -5,7 +5,6 @@ import io.gatling.core.structure.{ChainBuilder, ScenarioBuilder}
 import io.gatling.http.Predef._
 import org.apache.james.gatling.control.RecipientFeeder.RecipientFeederBuilder
 import org.apache.james.gatling.control.UserFeeder.UserFeederBuilder
-import org.apache.james.gatling.jmap.OpenMessage
 import org.apache.james.gatling.jmap.draft.scenari.{JmapInboxHomeLoadingScenario, JmapOpenArbitraryMessageScenario, JmapSelectArbitraryMailboxScenario}
 import org.apache.james.gatling.jmap.draft.{CommonSteps, JmapMessages}
 import org.apache.james.gatling.jmap.rfc8621.JmapEmail.{nonEmptyListMessagesChecks, openpaasEmailQueryParameters, queryEmails}
@@ -26,11 +25,19 @@ object PushPlatformValidationScenario {
   val emailIds = "emailIds"
 }
 
-class PushPlatformValidationScenario(minMessagesInMailbox: Int) {
+class PushPlatformValidationScenario(minMessagesInMailbox: Int,
+                                     minWaitDelay: Duration = 20 seconds,
+                                     maxWaitDelay: Duration = 40 seconds) {
   val flagUpdate: ChainBuilder = randomSwitch(
     70.0 -> exec(JmapEmail.markAsSeen()),
     20.0 -> exec(JmapEmail.markAsAnswered()),
     10.0 -> exec(JmapEmail.markAsFlagged()))
+    .asInstanceOf[ChainBuilder]
+
+  val getNewState: ChainBuilder =
+    exec(JmapMailbox.getNewState(PushPlatformValidationScenario.accountId, mailboxState))
+      .pause(1 second)
+      .exec(JmapEmail.getNewState(PushPlatformValidationScenario.accountId, emailState))
 
   val inboxHomeLoading: JmapInboxHomeLoadingScenario = new JmapInboxHomeLoadingScenario
   val openArbitrary: JmapOpenArbitraryMessageScenario = new JmapOpenArbitraryMessageScenario
@@ -38,7 +45,7 @@ class PushPlatformValidationScenario(minMessagesInMailbox: Int) {
 
   def sendMessage(recipientFeeder: RecipientFeederBuilder): ChainBuilder = JmapMessages.sendMessagesToUserWithRetryAuthentication(recipientFeeder)
 
-  def generate(duration: Duration, userFeeder: UserFeederBuilder, recipientFeeder: RecipientFeederBuilder): ScenarioBuilder =
+  def generate(duration: Duration, userFeeder: UserFeederBuilder, recipientFeeder: RecipientFeederBuilder): ScenarioBuilder = {
     scenario("PushPlatformValidation")
       .feed(userFeeder)
 
@@ -62,11 +69,12 @@ class PushPlatformValidationScenario(minMessagesInMailbox: Int) {
               5.0 -> sendMessage(recipientFeeder),
               30.0 -> openArbitrary.openArbitrary,
               10.0 -> flagUpdate,
-              15.0 -> exec(JmapMailbox.getNewState(PushPlatformValidationScenario.accountId, mailboxState))
-                  .pause(1 second)
-                .exec(JmapEmail.getNewState(PushPlatformValidationScenario.accountId, emailState)),
+              15.0 -> getNewState,
               30.0 -> exec())
+              .asInstanceOf[ChainBuilder]
+              .pause(minWaitDelay, maxWaitDelay)
           }))
       .exec(websocketClose())
+  }
 }
 
