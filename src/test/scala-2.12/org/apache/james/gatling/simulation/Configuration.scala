@@ -14,7 +14,10 @@ object Configuration {
 
   val JMAP_PORT = Properties.envOrElse("JMAP_PORT", "1080").toInt
   val JMAP_PROTOCOL = Properties.envOrElse("JMAP_PROTOCOL", "http")
+  val WS_PROTOCOL = Properties.envOrElse("WS_PROTOCOL", "ws")
+  val WS_PORT = Properties.envOrElse("WS_PORT", String.valueOf(JMAP_PORT)).toInt
   val BaseJmapUrl = new URL(s"$JMAP_PROTOCOL://$JmapServerHostName:$JMAP_PORT")
+  val BaseWsUrl = s"$WS_PROTOCOL://$JmapServerHostName:$WS_PORT"
 
   val WEBADMIN_PORT = Properties.envOrElse("WEBADMIN_PORT", "8000").toInt
   val WEBADMIN_PROTOCOL = Properties.envOrElse("WEBADMIN_PROTOCOL", "http")
