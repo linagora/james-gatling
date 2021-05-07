@@ -48,7 +48,7 @@ class PushPlatformValidationScenario(minMessagesInMailbox: Int) {
           .check(statusOk, noError, JmapMailbox.saveStateAs(mailboxState), JmapMailbox.saveInboxAs(inbox), JmapMailbox.saveDraftAs(draft), JmapMailbox.saveOutboxAs(outbox)))
         .exec(queryEmails(queryParameters = openpaasEmailQueryParameters(inbox))
           .check(statusOk, noError, nonEmptyListMessagesChecks(emailIds)))
-        .exec(JmapEmail.getEmails()
+        .exec(JmapEmail.getState()
           .check(statusOk, noError, JmapEmail.saveStateAs(emailState)))
         .exec(CommonSteps.authentication())
         .exec(openArbitrary.prepare)
