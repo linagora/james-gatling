@@ -4,12 +4,21 @@ import io.gatling.core.Predef._
 import io.gatling.core.structure.{ChainBuilder, ScenarioBuilder}
 import org.apache.james.gatling.control.RecipientFeeder.RecipientFeederBuilder
 import org.apache.james.gatling.control.UserFeeder.UserFeederBuilder
-import org.apache.james.gatling.jmap.draft.{CommonSteps, JmapMessages}
+import org.apache.james.gatling.jmap.draft.CommonSteps.authentication
+import org.apache.james.gatling.jmap.draft.JmapMailbox.{getSystemMailboxes, getSystemMailboxesChecks}
+import org.apache.james.gatling.jmap.draft.JmapMessages.openpaasListMessageParameters
+import org.apache.james.gatling.jmap.draft.{CommonSteps, JmapMailbox, JmapMessages, RetryAuthentication}
 import org.apache.james.gatling.jmap.{InboxHomeLoading, OpenMessage, SelectMailbox}
 
 import scala.concurrent.duration._
 
 class PlatformValidationScenario(minMessagesInMailbox: Int, minWaitDelay: Duration = 20 seconds, maxWaitDelay: Duration = 40 seconds) {
+  private object Keys {
+    val randomMailbox = "randomMailbox"
+    val inbox = "inboxID"
+    val messageIds = "messageIds"
+    val messagesDetailList = "messagesDetailList"
+  }
 
   val inboxHomeLoading: JmapInboxHomeLoadingScenario = new JmapInboxHomeLoadingScenario
   val openArbitrary: JmapOpenArbitraryMessageScenario = new JmapOpenArbitraryMessageScenario
@@ -20,15 +29,23 @@ class PlatformValidationScenario(minMessagesInMailbox: Int, minWaitDelay: Durati
     20.0 -> exec(JmapMessages.markAsAnswered()),
     10.0 -> exec(JmapMessages.markAsFlagged()))
 
+  def prepare: ChainBuilder =
+    exec(authentication())
+      .pause(1 second)
+      .exec(RetryAuthentication.execWithRetryAuthentication(getSystemMailboxes(),
+        getSystemMailboxesChecks
+          ++ JmapMailbox.saveRandomMailboxWithAtLeastMessagesAs(Keys.randomMailbox, minMessagesInMailbox)
+          ++ JmapMailbox.saveInboxAs(Keys.inbox)))
+      .pause(1 second)
+      .exec(RetryAuthentication.execWithRetryAuthentication(JmapMessages.listMessages(openpaasListMessageParameters(Keys.inbox)), JmapMessages.nonEmptyListMessagesChecks))
+
   def generate(duration: Duration, userFeeder: UserFeederBuilder, recipientFeeder: RecipientFeederBuilder): ScenarioBuilder =
     scenario("JmapSendMessages")
       .feed(userFeeder)
 
       .group("prepare")(
         // Prepare everything that your simulation needs
-        exec(CommonSteps.provisionSystemMailboxes())
-          .exec(openArbitrary.prepare)
-          .exec(selectArbitrary.prepare))
+        exec(prepare))
 
       // What does a user do when using JMAP?
       .during(duration) {
