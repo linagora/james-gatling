@@ -12,7 +12,7 @@ import org.apache.james.gatling.jmap.rfc8621.JmapEmail.{nonEmptyListMessagesChec
 import org.apache.james.gatling.jmap.rfc8621.JmapHttp.{noError, statusOk}
 import org.apache.james.gatling.jmap.rfc8621.JmapWebsocket.{enablePush, websocketClose, websocketConnect}
 import org.apache.james.gatling.jmap.rfc8621.{JmapEmail, JmapMailbox, SessionStep}
-import org.apache.james.gatling.jmap.scenari.PushPlatformValidationScenario.{draft, emailIds, emailState, inbox, mailboxState, outbox, randomMailbox}
+import org.apache.james.gatling.jmap.scenari.PushPlatformValidationScenario.{draft, emailIds, emailState, inbox, mailboxState, messageIds, outbox, randomMailbox}
 
 import scala.concurrent.duration._
 
@@ -24,6 +24,7 @@ object PushPlatformValidationScenario {
   val outbox = "outboxMailboxId"
   val accountId = "accountId"
   val emailIds = "emailIds"
+  val messageIds = "messageIds"
   val randomMailbox = "randomMailbox"
 }
 
@@ -61,7 +62,9 @@ class PushPlatformValidationScenario(minMessagesInMailbox: Int,
             JmapMailbox.saveOutboxAs(outbox),
             JmapMailbox.saveRandomMailboxWithAtLeastMessagesAs(randomMailbox, minMessagesInMailbox)))
         .exec(queryEmails(queryParameters = openpaasEmailQueryParameters(inbox))
-          .check(statusOk, noError, nonEmptyListMessagesChecks(emailIds)))
+          .check(statusOk, noError,
+            nonEmptyListMessagesChecks(emailIds),
+            nonEmptyListMessagesChecks(messageIds)))
         .exec(JmapEmail.getState()
           .check(statusOk, noError, JmapEmail.saveStateAs(emailState)))
         .exec(CommonSteps.authentication())
