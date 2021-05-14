@@ -23,7 +23,7 @@ object JmapEmail {
     JmapHttp.apiCall("emailQuery")
       .body(StringBody(
         s"""{
-           |  "using": ["urn:ietf:params:jmap:core","urn:ietf:params:jmap:mail"],
+           |  "using": ["urn:ietf:params:jmap:core","urn:ietf:params:jmap:mail", "urn:apache:james:params:jmap:mail:shares"],
            |  "methodCalls": [[
            |    "Email/query",
            |    ${Json.stringify(params)},
@@ -61,7 +61,7 @@ object JmapEmail {
     JmapHttp.apiCall("emailGet")
       .body(StringBody(
         s"""{
-           |  "using": ["urn:ietf:params:jmap:core","urn:ietf:params:jmap:mail"],
+           |  "using": ["urn:ietf:params:jmap:core","urn:ietf:params:jmap:mail", "urn:apache:james:params:jmap:mail:shares"],
            |  "methodCalls": [[
            |    "Email/get",
            |    {
@@ -79,7 +79,7 @@ object JmapEmail {
     JmapHttp.apiCall("emailGet")
       .body(StringBody(
         s"""{
-           |  "using": ["urn:ietf:params:jmap:core","urn:ietf:params:jmap:mail"],
+           |  "using": ["urn:ietf:params:jmap:core","urn:ietf:params:jmap:mail", "urn:apache:james:params:jmap:mail:shares"],
            |  "methodCalls": [[
            |    "Email/get",
            |    {
@@ -95,7 +95,7 @@ object JmapEmail {
     JmapHttp.apiCall("emailGetState")
       .body(StringBody(
         s"""{
-           |  "using": ["urn:ietf:params:jmap:core","urn:ietf:params:jmap:mail"],
+           |  "using": ["urn:ietf:params:jmap:core","urn:ietf:params:jmap:mail", "urn:apache:james:params:jmap:mail:shares"],
            |  "methodCalls": [[
            |    "Email/get",
            |    {
@@ -128,7 +128,7 @@ object JmapEmail {
     JmapHttp.apiCall(title.title)
       .body(StringBody(
         s"""{
-           |  "using": ["urn:ietf:params:jmap:core","urn:ietf:params:jmap:mail"],
+           |  "using": ["urn:ietf:params:jmap:core","urn:ietf:params:jmap:mail", "urn:apache:james:params:jmap:mail:shares"],
            |  "methodCalls": [[
            |    "Email/set",
            |    {
@@ -166,7 +166,7 @@ object JmapEmail {
     JmapHttp.apiCall(title.title)
       .body(StringBody(
         s"""{
-           |  "using": ["urn:ietf:params:jmap:core","urn:ietf:params:jmap:mail", "urn:ietf:params:jmap:submission"],
+           |  "using": ["urn:ietf:params:jmap:core","urn:ietf:params:jmap:mail", "urn:ietf:params:jmap:submission", "urn:apache:james:params:jmap:mail:shares"],
            |  "methodCalls": [
            |    ["Email/set", {
            |      "accountId": "$${$accountId}",
@@ -216,7 +216,7 @@ object JmapEmail {
     JmapHttp.apiCall("emailChanges")
       .body(StringBody(
         s"""{
-           |  "using": ["urn:ietf:params:jmap:core", "urn:ietf:params:jmap:mail"],
+           |  "using": ["urn:ietf:params:jmap:core", "urn:ietf:params:jmap:mail", "urn:apache:james:params:jmap:mail:shares"],
            |  "methodCalls": [
            |    ["Email/changes", {
            |      "accountId": "$${$accountId}",
