@@ -16,7 +16,7 @@ object JmapMailbox {
     JmapHttp.apiCall("getMailboxes")
       .body(StringBody(
         s"""{
-           |  "using": ["urn:ietf:params:jmap:core","urn:ietf:params:jmap:mail"],
+           |  "using": ["urn:ietf:params:jmap:core","urn:ietf:params:jmap:mail", "urn:apache:james:params:jmap:mail:shares"],
            |  "methodCalls": [[
            |    "Mailbox/get",
            |    {
@@ -79,7 +79,7 @@ object JmapMailbox {
     JmapHttp.apiCall("mailboxChanges")
       .body(StringBody(
         s"""{
-           |  "using": ["urn:ietf:params:jmap:core", "urn:ietf:params:jmap:mail"],
+           |  "using": ["urn:ietf:params:jmap:core", "urn:ietf:params:jmap:mail", "urn:apache:james:params:jmap:mail:shares"],
            |  "methodCalls": [
            |    ["Mailbox/changes", {
            |      "accountId": "$${$accountId}",
