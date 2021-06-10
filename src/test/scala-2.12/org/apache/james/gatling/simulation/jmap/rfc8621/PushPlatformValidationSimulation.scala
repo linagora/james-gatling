@@ -4,7 +4,7 @@ import io.gatling.core.Predef._
 import io.gatling.core.scenario.Simulation
 import org.apache.james.gatling.control.AuthenticatedUserFeeder.AuthenticatedUserFeederBuilder
 import org.apache.james.gatling.control.{Password, RecipientFeeder, User, UserFeeder, Username}
-import org.apache.james.gatling.jmap.scenari.PushPlatformValidationScenario
+import org.apache.james.gatling.jmap.rfc8621.scenari.PushPlatformValidationScenario
 import org.apache.james.gatling.simulation.Configuration.{InjectionDuration, ScenarioDuration, UserCount}
 import org.apache.james.gatling.simulation.HttpSettings
 

@@ -1,4 +1,4 @@
-package org.apache.james.gatling.jmap.scenari
+package org.apache.james.gatling.jmap.rfc8621.scenari
 
 import io.gatling.core.Predef.{exec, _}
 import io.gatling.core.structure.{ChainBuilder, ScenarioBuilder}
@@ -11,8 +11,8 @@ import org.apache.james.gatling.jmap.draft.{CommonSteps, JmapMessages}
 import org.apache.james.gatling.jmap.rfc8621.JmapEmail.{nonEmptyListMessagesChecks, openpaasEmailQueryParameters, queryEmails}
 import org.apache.james.gatling.jmap.rfc8621.JmapHttp.{noError, statusOk}
 import org.apache.james.gatling.jmap.rfc8621.JmapWebsocket.{enablePush, websocketClose, websocketConnect}
+import org.apache.james.gatling.jmap.rfc8621.scenari.PushPlatformValidationScenario.{accountId, draft, emailIds, emailState, inbox, mailboxState, messageIds, outbox, randomMailbox}
 import org.apache.james.gatling.jmap.rfc8621.{JmapEmail, JmapMailbox, SessionStep}
-import org.apache.james.gatling.jmap.scenari.PushPlatformValidationScenario.{draft, emailIds, emailState, inbox, mailboxState, messageIds, outbox, randomMailbox}
 
 import scala.concurrent.duration._
 
@@ -38,9 +38,9 @@ class PushPlatformValidationScenario(minMessagesInMailbox: Int,
     .asInstanceOf[ChainBuilder]
 
   val getNewState: ChainBuilder =
-    exec(JmapMailbox.getNewState(PushPlatformValidationScenario.accountId, mailboxState))
+    exec(JmapMailbox.getNewState(accountId, mailboxState))
       .pause(1 second)
-      .exec(JmapEmail.getNewState(PushPlatformValidationScenario.accountId, emailState))
+      .exec(JmapEmail.getNewState(accountId, emailState))
 
   val inboxHomeLoading: JmapInboxHomeLoadingScenario = new JmapInboxHomeLoadingScenario
   val openArbitrary: JmapOpenArbitraryMessageScenario = new JmapOpenArbitraryMessageScenario
