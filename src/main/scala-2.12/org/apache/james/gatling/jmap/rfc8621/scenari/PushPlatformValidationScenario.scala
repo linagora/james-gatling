@@ -10,7 +10,7 @@ import org.apache.james.gatling.jmap.draft.scenari.{JmapInboxHomeLoadingScenario
 import org.apache.james.gatling.jmap.draft.{CommonSteps, JmapMessages}
 import org.apache.james.gatling.jmap.rfc8621.JmapEmail.{nonEmptyListMessagesChecks, openpaasEmailQueryParameters, queryEmails}
 import org.apache.james.gatling.jmap.rfc8621.JmapHttp.{noError, statusOk}
-import org.apache.james.gatling.jmap.rfc8621.JmapWebsocket.{enablePush, websocketClose, websocketConnect}
+import org.apache.james.gatling.jmap.rfc8621.JmapWebsocket.{echoPingWs, enablePush, websocketClose, websocketConnect}
 import org.apache.james.gatling.jmap.rfc8621.scenari.PushPlatformValidationScenario.{accountId, draft, emailIds, emailState, inbox, mailboxState, messageIds, outbox, randomMailbox}
 import org.apache.james.gatling.jmap.rfc8621.{JmapEmail, JmapMailbox, SessionStep}
 
@@ -42,6 +42,9 @@ class PushPlatformValidationScenario(minMessagesInMailbox: Int,
       .pause(1 second)
       .exec(JmapEmail.getNewState(accountId, emailState))
 
+  val ping: ChainBuilder = exec(echoPingWs.await(3 seconds)(
+    ws.checkTextMessage("ping").check(jsonPath("$.methodResponses[0][1].ping").is("dummy"))))
+
   val inboxHomeLoading: JmapInboxHomeLoadingScenario = new JmapInboxHomeLoadingScenario
   val openArbitrary: JmapOpenArbitraryMessageScenario = new JmapOpenArbitraryMessageScenario
   val selectArbitrary: JmapSelectArbitraryMailboxScenario = new JmapSelectArbitraryMailboxScenario(minMessagesInMailbox)
@@ -69,21 +72,22 @@ class PushPlatformValidationScenario(minMessagesInMailbox: Int,
           .check(statusOk, noError, JmapEmail.saveStateAs(emailState)))
         .exec(CommonSteps.authentication())
         .exec(JmapMessages.listMessages(openpaasListMessageParameters(inbox))))
-      .exec(websocketConnect().onConnected(
-        exec(enablePush)
-          .during(duration) {
-            randomSwitch(
-              2.0 -> inboxHomeLoading.inboxHomeLoading,
-              8.0 -> selectArbitrary.selectArbitrary,
-              5.0 -> sendMessage(recipientFeeder),
-              30.0 -> openArbitrary.openArbitrary,
-              10.0 -> flagUpdate,
-              15.0 -> getNewState,
-              30.0 -> exec())
-              .asInstanceOf[ChainBuilder]
-              .pause(minWaitDelay, maxWaitDelay)
-          }))
-      .exec(websocketClose())
+      .exec(websocketConnect)
+      .exec(enablePush)
+      .during(duration) {
+        exec(ping)
+          .exec(randomSwitch(
+            2.0 -> inboxHomeLoading.inboxHomeLoading,
+            8.0 -> selectArbitrary.selectArbitrary,
+            5.0 -> sendMessage(recipientFeeder),
+            30.0 -> openArbitrary.openArbitrary,
+            10.0 -> flagUpdate,
+            15.0 -> getNewState,
+            30.0 -> exec())
+          .asInstanceOf[ChainBuilder]
+          .pause(minWaitDelay, maxWaitDelay))
+      }
+      .exec(websocketClose)
   }
 }
 
