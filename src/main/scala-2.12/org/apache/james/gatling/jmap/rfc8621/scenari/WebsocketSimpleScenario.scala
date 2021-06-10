@@ -17,13 +17,13 @@ class WebsocketSimpleScenario {
       .feed(userFeeder)
       .exec(SessionStep.retrieveAccountId)
       .exec(provisionSystemMailboxes())
-      .exec(websocketConnect().onConnected(
+      .exec(websocketConnect.onConnected(
         exec(enablePush)
           .during(duration) {
             exec(createMailbox)
               .pause(2 second)
         }))
-      .exec(websocketClose())
+      .exec(websocketClose)
 
   def createMailbox: ChainBuilder =
     exec((session: Session) => session.set("createdId", MailboxId.generate().id))

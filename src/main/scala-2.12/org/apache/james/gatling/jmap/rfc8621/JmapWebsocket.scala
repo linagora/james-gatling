@@ -6,13 +6,13 @@ import io.gatling.http.action.ws.{WsCloseBuilder, WsSendTextFrameBuilder}
 import io.gatling.http.request.builder.ws.WsConnectRequestBuilder
 
 object JmapWebsocket {
-  def websocketConnect(): WsConnectRequestBuilder =
+  def websocketConnect: WsConnectRequestBuilder =
     ws("Open websocket")
       .connect("/jmap/ws")
       .headers(JmapHttp.HEADERS_JSON)
       .basicAuth("${username}", "${password}")
 
-  def websocketClose(): WsCloseBuilder =
+  def websocketClose: WsCloseBuilder =
     ws("Close websocket")
       .close
 
@@ -43,6 +43,19 @@ object JmapWebsocket {
                    |          "name": "$${mailboxName}"
                    |        }
                    |      }
+                   |    },
+                   |    "c1"]]
+                   |}""".stripMargin)
+
+  def echoPingWs: WsSendTextFrameBuilder =
+    ws("ping")
+      .sendText(s"""{
+                   |  "@type": "Request",
+                   |  "using": ["urn:ietf:params:jmap:core"],
+                   |  "methodCalls": [[
+                   |    "Core/echo",
+                   |    {
+                   |      "ping": "dummy"
                    |    },
                    |    "c1"]]
                    |}""".stripMargin)
