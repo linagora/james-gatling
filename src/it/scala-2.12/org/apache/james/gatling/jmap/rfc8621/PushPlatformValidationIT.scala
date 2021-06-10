@@ -2,7 +2,7 @@ package org.apache.james.gatling.jmap.rfc8621
 
 import org.apache.james.gatling.Fixture
 import org.apache.james.gatling.jmap.draft.JmapIT
-import org.apache.james.gatling.jmap.scenari.PushPlatformValidationScenario
+import org.apache.james.gatling.jmap.rfc8621.scenari.PushPlatformValidationScenario
 
 import scala.concurrent.duration._
 
