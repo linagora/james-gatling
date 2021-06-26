@@ -228,7 +228,10 @@ object JmapEmail {
            |        "resultOf": "c1",
            |        "name": "Email/changes",
            |        "path": "/created"
-           |      }
+           |      },
+           |      "properties":[ "id", "blobId", "threadId", "mailboxIds", "keywords", "size",
+           |                     "sender", "from", "to", "cc", "bcc", "replyTo", "subject",
+           |                     "sentAt", "hasAttachment", "preview"]
            |    }, "c2"],
            |    ["Email/get", {
            |      "accountId": "$${$accountId}",
@@ -236,7 +239,8 @@ object JmapEmail {
            |        "resultOf": "c1",
            |        "name": "Email/changes",
            |        "path": "/updated"
-           |      }
+           |      },
+           |      "properties":["keywords", "mailboxIds"]
            |    }, "c3"]
            |  ]
            |}""".stripMargin))
