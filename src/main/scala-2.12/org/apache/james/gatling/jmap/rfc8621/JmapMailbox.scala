@@ -104,6 +104,6 @@ object JmapMailbox {
            |  ]
            |}""".stripMargin))
       .check(status.is(200))
-      .check(jsonPath("$.methodResponses[0][1].newState").saveAs("newState"))
+      .check(jsonPath("$.methodResponses[0][1].newState").saveAs(oldState))
   }
 }
