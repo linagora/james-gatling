@@ -46,4 +46,17 @@ object JmapWebsocket {
                    |    },
                    |    "c1"]]
                    |}""".stripMargin)
+
+  def echoPingWs: WsSendTextFrameBuilder =
+    ws("ping")
+      .sendText(s"""{
+                   |  "@type": "Request",
+                   |  "using": ["urn:ietf:params:jmap:core"],
+                   |  "methodCalls": [[
+                   |    "Core/echo",
+                   |    {
+                   |      "ping": "dummy"
+                   |    },
+                   |    "c1"]]
+                   |}""".stripMargin)
 }
