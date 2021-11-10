@@ -1,7 +1,6 @@
 package org.apache.james.gatling.imap.scenari
 
 import java.util.Calendar
-
 import com.linagora.gatling.imap.PreDef._
 import com.linagora.gatling.imap.protocol.command.MessageRange.{From, One}
 import com.linagora.gatling.imap.protocol.command.{MessageRanges, Silent, StoreFlags}
@@ -13,6 +12,7 @@ import io.gatling.core.session.el._
 import io.gatling.core.structure.ScenarioBuilder
 
 import scala.concurrent.duration._
+import scala.language.implicitConversions
 import scala.util.Random
 
 class ImapStoreScenario {

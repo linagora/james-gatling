@@ -13,13 +13,15 @@ import org.apache.james.gatling.control.UserFeeder
 import org.slf4j
 import org.slf4j.LoggerFactory
 
+import scala.util.Properties
+
 abstract class ImapIT extends GatlingFunSpec {
   protected val logger: slf4j.Logger = LoggerFactory.getLogger(this.getClass.getCanonicalName)
 
   protected val server: RunningServer = JamesServer.start()
-  lazy val protocolConf: Protocol = new ImapProtocolBuilder("localhost", mappedImapPort).build()
+  lazy val protocolConf: Protocol = new ImapProtocolBuilder("localhost", mappedImapPort, Properties.envOrElse("IMAP_PROTOCOL", "imap")).build()
 
-  protected def mappedImapPort = server.mappedImapPort
+  protected def mappedImapPort: Integer = server.mappedImapPort
 
   protected lazy val users = List(bart)
 

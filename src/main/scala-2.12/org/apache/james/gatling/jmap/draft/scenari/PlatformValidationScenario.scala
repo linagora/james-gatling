@@ -7,7 +7,7 @@ import org.apache.james.gatling.control.UserFeeder.UserFeederBuilder
 import org.apache.james.gatling.jmap.draft.CommonSteps.authentication
 import org.apache.james.gatling.jmap.draft.JmapMailbox.{getSystemMailboxes, getSystemMailboxesChecks}
 import org.apache.james.gatling.jmap.draft.JmapMessages.openpaasListMessageParameters
-import org.apache.james.gatling.jmap.draft.{CommonSteps, JmapMailbox, JmapMessages, RetryAuthentication}
+import org.apache.james.gatling.jmap.draft.{JmapMailbox, JmapMessages, RetryAuthentication}
 import org.apache.james.gatling.jmap.{InboxHomeLoading, OpenMessage, SelectMailbox}
 
 import scala.concurrent.duration._
