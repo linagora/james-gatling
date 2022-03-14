@@ -1,0 +1,20 @@
+pipeline {
+    agent any
+    stages {
+        stage('Git checkout') {
+            steps {
+                git 'https://github.com/linagora/james-gatling'
+            }
+        }
+        stage('Compile') {
+            steps {
+                sh '$HOME/.sdkman/candidates/sbt/current/bin/sbt clean compile'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh '$HOME/.sdkman/candidates/sbt/current/bin/sbt GatlingIt/test'
+            }
+        }
+    }
+}
