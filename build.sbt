@@ -21,6 +21,7 @@ lazy val root = (project in file("."))
     )
   .dependsOn(gatlingImap)
 
+// TODO enable WebsocketSimpleScenario and PushPlatformValidationScenario' websocketclose request when upgrade gatlingVersion
 val gatlingVersion = "3.0.3"
 val playWsVersion = "2.0.1"
 
