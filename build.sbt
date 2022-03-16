@@ -31,4 +31,4 @@ enablePlugins(GatlingPlugin)
 resolvers += "lightshed-maven" at "http://dl.bintray.com/content/lightshed/maven"
 resolvers += "Fabricator" at "http://dl.bintray.com/biercoff/Fabricator"
 
-lazy val gatlingImap = ProjectRef(uri("git://github.com/linagora/gatling-imap.git"), "gatling-imap")
+lazy val gatlingImap = ProjectRef(uri("https://github.com/linagora/gatling-imap.git"), "gatling-imap")
