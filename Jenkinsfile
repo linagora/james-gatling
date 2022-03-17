@@ -8,6 +8,7 @@ pipeline {
         }
         stage('Test') {
             steps {
+                sh 'docker pull linagora/tmail-backend:memory-branch-master'
                 sh 'sbt GatlingIt/test'
             }
             post {
