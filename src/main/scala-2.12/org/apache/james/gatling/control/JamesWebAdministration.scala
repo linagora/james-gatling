@@ -46,7 +46,7 @@ object User {
 }
 
 object Domain {
-  def random = Domain(RandomStringGenerator.randomString)
+  def random = Domain(RandomStringGenerator.randomAlphaString())
 }
 
 object Password {
