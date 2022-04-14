@@ -3,24 +3,17 @@ package org.apache.james.gatling.simulation.imap
 import com.linagora.gatling.imap.PreDef.imap
 import io.gatling.core.Predef._
 import io.gatling.core.scenario.Simulation
-import org.apache.james.gatling.control.{UserCreator, UserFeeder}
 import org.apache.james.gatling.imap.scenari.{ImapFullHeavyUserScenario, ImapFullLightUserScenario}
-import org.apache.james.gatling.simulation.{Configuration, HttpSettings}
-
-import scala.concurrent.duration._
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{Await, Future}
+import org.apache.james.gatling.simulation.Configuration.UserCount
+import org.apache.james.gatling.simulation.{Configuration, HttpSettings, UsersFeederWebAdminFactory}
 
 class ImapFullSimulation extends Simulation {
-
-  private val users = new UserCreator(Configuration.BaseJamesWebAdministrationUrl, Configuration.BaseJmapUrl).createUsersWithInboxAndOutbox(Configuration.UserCount)
-  private val usersFeeder = UserFeeder.toFeeder(Await.result(Future.sequence(users), 90 seconds))
-
-  private val lightScenario = new ImapFullLightUserScenario()
-  private val heavyScenario = new ImapFullHeavyUserScenario()
+  private val lightScenario: ImapFullLightUserScenario = new ImapFullLightUserScenario()
+  private val heavyScenario: ImapFullHeavyUserScenario = new ImapFullHeavyUserScenario()
+  private val feederFactory: UsersFeederWebAdminFactory = new UsersFeederWebAdminFactory(UserCount).initUsers
 
   setUp(
-    lightScenario.generate(Configuration.ScenarioDuration, usersFeeder).inject(atOnceUsers((Configuration.UserCount * 0.75).round.toInt)),
-    heavyScenario.generate(Configuration.ScenarioDuration, usersFeeder).inject(atOnceUsers((Configuration.UserCount * 0.25).round.toInt))
+    lightScenario.generate(Configuration.ScenarioDuration, feederFactory.userFeeder()).inject(atOnceUsers((Configuration.UserCount * 0.75).round.toInt)),
+    heavyScenario.generate(Configuration.ScenarioDuration, feederFactory.userFeeder()).inject(atOnceUsers((Configuration.UserCount * 0.25).round.toInt))
   ).protocols(HttpSettings.httpProtocol, imap.host(Configuration.ImapServerHostName).build())
 }
