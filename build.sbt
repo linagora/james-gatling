@@ -32,4 +32,4 @@ scalacOptions in ThisBuild ++= Seq("-unchecked", "-deprecation", "-feature", "-l
 
 enablePlugins(GatlingPlugin)
 
-lazy val gatlingImap = ProjectRef(uri("https://github.com/linagora/gatling-imap.git"), "gatling-imap")
+lazy val gatlingImap = ProjectRef(uri("https://github.com/chibenwa/gatling-imap.git"), "gatling-imap")
