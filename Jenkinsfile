@@ -3,6 +3,7 @@ pipeline {
     stages {
         stage('Compile') {
             steps {
+                sh 'sbt reload'
                 sh 'sbt clean compile'
             }
         }
