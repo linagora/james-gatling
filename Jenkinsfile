@@ -3,6 +3,7 @@ pipeline {
     stages {
         stage('Compile') {
             steps {
+                sh 'rm -rf /home/jenkins/.sbt/1.0/staging/'
                 sh 'sbt reload'
                 sh 'sbt clean compile'
             }
