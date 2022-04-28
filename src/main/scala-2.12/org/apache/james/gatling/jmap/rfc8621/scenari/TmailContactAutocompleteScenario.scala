@@ -24,12 +24,12 @@ class TmailContactAutocompleteScenario {
       .exec(SessionStep.retrieveAccountId)
       .exec(JmapMailbox.provisionUsersWithMessages(recipientFeeder, numberOfMessages = 5))
       .pause(2 seconds)
-      .randomSwitch(
-        70.0 -> exec((session: Session) => session.set(typeaheadKeyword, randomSubString(session.attributes(recipientSessionParam).asInstanceOf[String]))),
-        30.0 -> exec((session: Session) => session.set(typeaheadKeyword, Random.alphanumeric.take(5).mkString(""))))
       .during(duration) {
-        exec(JmapTmailContact.getAutocomplete(typeaheadKeyword = typeaheadKeyword)
-          .check(statusOk, noError))
+        randomSwitch(
+          70.0 -> exec((session: Session) => session.set(typeaheadKeyword, randomSubString(session.attributes(recipientSessionParam).asInstanceOf[String]))),
+          30.0 -> exec((session: Session) => session.set(typeaheadKeyword, Random.alphanumeric.take(5).mkString(""))))
+          .exec(JmapTmailContact.getAutocomplete(typeaheadKeyword = typeaheadKeyword).check(statusOk, noError))
+          .pause(2 seconds)
       }
 
   private def randomSubString(input: String): String = {
