@@ -29,7 +29,7 @@ class TmailContactAutocompleteScenario {
           70.0 -> exec((session: Session) => session.set(typeaheadKeyword, randomSubString(session.attributes(recipientSessionParam).asInstanceOf[String]))),
           30.0 -> exec((session: Session) => session.set(typeaheadKeyword, Random.alphanumeric.take(5).mkString(""))))
           .exec(JmapTmailContact.getAutocomplete(typeaheadKeyword = typeaheadKeyword).check(statusOk, noError))
-          .pause(2 seconds)
+          .pause(5 seconds)
       }
 
   private def randomSubString(input: String): String = {
