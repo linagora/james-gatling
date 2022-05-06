@@ -1,7 +1,8 @@
 package org.apache.james.gatling.smtp
 
+import com.linagora.gatling.imap.action.ExitableActorDelegatingAction
+import io.gatling.core.action.Action
 import io.gatling.core.action.builder.ActionBuilder
-import io.gatling.core.action.{Action, ExitableActorDelegatingAction}
 import io.gatling.core.structure.ScenarioContext
 import io.gatling.core.util.NameGen
 import org.apache.james.gatling.smtp.SmtpProtocol.SmtpComponents

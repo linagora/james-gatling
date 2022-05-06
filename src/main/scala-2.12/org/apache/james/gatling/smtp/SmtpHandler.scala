@@ -1,6 +1,5 @@
 package org.apache.james.gatling.smtp
 
-import javax.mail.internet.InternetAddress
 import akka.actor.{ActorRef, Props}
 import io.gatling.commons.stats.{KO, OK}
 import io.gatling.core.Predef.Status
@@ -8,6 +7,7 @@ import io.gatling.core.akka.BaseActor
 import io.gatling.core.session.Session
 import io.gatling.core.stats.message.ResponseTimings
 
+import javax.mail.internet.InternetAddress
 import scala.util.{Failure, Success}
 
 object SmtpHandler {
@@ -28,7 +28,7 @@ class SmtpHandler extends BaseActor {
   }
 
   def sendMail(sendMailRequest: SendMailRequest, requestOrigin: ActorRef) = {
-    import courier.{Mailer, Text, Envelope}
+    import courier.{Envelope, Mailer, Text}
     val baseMailer = Mailer(sendMailRequest.host, sendMailRequest.port)
       .startTls(sendMailRequest.ssl)
       .trustAll(true)
@@ -55,7 +55,7 @@ class SmtpHandler extends BaseActor {
 
   private def computeResponseTimings(reqStart: Long) = {
     val requestEnd = System.currentTimeMillis()
-    ResponseTimings(reqStart, requestEnd)
+    new ResponseTimings(reqStart, requestEnd)
   }
 }
 

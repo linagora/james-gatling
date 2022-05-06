@@ -1,19 +1,27 @@
 package org.apache.james.gatling.imap.scenari
 
-import java.util.Calendar
 import com.linagora.gatling.imap.PreDef._
 import com.linagora.gatling.imap.protocol.command.MessageRange.{From, One}
 import com.linagora.gatling.imap.protocol.command.{MessageRanges, Silent, StoreFlags}
-import io.gatling.commons.validation.Validation
+import io.gatling.commons.validation.{SuccessWrapper, Validation}
 import io.gatling.core.Predef._
 import io.gatling.core.feeder.FeederBuilder
 import io.gatling.core.session.Expression
 import io.gatling.core.session.el._
 import io.gatling.core.structure.ScenarioBuilder
+import org.apache.james.gatling.imap.scenari.ImapStoreScenario.validationSequence
 
+import java.util.Calendar
 import scala.concurrent.duration._
 import scala.language.implicitConversions
 import scala.util.Random
+
+object ImapStoreScenario {
+  def validationSequence[T](seq: Seq[Validation[T]]): Validation[Seq[T]] =
+    seq.foldLeft(Seq.empty[T].success) { (acc, validation) =>
+      for (accValue <- acc; value <- validation) yield accValue :+ value
+    }
+}
 
 class ImapStoreScenario {
   private val numberOfMailInInbox = 5000
@@ -31,7 +39,7 @@ class ImapStoreScenario {
   private val populateInbox = repeat(numberOfMailInInbox)(pause(appendGracePeriod).exec(populateMailbox))
 
   private implicit def storeFlags2Expression(value: StoreFlags): Expression[StoreFlags] = session =>
-    Validation.sequence(value.flags.map(flag => flag.el[String]).map(expr => expr(session)))
+    validationSequence(value.flags.map(flag => flag.el[String]).map(expr => expr(session)))
       .map(mutable => collection.immutable.Seq(mutable:_*))
       .map(flags => value.setFlags(flags))
 

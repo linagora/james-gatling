@@ -1,3 +1,3 @@
 logLevel := Level.Warn
 
-addSbtPlugin("io.gatling" % "gatling-sbt" % "3.0.0")
+addSbtPlugin("io.gatling" % "gatling-sbt" % "3.2.2")

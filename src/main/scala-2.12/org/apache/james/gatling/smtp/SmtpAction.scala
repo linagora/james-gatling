@@ -42,7 +42,7 @@ class SmtpAction(requestName: String,
   override def receive: Receive = {
     case session: Session => execute(session)
     case executionReport: ExecutionReport =>
-      statsEngine.logResponse(executionReport.session, requestName, executionReport.responseTimings.startTimestamp, executionReport.responseTimings.endTimestamp,
+      statsEngine.logResponse(executionReport.session.scenario, executionReport.session.groups, requestName, executionReport.responseTimings.startTimestamp, executionReport.responseTimings.endTimestamp,
         executionReport.status, None, executionReport.errorMessage)
       next ! executionReport.session
     case msg => logger.error(s"Unexpected message $msg")

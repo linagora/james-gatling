@@ -8,7 +8,7 @@ import io.gatling.http.Predef._
 import org.apache.james.gatling.Fixture.{bart, simpsonDomain}
 import org.apache.james.gatling.JamesServer
 import org.apache.james.gatling.JamesServer.RunningServer
-import org.apache.james.gatling.control.AuthenticatedUserFeeder.AuthenticatedUserFeederBuilder
+import org.apache.james.gatling.control.AuthenticatedUserFeeder.AuthenticatedUserFeeder
 import org.apache.james.gatling.control.RecipientFeeder.RecipientFeederBuilder
 import org.apache.james.gatling.control.UserFeeder.UserFeederBuilder
 import org.apache.james.gatling.control.{AuthenticatedUser, AuthenticatedUserFeeder, JamesJmap, RecipientFeeder, UserFeeder}
@@ -50,7 +50,7 @@ abstract class JmapIT extends GatlingFunSpec {
     }
   }
 
-  protected def scenario(scenarioFromFeeder: AuthenticatedUserFeederBuilder => ScenarioBuilder) = {
+  protected def scenario(scenarioFromFeeder: AuthenticatedUserFeeder => ScenarioBuilder) = {
     val authenticatedUsers : Iterator[AuthenticatedUser] = users.view.map(user => Await.result(jamesJmap.authenticateUser(user), 5 seconds)).toIterator
     val userFeeder = AuthenticatedUserFeeder.toFeeder(authenticatedUsers)
     scenarioFromFeeder(userFeeder).actionBuilders.reverse.foreach { actionBuilder =>

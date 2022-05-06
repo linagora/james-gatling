@@ -1,9 +1,10 @@
 package org.apache.james.gatling.jmap.draft
 
+import com.fasterxml.jackson.databind.JsonNode
 import fabricator.Words
 import io.gatling.core.Predef._
 import io.gatling.core.check.CheckBuilder
-import io.gatling.core.check.extractor.jsonpath.JsonPathCheckType
+import io.gatling.core.check.jsonpath.JsonPathCheckType
 import io.gatling.core.structure.ChainBuilder
 import io.gatling.http.Predef._
 import io.gatling.http.check.HttpCheck
@@ -69,7 +70,7 @@ object JmapMailbox {
             }, "#0"]]"""))
       .check(saveMailboxId())
 
-  def saveMailboxId(): CheckBuilder[JsonPathCheckType, Any, Seq[String]] = {
+  def saveMailboxId(): CheckBuilder[JsonPathCheckType, JsonNode, Seq[String]] = {
     jsonPath(s"""$$[0][1].created..$${createdId}.id""").findAll.saveAs("mailboxId")
   }
 

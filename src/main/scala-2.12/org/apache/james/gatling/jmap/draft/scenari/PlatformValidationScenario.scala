@@ -12,7 +12,7 @@ import org.apache.james.gatling.jmap.{InboxHomeLoading, OpenMessage, SelectMailb
 
 import scala.concurrent.duration._
 
-class PlatformValidationScenario(minMessagesInMailbox: Int, minWaitDelay: Duration = 20 seconds, maxWaitDelay: Duration = 40 seconds) {
+class PlatformValidationScenario(minMessagesInMailbox: Int, minWaitDelay: FiniteDuration = 20 seconds, maxWaitDelay: FiniteDuration = 40 seconds) {
   private object Keys {
     val randomMailbox = "randomMailbox"
     val inbox = "inboxID"

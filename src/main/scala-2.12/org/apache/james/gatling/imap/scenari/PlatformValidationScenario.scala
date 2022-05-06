@@ -6,15 +6,15 @@ import com.linagora.gatling.imap.protocol.command.MessageRange.{Last, Range}
 import com.linagora.gatling.imap.protocol.command.{MessageRanges, Silent, StoreFlags}
 import com.linagora.gatling.imap.protocol.{Messages, Recent, StatusItems, UidNext, Unseen}
 import io.gatling.core.Predef._
-import io.gatling.core.structure.{ScenarioBuilder, _}
-import javax.mail.Flags
-import javax.mail.search.FlagTerm
+import io.gatling.core.structure._
 import org.apache.james.gatling.control.UserFeeder.UserFeederBuilder
 
+import javax.mail.Flags
+import javax.mail.search.FlagTerm
 import scala.collection.immutable.Seq
-import scala.concurrent.duration.{Duration, _}
+import scala.concurrent.duration._
 
-class PlatformValidationScenario(minWaitDelay: Duration = 2 seconds, maxWaitDelay: Duration = 18 seconds)  {
+class PlatformValidationScenario(minWaitDelay: FiniteDuration = 2 seconds, maxWaitDelay: FiniteDuration = 18 seconds)  {
 
   val initialConnection: ChainBuilder = group("initialConnection")(
     exec(imap("Connect").connect()).exitHereIfFailed

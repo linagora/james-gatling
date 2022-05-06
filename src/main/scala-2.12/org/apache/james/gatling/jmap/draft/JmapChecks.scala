@@ -1,11 +1,13 @@
 package org.apache.james.gatling.jmap.draft
 
+import com.fasterxml.jackson.databind.JsonNode
 import io.gatling.core.Predef._
-import io.gatling.core.check.extractor.jsonpath.{JsonPathCheckBuilder, JsonPathOfType}
+import io.gatling.core.check.MultipleFindCheckBuilder
+import io.gatling.core.check.jsonpath.{JsonPathCheckType, JsonPathOfType}
 
 object JmapChecks {
 
-  private val hasErrorPath: JsonPathCheckBuilder[String] with JsonPathOfType = jsonPath("$[?(@[0] == 'error')]")
+  private val hasErrorPath: MultipleFindCheckBuilder[JsonPathCheckType, JsonNode, String] with JsonPathOfType = jsonPath("$[?(@[0] == 'error')]")
 
   val noError = hasErrorPath.notExists
   val hasError = hasErrorPath.exists

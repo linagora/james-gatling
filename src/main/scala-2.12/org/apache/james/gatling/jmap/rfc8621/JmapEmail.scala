@@ -1,41 +1,51 @@
 package org.apache.james.gatling.jmap.rfc8621
 
+import com.fasterxml.jackson.databind.JsonNode
 import io.gatling.core.Predef.{StringBody, jsonPath, _}
-import io.gatling.core.check.extractor.jsonpath.{JsonPathCheckBuilder, JsonPathOfType}
-import io.gatling.core.json.Json
+import io.gatling.core.check.MultipleFindCheckBuilder
+import io.gatling.core.check.jsonpath.{JsonPathCheckType, JsonPathOfType}
 import io.gatling.core.structure.ChainBuilder
 import io.gatling.http.Predef._
 import io.gatling.http.check.HttpCheck
 import io.gatling.http.request.builder.HttpRequestBuilder
 import org.apache.james.gatling.control.RecipientFeeder.RecipientFeederBuilder
-import org.apache.james.gatling.jmap.draft.JmapMessages.NO_PARAMETERS
+import org.apache.james.gatling.jmap.draft.JmapMessages.{JmapParameters, NO_PARAMETERS}
 import org.apache.james.gatling.jmap.draft.{JmapMessages, MessageId, Subject, TextBody}
+import org.apache.james.gatling.jmap.rfc8621.scenari.PushPlatformValidationScenario.accountId
 import org.apache.james.gatling.utils.RandomStringGenerator
 
 case class RequestTitle(title: String) extends AnyVal
 case class KeywordName(name: String) extends AnyVal
 
 object JmapEmail {
-  type JmapParameters = Map[String, Any]
-
   def queryEmails(queryParameters: JmapParameters = NO_PARAMETERS): HttpRequestBuilder = {
-    val params = queryParameters + ("accountId" -> "${accountId}")
     JmapHttp.apiCall("emailQuery")
       .body(StringBody(
         s"""{
            |  "using": ["urn:ietf:params:jmap:core","urn:ietf:params:jmap:mail", "urn:apache:james:params:jmap:mail:shares"],
            |  "methodCalls": [[
            |    "Email/query",
-           |    ${Json.stringify(params)},
+           |    {
+           |      "accountId": "$${$accountId}"
+           |      $queryParameters
+           |    },
            |    "c1"]]
            |}""".stripMargin))
   }
 
-  def openpaasEmailQueryParameters(mailboxKey: String = "inboxID"): JmapParameters =
-    Map("filter" -> Map("inMailbox" -> s"$${$mailboxKey}"),
-      "comparator" -> List(Map("property" -> "sentAt", "isAscending" -> false)),
-      "position" -> 0,
-      "limit" -> 30)
+  def openpaasEmailQueryParameters(mailboxKey: String = "inboxID"): JmapParameters = {
+    s""",
+       |"filter": {
+       |  "inMailbox": "$${$mailboxKey}"
+       |},
+       |"sort": [{
+       |  "property": "sentAt",
+       |  "isAscending": false
+       |}],
+       |"position": 0,
+       |"limit": 30
+       |""".stripMargin
+  }
 
   def nonEmptyListMessagesChecks(key: String = "emailIds"): HttpCheck =
     jsonPath("$.methodResponses[0][1].ids[*]").findAll.saveAs(key)
@@ -46,16 +56,16 @@ object JmapEmail {
   def emailSubmittedChecks(key: String = "emailSubmitted"): HttpCheck =
     jsonPath("$.methodResponses[1][1].created").find.saveAs(key)
 
-  private val emailsPath: JsonPathCheckBuilder[String] with JsonPathOfType = jsonPath("$.methodResponses[0][1].list[*]")
+  private val emailsPath: MultipleFindCheckBuilder[JsonPathCheckType, JsonNode, String] with JsonPathOfType = jsonPath("$.methodResponses[0][1].list[*]")
   private val statePath = "$.methodResponses[0][1].state"
   private val newStatePath = "$.methodResponses[0][1].newState"
 
   val nonEmptyEmailsChecks: HttpCheck = emailsPath.exists
 
-  val typicalMessageProperties: List[String] = List("bcc", "cc", "receivedAt", "sentAt", "from", "hasAttachment", "htmlBody", "id", "keywords", "mailboxIds", "size", "subject", "textBody", "to")
-  val previewMessageProperties: List[String] = List("bcc", "cc", "receivedAt", "sentAt", "from", "hasAttachment", "id", "keywords", "mailboxIds", "size", "subject", "to", "preview")
+  val typicalMessageProperties: String = "[\"bcc\", \"cc\", \"receivedAt\", \"sentAt\", \"from\", \"hasAttachment\", \"htmlBody\", \"id\", \"keywords\", \"mailboxIds\", \"size\", \"subject\", \"textBody\", \"to\"]"
+  val previewMessageProperties: String = "[\"bcc\", \"cc\", \"receivedAt\", \"sentAt\", \"from\", \"hasAttachment\", \"id\", \"keywords\", \"mailboxIds\", \"size\", \"subject\", \"to\", \"preview\"]"
 
-  def getRandomEmails(properties: List[String] = typicalMessageProperties,
+  def getRandomEmails(properties: String = typicalMessageProperties,
                       emailIdsKey: String = "emailIds",
                       accountId: String = "accountId"): HttpRequestBuilder = {
     JmapHttp.apiCall("emailGet")
@@ -67,13 +77,13 @@ object JmapEmail {
            |    {
            |      "accountId": "$${$accountId}",
            |      "ids": ["$${$emailIdsKey.random()}"],
-           |      "properties": ${Json.stringify(properties)}
+           |      "properties": $properties
            |    },
            |    "c1"]]
            |}""".stripMargin))
   }
 
-  def getEmails(properties: List[String] = typicalMessageProperties,
+  def getEmails(properties: String = typicalMessageProperties,
                 emailIdsKey: String = "emailIds",
                 accountId: String = "accountId"): HttpRequestBuilder = {
     JmapHttp.apiCall("emailGet")
@@ -85,7 +95,7 @@ object JmapEmail {
            |    {
            |      "accountId": "$${$accountId}",
            |      "ids": $${$emailIdsKey.jsonStringify()},
-           |      "properties": ${Json.stringify(properties)}
+           |      "properties": $properties
            |    },
            |    "c1"]]
            |}""".stripMargin))

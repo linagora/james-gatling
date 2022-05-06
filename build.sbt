@@ -9,6 +9,9 @@ lazy val root = (project in file("."))
       libraryDependencies += "com.typesafe.play" %% "play-ahc-ws-standalone" % playWsVersion,
       libraryDependencies += "io.gatling" % "gatling-test-framework" % gatlingVersion,
       libraryDependencies += "io.gatling.highcharts" % "gatling-charts-highcharts" % gatlingVersion,
+      libraryDependencies += "com.typesafe.akka" %% "akka-testkit" % "2.6.8" % "it",
+      libraryDependencies += "com.typesafe.akka" %% "akka-protobuf" % "2.6.8" % "it",
+      libraryDependencies += "com.typesafe.akka" %% "akka-stream" % "2.6.8" % "it",
       libraryDependencies += "org.testcontainers" % "testcontainers" % "1.11.0" % "it",
 
       libraryDependencies += "com.github.azakordonets" %% "fabricator" % "2.1.5",
@@ -25,7 +28,7 @@ lazy val root = (project in file("."))
   .dependsOn(gatlingImap)
 
 // TODO enable WebsocketSimpleScenario and PushPlatformValidationScenario' websocketclose request when upgrade gatlingVersion
-val gatlingVersion = "3.0.3"
+val gatlingVersion = "3.4.2"
 val playWsVersion = "2.0.1"
 
 scalacOptions in ThisBuild ++= Seq("-unchecked", "-deprecation", "-feature", "-language:postfixOps", "-Ywarn-unused:imports")
