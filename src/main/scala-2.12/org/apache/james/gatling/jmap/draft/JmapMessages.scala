@@ -1,7 +1,6 @@
 package org.apache.james.gatling.jmap.draft
 
 import io.gatling.core.Predef._
-import io.gatling.core.json.Json
 import io.gatling.core.session.Session
 import io.gatling.http.Predef._
 import io.gatling.http.check.HttpCheck
@@ -28,8 +27,8 @@ object JmapMessages {
 
   private val messageIdsPath = "$[0][1].messageIds[*]"
 
-  type JmapParameters = Map[String, Any]
-  val NO_PARAMETERS : JmapParameters = Map()
+  type JmapParameters = String
+  val NO_PARAMETERS : JmapParameters = ""
 
   val messageIdSessionParam = "messageId"
   val subjectSessionParam = "subject"
@@ -118,33 +117,27 @@ object JmapMessages {
       .exec(sendMessagesWithRetryAuthentication())
   }
 
-  def openpaasListMessageFilter(mailboxesKey: List[String]): JmapParameters = {
-    val mailboxes = mailboxesKey.map(key => s"$${$key}")
-    Map(
-      "inMailboxes" -> mailboxes,
-      "text" -> null)
-  }
-
   def openpaasListMessageParameters(mailboxKey: String = "inboxID"): JmapParameters =
-    openpaasListMessageParameters(List(mailboxKey))
-
-
-  def openpaasListMessageParameters(mailboxesKey: List[String]): JmapParameters =
-    Map("filter" -> openpaasListMessageFilter(mailboxesKey),
-      "sort" -> Seq("date desc"),
-      "collapseThreads" -> false,
-      "fetchMessages" -> false,
-      "position" -> 0,
-      "limit" -> 30
-    )
+    s"""
+       |  "filter": {
+       |    "inMailboxes": ["$${$mailboxKey}"],
+       |    "text": null
+       |  },
+       |  "sort": [ "date desc" ],
+       |  "collapseThreads": false,
+       |  "fetchMessages": false,
+       |  "position": 0,
+       |  "limit": 30
+       |""".stripMargin
 
   def listMessages(queryParameters: JmapParameters = NO_PARAMETERS) =
     JmapAuthentication.authenticatedQuery("listMessages", "/jmap")
       .body(StringBody(
         s"""[[
           "getMessageList",
-            ${Json.stringify(queryParameters)}
-           ,
+          {
+            $queryParameters
+          },
           "#0"
           ]]"""))
 
@@ -167,43 +160,43 @@ object JmapMessages {
   def listMessagesWithRetryAuthentication() =
     execWithRetryAuthentication(listMessages(), nonEmptyListMessagesChecks)
 
-  def getMessagesWithRetryAuthentication(properties: List[String], messageIdsKey: String = "messageIds") =
+  def getMessagesWithRetryAuthentication(properties: String, messageIdsKey: String = "messageIds") =
     execWithRetryAuthentication(getMessages(properties, messageIdsKey), getRandomMessageChecks)
 
   def getRandomMessagesWithRetryAuthentication() =
     execWithRetryAuthentication(getRandomMessages(), getRandomMessageChecks)
 
-  val typicalMessageProperties: List[String] = List("bcc", "cc", "date", "from", "hasAttachment", "htmlBody", "id", "isAnswered", "isDraft", "isFlagged", "isUnread", "mailboxIds", "size", "subject", "textBody", "to")
+  val typicalMessageProperties: String = "[\"bcc\", \"cc\", \"date\", \"from\", \"hasAttachment\", \"htmlBody\", \"id\", \"isAnswered\", \"isDraft\", \"isFlagged\", \"isUnread\", \"mailboxIds\", \"size\", \"subject\", \"textBody\", \"to\"]"
 
-  val previewMessageProperties: List[String] = List("bcc", "blobId", "cc", "date", "from", "hasAttachment", "headers", "id", "isAnswered", "isDraft", "isFlagged", "isForwarded", "isUnread", "mailboxIds", "preview", "replyTo", "subject", "threadId", "to")
+  val previewMessageProperties: String = "[\"bcc\", \"blobId\", \"cc\", \"date\", \"from\", \"hasAttachment\", \"headers\", \"id\", \"isAnswered\", \"isDraft\", \"isFlagged\", \"isForwarded\", \"isUnread\", \"mailboxIds\", \"preview\", \"replyTo\", \"subject\", \"threadId\", \"to\"]"
 
-  val openpaasInboxOpenMessageProperties: List[String] = List("attachments", "bcc", "blobId", "cc", "date", "from", "hasAttachment", "headers", "htmlBody", "id", "isDraft", "isFlagged", "isUnread", "mailboxIds", "preview", "replyTo", "subject", "textBody", "threadId", "to")
-
-
+  val openpaasInboxOpenMessageProperties: String = "[\"attachments\", \"bcc\", \"blobId\", \"cc\", \"date\", \"from\", \"hasAttachment\", \"headers\", \"htmlBody\", \"id\", \"isDraft\", \"isFlagged\", \"isUnread\", \"mailboxIds\", \"preview\", \"replyTo\", \"subject\", \"textBody\", \"threadId\", \"to\"]"
 
 
 
-  def getRandomMessages(properties: List[String] = typicalMessageProperties, messageIdsKey: String = "messageIds") =
+
+
+  def getRandomMessages(properties: String = typicalMessageProperties, messageIdsKey: String = "messageIds") =
     JmapAuthentication.authenticatedQuery("getMessages", "/jmap")
       .body(StringBody(
         s"""[[
           "getMessages",
           {
             "ids": ["$${$messageIdsKey.random()}"],
-            "properties": ${Json.stringify(properties)}
+            "properties": $properties
           },
           "#0"
           ]]"""))
 
 
-  def getMessages(properties: List[String], messageIdsKey: String = "messageIds") =
+  def getMessages(properties: String, messageIdsKey: String = "messageIds") =
     JmapAuthentication.authenticatedQuery("getMessages", "/jmap")
       .body(StringBody(
         s"""[[
           "getMessages",
           {
             "ids": $${$messageIdsKey.jsonStringify()},
-            "properties": ${Json.stringify(properties)}
+            "properties": $properties
           },
           "#0"
           ]]"""))

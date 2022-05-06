@@ -1,7 +1,7 @@
 package org.apache.james.gatling.imap
 
 import org.apache.james.gatling.Fixture
-import org.apache.james.gatling.imap.scenari.{ImapStoreScenario, PlatformValidationScenario}
+import org.apache.james.gatling.imap.scenari.PlatformValidationScenario
 
 import scala.concurrent.duration._
 

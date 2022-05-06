@@ -10,7 +10,7 @@ import org.apache.james.gatling.jmap.draft.scenari.{JmapInboxHomeLoadingScenario
 import org.apache.james.gatling.jmap.draft.{CommonSteps, JmapMessages}
 import org.apache.james.gatling.jmap.rfc8621.JmapEmail.{nonEmptyListMessagesChecks, openpaasEmailQueryParameters, queryEmails}
 import org.apache.james.gatling.jmap.rfc8621.JmapHttp.{noError, statusOk}
-import org.apache.james.gatling.jmap.rfc8621.JmapWebsocket.{echoPingWs, enablePush, websocketClose, websocketConnect}
+import org.apache.james.gatling.jmap.rfc8621.JmapWebsocket.{echoPingWs, enablePush, websocketConnect}
 import org.apache.james.gatling.jmap.rfc8621.scenari.PushPlatformValidationScenario.{accountId, draft, emailIds, emailState, inbox, mailboxState, messageIds, outbox, randomMailbox}
 import org.apache.james.gatling.jmap.rfc8621.{JmapEmail, JmapMailbox, SessionStep}
 
@@ -29,8 +29,8 @@ object PushPlatformValidationScenario {
 }
 
 class PushPlatformValidationScenario(minMessagesInMailbox: Int,
-                                     minWaitDelay: Duration = 20 seconds,
-                                     maxWaitDelay: Duration = 40 seconds) {
+                                     minWaitDelay: FiniteDuration = 20 seconds,
+                                     maxWaitDelay: FiniteDuration = 40 seconds) {
   val flagUpdate: ChainBuilder = randomSwitch(
     70.0 -> exec(JmapEmail.markAsSeen()),
     20.0 -> exec(JmapEmail.markAsAnswered()),

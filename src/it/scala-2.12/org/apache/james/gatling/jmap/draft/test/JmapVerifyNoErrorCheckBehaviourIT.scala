@@ -6,7 +6,6 @@ import io.gatling.http.check.HttpCheck
 import org.apache.james.gatling.Fixture
 import org.apache.james.gatling.control.RecipientFeeder.RecipientFeederBuilder
 import org.apache.james.gatling.control.UserFeeder.UserFeederBuilder
-import org.apache.james.gatling.jmap.draft.JmapMessages.typicalMessageProperties
 import org.apache.james.gatling.jmap.draft.RetryAuthentication.execWithRetryAuthentication
 import org.apache.james.gatling.jmap.draft.{CommonSteps, JmapAuthentication, JmapChecks, JmapIT, JmapMessages}
 
@@ -19,7 +18,7 @@ class JmapVerifyNoErrorCheckBehaviourIT extends JmapIT {
     users.foreach(server.sendMessage(Fixture.homer.username))
   }
 
-  private def bogusGetRandomMessage(properties: List[String] = typicalMessageProperties, messageIdsKey: String = "messageIds") =
+  private def bogusGetRandomMessage(messageIdsKey: String = "messageIds") =
     JmapAuthentication.authenticatedQuery("getMessages (with bogus properties serialization)", "/jmap")
       .body(StringBody(
         s"""[[

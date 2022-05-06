@@ -1,6 +1,6 @@
 package org.apache.james.gatling.jmap.rfc8621
 
-import io.gatling.core.Predef.StringBody
+import io.gatling.core.Predef._
 import io.gatling.http.request.builder.HttpRequestBuilder
 
 object JmapTmailContact {
