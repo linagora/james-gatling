@@ -42,7 +42,7 @@ class MassiveOperationScenario {
     .exec(imap("deleteFolder").deleteFolder(mailboxBName).check(ok))
     .exec(imap("deleteFolder").deleteFolder(mailboxCName).check(ok))
   private val createMailboxDWith1000SubMailboxes = exec(imap("createFolder").createFolder(mailboxDName).check(ok))
-    .exec(repeat(1000, "loopId")(pause(gracePeriod).exec(exec(imap("createFolder").createFolder(s"$mailboxDNewName.$${loopId}").check(ok)))))
+    .exec(repeat(1000, "loopId")(pause(gracePeriod).exec(exec(imap("createFolder").createFolder(s"$mailboxDName.$${loopId}").check(ok)))))
   private val renameMailboxD = exec(imap("renameFolder").renameFolder(mailboxDName, mailboxDNewName).check(ok))
   private val deleteMailboxD = exec(imap("deleteFolder").deleteFolder(mailboxDNewName).check(ok))
 
