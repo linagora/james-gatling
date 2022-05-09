@@ -72,6 +72,7 @@ class MassiveOperationScenario {
       .exec(createMailboxDWith1000SubMailboxes)
       .pause(1 seconds)
       .exec(renameMailboxD)
+      .pause(5 seconds)
       .exec(deleteMailboxD)
 
 }
