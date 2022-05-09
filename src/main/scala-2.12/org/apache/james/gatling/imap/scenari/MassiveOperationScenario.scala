@@ -15,6 +15,7 @@ import scala.concurrent.duration._
 class MassiveOperationScenario {
   private val gracePeriod = 5 milliseconds
   private val numberOfMailInInbox = 20000
+  private val numberOfSubMailboxes = 1000
   private val mailboxAName = "MailboxA"
   private val mailboxBName = "MailboxB"
   private val mailboxCName = "MailboxC"
@@ -42,9 +43,10 @@ class MassiveOperationScenario {
     .exec(imap("deleteFolder").deleteFolder(mailboxBName).check(ok))
     .exec(imap("deleteFolder").deleteFolder(mailboxCName).check(ok))
   private val createMailboxDWith1000SubMailboxes = exec(imap("createFolder").createFolder(mailboxDName).check(ok))
-    .exec(repeat(1000, "loopId")(pause(gracePeriod).exec(exec(imap("createFolder").createFolder(s"$mailboxDName.$${loopId}").check(ok)))))
+    .exec(repeat(numberOfSubMailboxes, "loopId")(pause(gracePeriod).exec(exec(imap("createFolder").createFolder(s"$mailboxDName.$${loopId}").check(ok)))))
   private val renameMailboxD = exec(imap("renameFolder").renameFolder(mailboxDName, mailboxDNewName).check(ok))
   private val deleteMailboxD = exec(imap("deleteFolder").deleteFolder(mailboxDNewName).check(ok))
+    .exec(repeat(numberOfSubMailboxes, "loopId")(pause(gracePeriod).exec(exec(imap("deleteFolder").deleteFolder(s"$mailboxDNewName.$${loopId}").check(ok)))))
 
 
   def generate(feeder: FeederBuilder): ScenarioBuilder =
