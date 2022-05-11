@@ -9,9 +9,9 @@ lazy val root = (project in file("."))
       libraryDependencies += "com.typesafe.play" %% "play-ahc-ws-standalone" % playWsVersion,
       libraryDependencies += "io.gatling" % "gatling-test-framework" % gatlingVersion,
       libraryDependencies += "io.gatling.highcharts" % "gatling-charts-highcharts" % gatlingVersion,
-      libraryDependencies += "com.typesafe.akka" %% "akka-testkit" % "2.6.8" % "it",
-      libraryDependencies += "com.typesafe.akka" %% "akka-protobuf" % "2.6.8" % "it",
-      libraryDependencies += "com.typesafe.akka" %% "akka-stream" % "2.6.8" % "it",
+      libraryDependencies += "com.typesafe.akka" %% "akka-testkit" % "2.6.8" % "test,it",
+      libraryDependencies += "com.typesafe.akka" %% "akka-protobuf" % "2.6.8" % "test,it",
+      libraryDependencies += "com.typesafe.akka" %% "akka-stream" % "2.6.8" % "test,it",
       libraryDependencies += "org.testcontainers" % "testcontainers" % "1.11.0" % "it",
 
       libraryDependencies += "com.github.azakordonets" %% "fabricator" % "2.1.5",
