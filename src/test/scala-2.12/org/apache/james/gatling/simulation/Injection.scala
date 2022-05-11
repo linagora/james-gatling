@@ -17,5 +17,5 @@ case class UsersPerSecond(nb: Double) extends UsersDensity {
   override def injectDuring(givenDuring: FiniteDuration): ConstantRateOpenInjection = constantUsersPerSec(nb) during givenDuring
 }
 case class UsersTotal(nb: Double) extends UsersDensity {
-  override def injectDuring(givenDuring: FiniteDuration): RampOpenInjection = rampUsers(nb.toInt) during givenDuring
+  override def injectDuring(givenDuring: FiniteDuration): OpenInjectionStep = rampUsers(nb.toInt) during givenDuring
 }

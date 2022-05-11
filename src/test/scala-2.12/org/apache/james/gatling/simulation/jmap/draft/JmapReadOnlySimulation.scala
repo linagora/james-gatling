@@ -20,7 +20,7 @@ class JmapReadOnlySimulation extends Simulation {
         username = Username(recordValueToString(record("username"))),
         accessToken = BearerAccessToken(recordValueToString(record("bearerAccessToken")))))
 
-  val feeder: AuthenticatedUserFeederBuilder = AuthenticatedUserFeeder.toFeeder(authenticatedUsers.toIterator)
+  val feeder: AuthenticatedUserFeeder = AuthenticatedUserFeeder.toFeeder(authenticatedUsers.toIterator)
 
   setUp(new JmapReadOnlyScenario().generate(feeder, Configuration.ScenarioDuration)
     .inject(UsersTotal(authenticatedUsers.length).injectDuring(Configuration.InjectionDuration))
