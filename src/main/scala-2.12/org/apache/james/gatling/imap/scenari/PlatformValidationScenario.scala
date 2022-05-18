@@ -19,14 +19,14 @@ class PlatformValidationScenario(minWaitDelay: FiniteDuration = 2 seconds, maxWa
   val initialConnection: ChainBuilder = group("initialConnection")(
     exec(imap("Connect").connect()).exitHereIfFailed
       .exec(imap("capability").capability().check(ok))
-      .exec(imap("login").login("${username}", "${password}").check(ok))
+      .exec(imap("login").login("${username}", "${password}").check(ok)).exitHereIfFailed
       .exec(imap("capability").capability().check(ok))
       .exec(imap("enableUTF8").enable("UTF8=ACCEPT").check(ok))
       .exec(imap("namespace").namespace().check(ok))
       .exec(imap("list").list("", "*").check(ok))
       .exec(imap("lsub").list("", "*").check(ok))
       .exec(imap("myrights").myRights("INBOX").check(ok))
-      .exec(imap("select").select("INBOX").check(ok))
+      .exec(imap("select").select("INBOX").check(ok)).exitHereIfFailed
       .exec(imap("flagResync").fetch(MessageRanges(Range(1, 1000000)), AttributeList("UID", "FLAGS"))))
 
   val closeConnection: ChainBuilder = group("closeConnection")(
@@ -48,7 +48,7 @@ class PlatformValidationScenario(minWaitDelay: FiniteDuration = 2 seconds, maxWa
       2.0 -> exec(imap("store").store(MessageRanges(Last()), StoreFlags.add(Silent.Enable(), "\\Seen")).check(ok)),
       1.0 -> exec(imap("list").list("", "*").check(ok, hasFolder("INBOX"))),
       1.0 -> exec(imap("unselect").unselect().check(ok))
-        .exec(imap("select").select("INBOX").check(ok)),
+        .exec(imap("select").select("INBOX").check(ok)).exitHereIfFailed,
       1.0 -> exec(imap("check").check().check(ok)),
       1.0 -> exec(imap("expunge").expunge().check(ok))))
 
