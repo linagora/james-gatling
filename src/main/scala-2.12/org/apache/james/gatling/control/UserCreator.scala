@@ -17,6 +17,15 @@ class UserCreator(val baseJamesWebAdministrationUrl: URL, val baseJamesJmap: URL
         case Success(user) => registerSystemMailboxes(user)
       })
 
+  def createUsersWithInboxAndOutbox(users: Seq[User], domain: Domain) = {
+    Await.result(jamesWebAdministration.addDomain(domain), 10.seconds)
+
+    createUsers(users)
+      .map(userFuture => userFuture.andThen {
+        case Success(user) => registerSystemMailboxes(user)
+      })
+  }
+
   def createUsers(userCount: Int): Seq[Future[User]] = {
     val domain = Domain.random
     Await.result(jamesWebAdministration.addDomain(domain), 10.seconds)
@@ -24,6 +33,9 @@ class UserCreator(val baseJamesWebAdministrationUrl: URL, val baseJamesJmap: URL
     generateUsers(userCount, domain)
       .map(jamesWebAdministration.addUser)
   }
+
+  def createUsers(users: Seq[User]): Seq[Future[User]] =
+    users.map(jamesWebAdministration.addUser)
 
   private def generateUsers(userCount: Int, domain: Domain): Seq[User] =
     (0 until userCount)
