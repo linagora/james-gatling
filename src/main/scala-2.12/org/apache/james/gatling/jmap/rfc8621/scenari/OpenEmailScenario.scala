@@ -1,7 +1,7 @@
 package org.apache.james.gatling.jmap.rfc8621.scenari
 
 import io.gatling.core.Predef._
-import io.gatling.core.structure.ScenarioBuilder
+import io.gatling.core.structure.{ChainBuilder, ScenarioBuilder}
 import io.gatling.http.Predef._
 import org.apache.james.gatling.control.UserFeeder.UserFeederBuilder
 import org.apache.james.gatling.jmap.OpenMessage
@@ -25,7 +25,9 @@ class OpenEmailScenario {
         .check(statusOk, noError, saveInboxAs(Keys.inbox)))
       .exec(queryEmails(queryParameters = openpaasEmailQueryParameters(Keys.inbox))
         .check(statusOk, noError, nonEmptyListMessagesChecks(key = Keys.emailIds))))
-    .group(OpenMessage.name)(
-      exec(getRandomEmails(typicalMessageProperties, Keys.emailIds)
-        .check(JmapHttp.statusOk, JmapHttp.noError, JmapEmail.nonEmptyEmailsChecks)))
+    .group(OpenMessage.name)(openArbitrary)
+
+  def openArbitrary: ChainBuilder =
+    exec(getRandomEmails(typicalMessageProperties, Keys.emailIds)
+      .check(JmapHttp.statusOk, JmapHttp.noError, JmapEmail.nonEmptyEmailsChecks))
 }
