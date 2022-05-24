@@ -5,9 +5,6 @@ import io.gatling.core.structure.{ChainBuilder, ScenarioBuilder}
 import io.gatling.http.Predef._
 import org.apache.james.gatling.control.RecipientFeeder.RecipientFeederBuilder
 import org.apache.james.gatling.control.UserFeeder.UserFeederBuilder
-import org.apache.james.gatling.jmap.draft.JmapMessages.openpaasListMessageParameters
-import org.apache.james.gatling.jmap.draft.scenari.{JmapInboxHomeLoadingScenario, JmapOpenArbitraryMessageScenario, JmapSelectArbitraryMailboxScenario}
-import org.apache.james.gatling.jmap.draft.{CommonSteps, JmapMessages}
 import org.apache.james.gatling.jmap.rfc8621.JmapEmail.{nonEmptyListMessagesChecks, openpaasEmailQueryParameters, queryEmails}
 import org.apache.james.gatling.jmap.rfc8621.JmapHttp.{noError, statusOk}
 import org.apache.james.gatling.jmap.rfc8621.JmapWebsocket.{echoPingWs, enablePush, websocketConnect}
@@ -45,11 +42,9 @@ class PushPlatformValidationScenario(minMessagesInMailbox: Int,
   val ping: ChainBuilder = exec(echoPingWs.await(3 seconds)(
     ws.checkTextMessage("ping").check(jsonPath("$.methodResponses[0][1].ping").is("dummy"))))
 
-  val inboxHomeLoading: JmapInboxHomeLoadingScenario = new JmapInboxHomeLoadingScenario
-  val openArbitrary: JmapOpenArbitraryMessageScenario = new JmapOpenArbitraryMessageScenario
-  val selectArbitrary: JmapSelectArbitraryMailboxScenario = new JmapSelectArbitraryMailboxScenario(minMessagesInMailbox)
-
-  def sendMessage(recipientFeeder: RecipientFeederBuilder): ChainBuilder = JmapMessages.sendMessagesToUserWithRetryAuthentication(recipientFeeder)
+  val inboxHomeLoading: InboxLoadingScenario = new InboxLoadingScenario()
+  val openArbitrary: OpenEmailScenario = new OpenEmailScenario
+  val selectArbitrary: SelectMailboxScenario = new SelectMailboxScenario(minMessagesInMailbox)
 
   def generate(duration: Duration, userFeeder: UserFeederBuilder, recipientFeeder: RecipientFeederBuilder): ScenarioBuilder = {
     scenario("PushPlatformValidation")
@@ -70,8 +65,7 @@ class PushPlatformValidationScenario(minMessagesInMailbox: Int,
             nonEmptyListMessagesChecks(messageIds)))
         .exec(JmapEmail.getState()
           .check(statusOk, noError, JmapEmail.saveStateAs(emailState)))
-        .exec(CommonSteps.authentication())
-        .exec(JmapMessages.listMessages(openpaasListMessageParameters(inbox))))
+        .exec(queryEmails(queryParameters = openpaasEmailQueryParameters(inbox))))
       .exec(websocketConnect)
       .exec(enablePush)
       .during(duration) {
@@ -79,7 +73,7 @@ class PushPlatformValidationScenario(minMessagesInMailbox: Int,
           .exec(randomSwitch(
             2.0 -> inboxHomeLoading.inboxHomeLoading,
             8.0 -> selectArbitrary.selectArbitrary,
-            5.0 -> sendMessage(recipientFeeder),
+            5.0 -> JmapEmail.submitEmails(recipientFeeder),
             30.0 -> openArbitrary.openArbitrary,
             10.0 -> flagUpdate,
             15.0 -> getNewState,
