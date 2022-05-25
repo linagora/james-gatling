@@ -23,16 +23,12 @@ object Configuration {
   val WEBADMIN_PROTOCOL = Properties.envOrElse("WEBADMIN_PROTOCOL", "http")
   val BaseJamesWebAdministrationUrl = new URL(s"$WEBADMIN_PROTOCOL://$WebadminServerHostName:$WEBADMIN_PORT")
 
-  val DURATION_PROPERTY = Properties.envOrNone("DURATION") match {
-    case Some(duration) => Some(duration.toInt minutes)
-    case _ => None
-  }
+  val InjectDuration = Properties.envOrElse("INJECT_DURATION", "10").toInt seconds
+  val ScenarioDuration = Properties.envOrElse("SCENARIO_DURATION", "10").toInt seconds
 
-  val ScenarioDuration = DURATION_PROPERTY.getOrElse(1 hour)
-  val InjectionDuration = DURATION_PROPERTY.getOrElse(1 hour)
-  val UserCount = 100
-  val RandomlySentMails = 10
-  val NumberOfMailboxes = 10
-  val NumberOfMessages = 20
+  val UserCount = Properties.envOrElse("USER_COUNT", "100").toInt
+  val RandomlySentMails = Properties.envOrElse("RANDOMLY_SENT_MAILS", "10").toInt
+  val NumberOfMailboxes = Properties.envOrElse("NUMBER_OF_MAILBOXES", "10").toInt
+  val NumberOfMessages = Properties.envOrElse("NUMBER_OF_MESSAGES", "20").toInt
 
 }

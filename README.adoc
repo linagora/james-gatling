@@ -20,6 +20,14 @@ In some cases you could want to specify target hostname per protocol, the follow
  * `IMAP_SERVER_HOSTNAME` which is set to `TARGET_HOSTNAME` by default
  * `WEBADMIN_SERVER_HOSTNAME` which is set to `TARGET_HOSTNAME` by default
 
+You can also customize the sizing of the scenarios:
+ * `INJECT_DURATION` is the ramp up time, set to `10` seconds by default
+ * `SCENARIO_DURATION` is the effective scenario duration, set to `10` seconds by default
+ * `USER_COUNT` is the number of users, set to `100` by default
+ * `RANDOMLY_SENT_MAILS` is the numbers of emails sent by user during the provisioning, `10` by default
+ * `NUMBER_OF_MAILBOXES` is the numbers of mailboxes created during the provisioning, `10` by default
+ * `NUMBER_OF_MESSAGES` is the numbers of messages created per mailbox during the provisioning, `20` by default
+
 You can run all the simulations via sbt :
 
 .bash
