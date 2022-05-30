@@ -30,7 +30,7 @@ object Configuration {
 
   val ScenarioDuration = DURATION_PROPERTY.getOrElse(1 hour)
   val InjectionDuration = DURATION_PROPERTY.getOrElse(1 hour)
-  val UserCount = 100
+  val UserCount = Properties.envOrElse("USER_COUNT", "100").toInt
   val RandomlySentMails = 10
   val NumberOfMailboxes = 10
   val NumberOfMessages = 20
