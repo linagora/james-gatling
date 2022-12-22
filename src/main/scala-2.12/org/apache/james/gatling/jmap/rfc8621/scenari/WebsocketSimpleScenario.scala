@@ -30,7 +30,9 @@ class WebsocketSimpleScenario {
       .exec((session: Session) => session.set("mailboxName", MailboxName.generate().name))
       .exec(setMailboxesWs
         .await(2 seconds)(
-          ws.checkTextMessage("check push state").check(jsonPath("$.@type").is("StateChange")))
+          ws.checkTextMessage("check mailbox created push state").check(jsonPath("$.@type").is("StateChange")))
         .await(2 seconds)(
-          ws.checkTextMessage("check response").check(jsonPath("$.methodResponses[0][1].created").find.saveAs("mailboxCreated"))))
+          ws.checkTextMessage("check mailbox subscribed push state").check(jsonPath("$.@type").is("StateChange")))
+        .await(2 seconds)(
+          ws.checkTextMessage("check mailbox/set response").check(jsonPath("$.methodResponses[0][1].created").find.saveAs("mailboxCreated"))))
 }
