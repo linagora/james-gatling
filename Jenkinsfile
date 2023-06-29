@@ -1,5 +1,7 @@
 pipeline {
-    agent gatling
+    agent {
+        label 'gatling'
+    }
 
     options {
         // Configure an overall timeout for the build.
