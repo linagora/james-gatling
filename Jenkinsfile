@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent gatling
 
     options {
         // Configure an overall timeout for the build.
