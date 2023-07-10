@@ -7,7 +7,11 @@ WORKDIR /home/sbtuser
 RUN git clone https://github.com/linagora/james-gatling.git
 
 WORKDIR /home/sbtuser/james-gatling
+COPY run.sh /home/sbtuser/james-gatling/run.sh
+USER root
+RUN chmod 755 /home/sbtuser/james-gatling/run.sh
+USER sbtuser
 
 RUN sbt clean compile
 
-CMD sbt
+ENTRYPOINT [ "bash", "/home/sbtuser/james-gatling/run.sh" ]
