@@ -2,7 +2,7 @@ package org.apache.james.gatling.simulation.jmap.draft
 
 import io.gatling.core.Predef._
 import org.apache.james.gatling.jmap.draft.scenari.PlatformValidationScenario
-import org.apache.james.gatling.simulation.Configuration.{InjectionDuration, ScenarioDuration, UserCount}
+import org.apache.james.gatling.simulation.Configuration.{InjectionDuration, MaxDuration, ScenarioDuration, UserCount}
 import org.apache.james.gatling.simulation.{HttpSettings, UsersFeederCSVFactory}
 
 class PlatformValidationSimulation extends Simulation {
@@ -14,4 +14,5 @@ class PlatformValidationSimulation extends Simulation {
       recipientFeeder = feederFactory.recipientFeeder())
     .inject(rampUsers(UserCount) during InjectionDuration)
     .protocols(HttpSettings.httpProtocol))
+    .maxDuration(MaxDuration)
 }

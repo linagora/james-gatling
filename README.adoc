@@ -4,7 +4,7 @@ image:https://travis-ci.org/linagora/james-gatling.svg?branch=master["Build Stat
 
 For now, you need to have a running dockerized James JMAP server running on the same computer than your Gatling host. It needs to export the webAdmin over port 8000.
 
-Alternativly you can set up the following system properties:
+Alternatively you can set up the following system properties:
 
  * `TARGET_HOSTNAME` which is set to `localhost` by default
  * `SMTP_PORT` which is set to `25` by default
