@@ -66,15 +66,15 @@ class PushPlatformValidationScenario(minMessagesInMailbox: Int,
         .exec(JmapEmail.getState()
           .check(statusOk, noError, JmapEmail.saveStateAs(emailState)))
         .exec(queryEmails(queryParameters = openpaasEmailQueryParameters(inbox))))
-      .exec(websocketConnect)
+      .exec(websocketConnect).exitHereIfFailed
       .exec(enablePush)
       .during(duration) {
         exec(ping)
           .exec(randomSwitch(
             2.0 -> inboxHomeLoading.inboxHomeLoading,
             8.0 -> selectArbitrary.selectArbitrary,
-            5.0 -> JmapEmail.submitEmails(recipientFeeder),
-            30.0 -> openArbitrary.openArbitrary,
+            5.0 -> JmapEmail.submitEmails(recipientFeeder).exitHereIfFailed,
+            30.0 -> openArbitrary.openArbitrary.exitHereIfFailed,
             10.0 -> flagUpdate,
             15.0 -> getNewState,
             30.0 -> exec())
