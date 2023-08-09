@@ -14,7 +14,7 @@ class JmapMessageUpdateScenario {
     scenario("JmapUpdateMessages")
       .feed(userFeeder)
       .exec(CommonSteps.provisionUsersWithMessageList(recipientFeeder, randomlySentMails))
-      .during(duration) {
+      .during(duration.toSeconds.toInt) {
         randomSwitch(
           70.0 -> exec(JmapMessages.markAsRead()),
           20.0 -> exec(JmapMessages.markAsAnswered()),

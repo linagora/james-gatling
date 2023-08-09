@@ -48,7 +48,7 @@ class PlatformValidationScenario(minMessagesInMailbox: Int, minWaitDelay: Finite
         exec(prepare))
 
       // What does a user do when using JMAP?
-      .during(duration) {
+      .during(duration.toSeconds.toInt) {
         randomSwitch(
             // Full reload every 10 minutes (=> mailbox polling)
             5.0 -> group(InboxHomeLoading.name)(inboxHomeLoading.inboxHomeLoading),

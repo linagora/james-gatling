@@ -71,7 +71,7 @@ object JmapMailbox {
             }, "#0"]]"""))
       .check(saveMailboxId())
 
-  def saveMailboxId(): CheckBuilder[JsonPathCheckType, JsonNode, Seq[String]] = {
+  def saveMailboxId(): CheckBuilder[JsonPathCheckType, JsonNode] = {
     jsonPath(s"""$$[0][1].created..$${createdId}.id""").findAll.saveAs("mailboxId")
   }
 

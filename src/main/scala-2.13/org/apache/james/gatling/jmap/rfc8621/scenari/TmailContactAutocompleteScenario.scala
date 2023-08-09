@@ -27,7 +27,7 @@ class TmailContactAutocompleteScenario {
       .randomSwitch(
         70.0 -> exec((session: Session) => session.set(typeaheadKeyword, randomSubString(session.attributes(recipientSessionParam).asInstanceOf[String]))),
         30.0 -> exec((session: Session) => session.set(typeaheadKeyword, Random.alphanumeric.take(5).mkString(""))))
-      .during(duration) {
+      .during(duration.toSeconds.toInt) {
         exec(JmapTmailContact.getAutocomplete(typeaheadKeyword = typeaheadKeyword)
           .check(statusOk, noError))
       }

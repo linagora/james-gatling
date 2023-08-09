@@ -56,7 +56,7 @@ class PlatformValidationScenario(minWaitDelay: FiniteDuration = 2 seconds, maxWa
     scenario("ImapPlatformValidation")
       .feed(userFeeder)
       .exec(initialConnection)
-      .during(duration) {
+      .during(duration.toSeconds.toInt) {
         coreActions.pause(minWaitDelay, maxWaitDelay)
       }
       .exec(closeConnection)

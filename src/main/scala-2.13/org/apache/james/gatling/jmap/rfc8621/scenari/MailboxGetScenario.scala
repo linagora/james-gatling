@@ -13,7 +13,7 @@ class MailboxGetScenario {
     scenario("MailboxGetScenario")
       .feed(userFeeder)
       .exec(SessionStep.retrieveAccountId)
-      .during(duration) {
+      .during(duration.toSeconds.toInt) {
         exec(JmapMailbox.getMailboxes
             .check(JmapHttp.statusOk, JmapHttp.noError))
           .pause(1 second)

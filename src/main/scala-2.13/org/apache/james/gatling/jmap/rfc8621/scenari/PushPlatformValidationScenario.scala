@@ -68,7 +68,7 @@ class PushPlatformValidationScenario(minMessagesInMailbox: Int,
         .exec(queryEmails(queryParameters = openpaasEmailQueryParameters(inbox))))
       .exec(websocketConnect)
       .exec(enablePush)
-      .during(duration) {
+      .during(duration.toSeconds.toInt) {
         exec(ping)
           .exec(randomSwitch(
             2.0 -> inboxHomeLoading.inboxHomeLoading,

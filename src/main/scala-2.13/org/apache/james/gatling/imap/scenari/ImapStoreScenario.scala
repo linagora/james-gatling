@@ -50,7 +50,7 @@ class ImapStoreScenario {
     scenario("imap store scenario")
       .feed(feeder)
       .pause(1.second)
-      .during(duration) {
+      .during(duration.toSeconds.toInt) {
         exec(imap("Connect").connect()).exitHereIfFailed
         .exec(imap("login").login("${username}", "${password}").check(ok))
         .exec(imap("select").select("INBOX").check(ok))
