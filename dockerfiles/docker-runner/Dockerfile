@@ -1,4 +1,4 @@
-FROM sbtscala/scala-sbt:eclipse-temurin-focal-11.0.17_8_1.9.1_2.12.18
+FROM sbtscala/scala-sbt:eclipse-temurin-focal-11.0.17_8_1.9.1_2.13.11
 
 USER sbtuser
 
