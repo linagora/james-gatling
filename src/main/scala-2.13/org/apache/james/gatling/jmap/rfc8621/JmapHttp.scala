@@ -2,7 +2,7 @@ package org.apache.james.gatling.jmap.rfc8621
 
 import com.fasterxml.jackson.databind.JsonNode
 import io.gatling.core.Predef._
-import io.gatling.core.check.MultipleFindCheckBuilder
+import io.gatling.core.check.CheckBuilder.MultipleFind
 import io.gatling.core.check.jsonpath.{JsonPathCheckType, JsonPathOfType}
 import io.gatling.http.HeaderNames
 import io.gatling.http.Predef.{http, status}
@@ -24,7 +24,7 @@ object JmapHttp {
     .basicAuth("${username}", "${password}")
 
 
-  private val hasErrorPath: MultipleFindCheckBuilder[JsonPathCheckType, JsonNode, String] with JsonPathOfType = jsonPath("$[?(@[0] == 'error')]")
+  private val hasErrorPath: MultipleFind[JsonPathCheckType, JsonNode, String] with JsonPathOfType = jsonPath("$[?(@[0] == 'error')]")
   val noError = hasErrorPath.notExists
   val hasError = hasErrorPath.exists
   val statusOk = status.is(200)

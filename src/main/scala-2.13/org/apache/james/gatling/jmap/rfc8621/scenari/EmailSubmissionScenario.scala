@@ -16,7 +16,7 @@ class EmailSubmissionScenario {
       .feed(userFeeder)
       .exec(retrieveAccountId)
       .exec(JmapMailbox.provisionSystemMailboxes())
-      .during(duration) {
+      .during(duration.toSeconds.toInt) {
         exec(JmapEmail.submitEmails(recipientFeeder))
           .pause(1 second, 2 seconds)
       }

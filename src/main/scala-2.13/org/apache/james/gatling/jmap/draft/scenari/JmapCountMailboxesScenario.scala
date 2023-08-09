@@ -20,7 +20,7 @@ class JmapCountMailboxesScenario {
       .feed(userFeeder)
       .exec(CommonSteps.authentication())
       .exec(execWithRetryAuthentication(JmapMailbox.getMailboxes, JmapMailbox.storeMailboxIds))
-      .during(duration) {
+      .during(duration.toSeconds.toInt) {
         execWithRetryAuthentication(JmapMailbox.getMailboxes, JmapMailbox.checkSystemMailboxIdsHaveNotChanged)
           .pause(1 second, 2 seconds)
       }

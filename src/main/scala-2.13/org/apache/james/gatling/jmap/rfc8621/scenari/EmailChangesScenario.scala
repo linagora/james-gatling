@@ -23,7 +23,7 @@ class EmailChangesScenario {
     scenario("EmailChangesScenario")
       .feed(userFeeder)
       .exec(SessionStep.retrieveAccountId)
-      .during(duration) {
+      .during(duration.toSeconds.toInt) {
         exec(JmapMailbox.getMailboxes
           .check(statusOk, noError, JmapMailbox.saveInboxAs(inbox)))
         .exec(queryEmails(queryParameters = openpaasEmailQueryParameters(inbox))

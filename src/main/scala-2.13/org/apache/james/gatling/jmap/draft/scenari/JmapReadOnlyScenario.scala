@@ -70,7 +70,7 @@ class JmapReadOnlyScenario {
   def generate(userFeeder: AuthenticatedUserFeeder, duration: Duration): ScenarioBuilder = {
     scenario("JmapReadOnlyScenario")
       .feed(userFeeder)
-      .during(duration) {
+      .during(duration.toSeconds.toInt) {
         group(InboxHomeLoading.name)(
           pause(1 second)
           .doIf(shouldPoll) {

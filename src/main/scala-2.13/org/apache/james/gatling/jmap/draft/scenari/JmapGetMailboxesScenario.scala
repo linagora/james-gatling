@@ -13,7 +13,7 @@ class JmapGetMailboxesScenario {
     scenario("JmapGetMailboxes")
       .feed(userFeeder)
       .exec(CommonSteps.authentication())
-      .during(duration) {
+      .during(duration.toSeconds.toInt) {
         JmapMailbox.getSystemMailboxesWithRetryAuthentication
           .pause(1 second , 2 seconds)
       }

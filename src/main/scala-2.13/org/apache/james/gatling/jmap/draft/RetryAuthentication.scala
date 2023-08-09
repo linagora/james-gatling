@@ -5,7 +5,6 @@ import io.gatling.core.structure.ChainBuilder
 import io.gatling.http.Predef._
 import io.gatling.http.check.HttpCheck
 import io.gatling.http.request.builder.HttpRequestBuilder
-import io.gatling.http.request.builder.HttpRequestBuilder.toActionBuilder
 import io.gatling.http.response.Response
 
 object RetryAuthentication {

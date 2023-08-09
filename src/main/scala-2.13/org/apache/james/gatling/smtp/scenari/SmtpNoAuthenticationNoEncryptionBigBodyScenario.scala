@@ -8,7 +8,7 @@ import org.apache.james.gatling.smtp.SmtpProtocol.smtp
 import scala.concurrent.duration._
 import scala.util.Random
 
-class SmtpNoAuthenticationNoEncryptionBigBodyScenario extends App {
+class SmtpNoAuthenticationNoEncryptionBigBodyScenario {
 
   private val myRandom = Random.alphanumeric
 
@@ -19,7 +19,7 @@ class SmtpNoAuthenticationNoEncryptionBigBodyScenario extends App {
     scenario("SMTP_No_Authentication_No_Encryption_Big_Body")
     .feed(feeder)
     .pause(1.second)
-    .during(duration) {
+    .during(duration.toSeconds.toInt) {
       exec(smtp("sendBigMail")
         .subject("subject")
         .body(generateMessage()))

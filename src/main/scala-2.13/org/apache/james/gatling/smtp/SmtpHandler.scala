@@ -1,13 +1,13 @@
 package org.apache.james.gatling.smtp
 
 import akka.actor.{ActorRef, Props}
+import com.linagora.gatling.imap.action.BaseActor
 import io.gatling.commons.stats.{KO, OK}
 import io.gatling.core.Predef.Status
-import io.gatling.core.akka.BaseActor
 import io.gatling.core.session.Session
 import io.gatling.core.stats.message.ResponseTimings
-
 import javax.mail.internet.InternetAddress
+
 import scala.util.{Failure, Success}
 
 object SmtpHandler {

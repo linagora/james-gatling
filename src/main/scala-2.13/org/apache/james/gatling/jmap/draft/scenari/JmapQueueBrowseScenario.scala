@@ -15,7 +15,7 @@ class JmapQueueBrowseScenario {
     scenario("JmapSendMessages")
     .feed(userFeeder)
     .exec(CommonSteps.provisionSystemMailboxes())
-    .during(duration) {
+    .during(duration.toSeconds.toInt) {
       exec(
         randomSwitch(
           99.0 -> JmapMessages.sendMessagesToUserWithRetryAuthentication(recipientFeeder),

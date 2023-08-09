@@ -19,7 +19,7 @@ class WebsocketSimpleScenario {
       .exec(provisionSystemMailboxes())
       .exec(websocketConnect.onConnected(
         exec(enablePush)
-          .during(duration) {
+          .during(duration.toSeconds.toInt) {
             exec(createMailbox)
               .pause(2 second)
         }))

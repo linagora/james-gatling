@@ -2,7 +2,7 @@ package org.apache.james.gatling.jmap.rfc8621
 
 import com.fasterxml.jackson.databind.JsonNode
 import io.gatling.core.Predef.{StringBody, jsonPath, _}
-import io.gatling.core.check.MultipleFindCheckBuilder
+import io.gatling.core.check.CheckBuilder.MultipleFind
 import io.gatling.core.check.jsonpath.{JsonPathCheckType, JsonPathOfType}
 import io.gatling.core.structure.ChainBuilder
 import io.gatling.http.Predef._
@@ -56,7 +56,7 @@ object JmapEmail {
   def emailSubmittedChecks(key: String = "emailSubmitted"): HttpCheck =
     jsonPath("$.methodResponses[1][1].created").find.saveAs(key)
 
-  private val emailsPath: MultipleFindCheckBuilder[JsonPathCheckType, JsonNode, String] with JsonPathOfType = jsonPath("$.methodResponses[0][1].list[*]")
+  private val emailsPath: MultipleFind[JsonPathCheckType, JsonNode, String] with JsonPathOfType = jsonPath("$.methodResponses[0][1].list[*]")
   private val statePath = "$.methodResponses[0][1].state"
   private val newStatePath = "$.methodResponses[0][1].newState"
 

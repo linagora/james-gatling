@@ -12,7 +12,7 @@ class SmtpNoAuthenticationNoEncryptionScenario {
     scenario("SMTP_No_Authentication_No_Encryption")
     .feed(feeder)
     .pause(1 second)
-    .during(duration) {
+    .during(duration.toSeconds.toInt) {
       exec(smtp("sendMail")
         .subject("subject")
         .body("This is the mail body being sent"))
