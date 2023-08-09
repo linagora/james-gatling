@@ -33,6 +33,20 @@ object JmapEmail {
            |}""".stripMargin))
   }
 
+  def filterKeywordQueryParameter(keyword: String = RandomStringGenerator.randomMeaningWord()): JmapParameters = {
+    s""",
+       |"filter": {
+       |  "text": "$keyword"
+       |},
+       |"sort": [{
+       |  "property": "sentAt",
+       |  "isAscending": false
+       |}],
+       |"position": 0,
+       |"limit": 30
+       |""".stripMargin
+  }
+
   def openpaasEmailQueryParameters(mailboxKey: String = "inboxID"): JmapParameters = {
     s""",
        |"filter": {
