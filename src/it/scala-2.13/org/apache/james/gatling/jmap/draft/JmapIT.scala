@@ -51,7 +51,7 @@ abstract class JmapIT extends GatlingFunSpec {
   }
 
   protected def scenario(scenarioFromFeeder: AuthenticatedUserFeeder => ScenarioBuilder) = {
-    val authenticatedUsers : Iterator[AuthenticatedUser] = users.view.map(user => Await.result(jamesJmap.authenticateUser(user), 5 seconds)).toIterator
+    val authenticatedUsers : Iterator[AuthenticatedUser] = users.view.map(user => Await.result(jamesJmap.authenticateUser(user), 5 seconds)).iterator
     val userFeeder = AuthenticatedUserFeeder.toFeeder(authenticatedUsers)
     scenarioFromFeeder(userFeeder).actionBuilders.reverse.foreach { actionBuilder =>
       spec(actionBuilder)

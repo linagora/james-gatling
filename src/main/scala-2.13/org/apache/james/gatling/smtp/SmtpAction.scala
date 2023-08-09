@@ -22,7 +22,7 @@ class SmtpAction(requestName: String,
 
   val name = "sendMail"
 
-  def execute(session: Session) {
+  def execute(session: Session): Unit = {
     smtpHandler ! generateSendMailRequest(session)
   }
 
