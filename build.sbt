@@ -1,5 +1,7 @@
 import sbt.Keys.libraryDependencies
 
+import scala.collection.Seq
+
 lazy val root = (project in file("."))
     .settings(
       name := "james-gatling",
@@ -30,7 +32,8 @@ lazy val root = (project in file("."))
 // TODO enable WebsocketSimpleScenario and PushPlatformValidationScenario' websocketclose request when upgrade gatlingVersion
 val gatlingVersion = "3.9.5"
 
-scalacOptions in ThisBuild ++= Seq("-unchecked", "-deprecation", "-feature", "-language:postfixOps", "-Ywarn-unused:imports")
+scalacOptions := Seq("-unchecked", "-deprecation", "-feature", "-language:postfixOps", "-Ywarn-unused:imports",
+      "-Wconf:msg=Auto-application to \\`\\(\\)\\` is deprecated:s")
 
 enablePlugins(GatlingPlugin)
 
