@@ -8,12 +8,12 @@ import org.apache.james.gatling.smtp.SmtpProtocol.smtp
 import scala.concurrent.duration._
 import scala.util.Random
 
-class SmtpNoAuthenticationNoEncryptionBigBodyScenario {
+class SmtpNoAuthenticationNoEncryptionBigBodyScenario extends App {
 
   private val myRandom = Random.alphanumeric
 
   private def generateMessage() : String =
-    myRandom.grouped(200).flatMap(_.append(Stream('\r', '\n'))).take(1024 * 1024).mkString
+    myRandom.grouped(200).flatMap(char => char +: "\r\n").take(1024 * 1024).mkString
 
   def generate(duration: Duration, feeder: FeederBuilderBase[String]): ScenarioBuilder =
     scenario("SMTP_No_Authentication_No_Encryption_Big_Body")
