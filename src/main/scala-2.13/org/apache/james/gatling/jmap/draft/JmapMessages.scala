@@ -12,7 +12,7 @@ import play.api.libs.json.{JsArray, JsString, Json => PlayJson}
 
 case class MessageId(id: String = RandomStringGenerator.randomString) extends AnyVal
 case class RecipientAddress(address: String) extends AnyVal
-case class Subject(subject: String = RandomStringGenerator.randomString) extends AnyVal
+case class Subject(subject: String = RandomStringGenerator.randomMeaningWord()) extends AnyVal
 case class TextBody(text: String = RandomStringGenerator.randomString) extends AnyVal
 
 case class RequestTitle(title: String) extends AnyVal

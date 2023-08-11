@@ -27,4 +27,7 @@ object RandomStringGenerator {
       case 8 => faker.food().spice()
       case 9 => faker.name().name()
     }
+
+  def randomDomain: String = faker.internet().domainName()
+
 }
