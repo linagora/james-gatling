@@ -18,6 +18,10 @@ case class RequestTitle(title: String) extends AnyVal
 case class KeywordName(name: String) extends AnyVal
 
 object JmapEmail {
+  def queryEmailsAndCheck(queryParameters: JmapParameters = NO_PARAMETERS): ChainBuilder =
+    exec(queryEmails(queryParameters)
+      .check(JmapHttp.statusOk, JmapHttp.noError))
+
   def queryEmails(queryParameters: JmapParameters = NO_PARAMETERS): HttpRequestBuilder = {
     JmapHttp.apiCall("emailQuery")
       .body(StringBody(

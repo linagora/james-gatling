@@ -72,9 +72,10 @@ class PushPlatformValidationScenario(minMessagesInMailbox: Int,
         exec(ping)
           .exec(randomSwitch(
             2.0 -> inboxHomeLoading.inboxHomeLoading,
+            2.0 -> JmapEmail.queryEmailsAndCheck(JmapEmail.filterKeywordQueryParameter()),
             8.0 -> selectArbitrary.selectArbitrary,
             5.0 -> JmapEmail.submitEmails(recipientFeeder),
-            30.0 -> openArbitrary.openArbitrary,
+            28.0 -> openArbitrary.openArbitrary,
             10.0 -> flagUpdate,
             15.0 -> getNewState,
             30.0 -> exec())
