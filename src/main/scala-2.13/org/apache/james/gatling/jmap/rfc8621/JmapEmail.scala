@@ -68,6 +68,9 @@ object JmapEmail {
   def nonEmptyListMessagesChecks(key: String = "emailIds"): HttpCheck =
     jsonPath("$.methodResponses[0][1].ids[*]").findAll.saveAs(key)
 
+  def saveOneEmail(key: String = "emailId"): HttpCheck =
+    jsonPath("$.methodResponses[0][1].ids[*]").findRandom.saveAs(key)
+
   def emailCreatedChecks(key: String = "emailCreated"): HttpCheck =
     jsonPath("$.methodResponses[0][1].created").find.saveAs(key)
 
@@ -168,6 +171,44 @@ object JmapEmail {
            |      }
            |    },
            |    "c1"]]
+           |}""".stripMargin))
+  }
+
+  def performMove(emailId: String = "emailId",
+                    inboxMailboxId: String = "inboxID",
+                    spamMailboxId: String = "spamMailboxId",
+                    accountId: String = "accountId"): HttpRequestBuilder = {
+    JmapHttp.apiCall("moveTwice")
+      .body(StringBody(
+        s"""{
+           |  "using": ["urn:ietf:params:jmap:core","urn:ietf:params:jmap:mail", "urn:apache:james:params:jmap:mail:shares"],
+           |  "methodCalls": [
+           |  [
+           |    "Email/set",
+           |    {
+           |      "accountId": "$${$accountId}",
+           |      "update": {
+           |        "$${$emailId}": {
+           |          "mailboxIds": {
+           |             "$${$spamMailboxId}": true
+           |          }
+           |        }
+           |      }
+           |    },
+           |    "c1"],
+           |  [
+           |    "Email/set",
+           |    {
+           |      "accountId": "$${$accountId}",
+           |      "update": {
+           |        "$${$emailId}": {
+           |          "mailboxIds": {
+           |             "$${$inboxMailboxId}": true
+           |          }
+           |        }
+           |      }
+           |    },
+           |    "c2"]]
            |}""".stripMargin))
   }
 

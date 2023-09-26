@@ -51,6 +51,8 @@ object JmapMailbox {
 
   def saveDraftAs(key: String): HttpCheck = jsonPath(draftsIdPath).saveAs(key)
 
+  def saveSpamAs(key: String): HttpCheck = jsonPath(spamIdPath).saveAs(key)
+
   def saveOutboxAs(key: String): HttpCheck = jsonPath(outboxIdPath).saveAs(key)
 
   def saveRandomMailboxWithAtLeastMessagesAs(key: String, atLeastMessages : Int): HttpCheck =
