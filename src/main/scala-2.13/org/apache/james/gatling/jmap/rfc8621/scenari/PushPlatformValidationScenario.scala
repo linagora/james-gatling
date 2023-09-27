@@ -28,8 +28,8 @@ object PushPlatformValidationScenario {
 }
 
 class PushPlatformValidationScenario(minMessagesInMailbox: Int,
-                                     minWaitDelay: FiniteDuration = 2 seconds,
-                                     maxWaitDelay: FiniteDuration = 4 seconds) {
+                                     minWaitDelay: FiniteDuration = 20 seconds,
+                                     maxWaitDelay: FiniteDuration = 40 seconds) {
   val flagUpdate: ChainBuilder = randomSwitch(
     70.0 -> exec(JmapEmail.markAsSeen()),
     20.0 -> exec(JmapEmail.markAsAnswered()),
