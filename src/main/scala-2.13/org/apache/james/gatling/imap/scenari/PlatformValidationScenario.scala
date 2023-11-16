@@ -7,11 +7,10 @@ import com.linagora.gatling.imap.protocol.command.{MessageRanges, Silent, StoreF
 import com.linagora.gatling.imap.protocol.{Messages, Recent, StatusItems, UidNext, Unseen}
 import io.gatling.core.Predef._
 import io.gatling.core.structure._
-import org.apache.james.gatling.control.UserFeeder.UserFeederBuilder
-
 import javax.mail.Flags
 import javax.mail.search.FlagTerm
-import scala.collection.immutable.Seq
+import org.apache.james.gatling.control.UserFeeder.UserFeederBuilder
+
 import scala.concurrent.duration._
 
 class PlatformValidationScenario(minWaitDelay: FiniteDuration = 2 seconds, maxWaitDelay: FiniteDuration = 18 seconds)  {
@@ -24,7 +23,7 @@ class PlatformValidationScenario(minWaitDelay: FiniteDuration = 2 seconds, maxWa
       .exec(imap("enableUTF8").enable("UTF8=ACCEPT").check(ok))
       .exec(imap("namespace").namespace().check(ok))
       .exec(imap("list").list("", "*").check(ok))
-      .exec(imap("lsub").list("", "*").check(ok))
+      .exec(imap("lsub").lsub("", "*").check(ok))
       .exec(imap("myrights").myRights("INBOX").check(ok))
       .exec(imap("select").select("INBOX").check(ok)).exitHereIfFailed
       .exec(imap("flagResync").fetch(MessageRanges(Range(1, 1000000)), AttributeList("UID", "FLAGS"))))
