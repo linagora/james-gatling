@@ -166,7 +166,7 @@ object JmapEmail {
            |      "accountId": "$${$accountId}",
            |      "update": {
            |        "$${$emailIdsKey.random()}": {
-           |          "$keywordName": true
+           |          "keywords/${keywordName.name}": true
            |        }
            |      }
            |    },
