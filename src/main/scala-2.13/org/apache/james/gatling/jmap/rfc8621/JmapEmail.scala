@@ -74,6 +74,9 @@ object JmapEmail {
   def emailCreatedChecks(key: String = "emailCreated"): HttpCheck =
     jsonPath("$.methodResponses[0][1].created").find.saveAs(key)
 
+  def emailUpdatedChecks(key: String = "emailUpdated"): HttpCheck =
+    jsonPath("$.methodResponses[0][1].updated").find.saveAs(key)
+
   def emailSubmittedChecks(key: String = "emailSubmitted"): HttpCheck =
     jsonPath("$.methodResponses[1][1].created").find.saveAs(key)
 
@@ -139,18 +142,18 @@ object JmapEmail {
 
   def markAsSeen(emailIdsKey: String = "emailIds",
                  accountId: String = "accountId"): HttpRequestBuilder =
-    performUpdate(RequestTitle("markAsSeen"), KeywordName("$seen"),
-      emailIdsKey = emailIdsKey, accountId = accountId)
+    performUpdate(RequestTitle("markAsSeen"), KeywordName("$seen"), emailIdsKey = emailIdsKey, accountId = accountId)
+      .check(JmapHttp.statusOk, JmapHttp.noError, JmapEmail.emailUpdatedChecks())
 
   def markAsAnswered(emailIdsKey: String = "emailIds",
                      accountId: String = "accountId"): HttpRequestBuilder =
-    performUpdate(RequestTitle("markAsAnswered"), KeywordName("$answered"),
-      emailIdsKey = emailIdsKey, accountId = accountId)
+    performUpdate(RequestTitle("markAsAnswered"), KeywordName("$answered"), emailIdsKey = emailIdsKey, accountId = accountId)
+      .check(JmapHttp.statusOk, JmapHttp.noError, JmapEmail.emailUpdatedChecks())
 
   def markAsFlagged(emailIdsKey: String = "emailIds",
                     accountId: String = "accountId"): HttpRequestBuilder =
-    performUpdate(RequestTitle("markAsFlagged"), KeywordName("$flagged"),
-      emailIdsKey = emailIdsKey, accountId = accountId)
+    performUpdate(RequestTitle("markAsFlagged"), KeywordName("$flagged"), emailIdsKey = emailIdsKey, accountId = accountId)
+      .check(JmapHttp.statusOk, JmapHttp.noError, JmapEmail.emailUpdatedChecks())
 
   def performUpdate(title: RequestTitle,
                     keywordName: KeywordName,
@@ -166,7 +169,7 @@ object JmapEmail {
            |      "accountId": "$${$accountId}",
            |      "update": {
            |        "$${$emailIdsKey.random()}": {
-           |          "$keywordName": true
+           |          "keywords/${keywordName.name}": true
            |        }
            |      }
            |    },
