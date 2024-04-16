@@ -1,13 +1,39 @@
 package org.apache.james.gatling.jmap.rfc8621
 
+import fabricator.Words
 import io.gatling.core.Predef._
 import io.gatling.core.structure.ChainBuilder
 import io.gatling.http.Predef._
 import io.gatling.http.check.HttpCheck
 import io.gatling.http.request.builder.HttpRequestBuilder
 import org.apache.james.gatling.control.RecipientFeeder.RecipientFeederBuilder
+import org.apache.james.gatling.utils.RandomStringGenerator
+import play.api.libs.json.{JsResult, JsValue, Reads}
 
 import scala.concurrent.duration._
+
+object MailboxId {
+  implicit val reads = new Reads[MailboxId] {
+    override def reads(json: JsValue): JsResult[MailboxId] = json.validate[String].map(MailboxId.apply)
+  }
+
+  def generate(): MailboxId =
+    MailboxId(RandomStringGenerator.randomString)
+}
+
+case class MailboxId(id: String) extends AnyVal
+
+object MailboxName {
+  implicit val reads = new Reads[MailboxName] {
+    override def reads(json: JsValue): JsResult[MailboxName] = json.validate[String].map(MailboxName.apply)
+  }
+  private val words = Words()
+
+  def generate(): MailboxName =
+    MailboxName(words.words(2).mkString("_"))
+}
+
+case class MailboxName(name: String) extends AnyVal
 
 object JmapMailbox {
   private val loopVariableName = "any"

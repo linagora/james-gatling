@@ -4,7 +4,7 @@ import java.net.URL
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import org.apache.james.gatling.jmap.draft.JmapHttp
+import org.apache.james.gatling.jmap.rfc8621.JmapHttp
 import play.api.libs.json._
 import play.api.libs.ws.DefaultBodyWritables._
 import play.api.libs.ws.ahc.StandaloneAhcWSClient

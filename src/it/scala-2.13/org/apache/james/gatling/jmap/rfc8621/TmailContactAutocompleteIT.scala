@@ -1,6 +1,5 @@
 package org.apache.james.gatling.jmap.rfc8621
 
-import org.apache.james.gatling.jmap.draft.JmapIT
 import org.apache.james.gatling.jmap.rfc8621.scenari.TmailContactAutocompleteScenario
 
 import scala.concurrent.duration.DurationInt

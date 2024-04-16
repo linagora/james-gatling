@@ -5,7 +5,7 @@ import java.nio.charset.StandardCharsets
 
 import javax.mail.internet.InternetAddress
 import org.apache.james.gatling.control.{Domain, JamesWebAdministration, User, Username}
-import org.apache.james.gatling.jmap.draft.MailboxName
+import org.apache.james.gatling.jmap.rfc8621.MailboxName
 import org.slf4j.{Logger, LoggerFactory}
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.utility.MountableFile

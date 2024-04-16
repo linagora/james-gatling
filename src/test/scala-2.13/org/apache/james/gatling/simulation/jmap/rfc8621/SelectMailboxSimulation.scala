@@ -2,7 +2,6 @@ package org.apache.james.gatling.simulation.jmap.rfc8621
 
 import io.gatling.core.scenario.Simulation
 import org.apache.james.gatling.jmap.SelectMailbox
-import org.apache.james.gatling.jmap.draft.scenari.JmapSelectArbitraryMailboxScenario
 import org.apache.james.gatling.jmap.rfc8621.scenari.SelectMailboxScenario
 import org.apache.james.gatling.simulation.SimulationOnMailCorpus
 

@@ -2,7 +2,7 @@ package org.apache.james.gatling.control
 
 import io.gatling.core.Predef._
 import io.gatling.core.feeder.Feeder
-import org.apache.james.gatling.jmap.draft.RecipientAddress
+import org.apache.james.gatling.jmap.rfc8621.RecipientAddress
 
 object RecipientFeeder {
 
