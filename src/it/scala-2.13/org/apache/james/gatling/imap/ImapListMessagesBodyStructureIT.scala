@@ -2,7 +2,7 @@ package org.apache.james.gatling.imap
 
 import org.apache.james.gatling.Fixture
 import org.apache.james.gatling.imap.scenari.ImapListMessagesBodyStructureScenario
-import org.apache.james.gatling.jmap.draft.MailboxName
+import org.apache.james.gatling.jmap.rfc8621.MailboxName
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._

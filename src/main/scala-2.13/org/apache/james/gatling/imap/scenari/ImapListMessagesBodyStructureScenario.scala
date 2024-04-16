@@ -8,7 +8,7 @@ import io.gatling.core.Predef._
 import io.gatling.core.feeder.FeederBuilder
 import io.gatling.core.structure.ScenarioBuilder
 import org.apache.james.gatling.jmap.ListMessageBodyStructure
-import org.apache.james.gatling.jmap.draft.MailboxName
+import org.apache.james.gatling.jmap.rfc8621.MailboxName
 
 import scala.concurrent.duration._
 

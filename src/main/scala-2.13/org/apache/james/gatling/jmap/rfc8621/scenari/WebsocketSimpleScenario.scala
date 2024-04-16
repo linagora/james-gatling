@@ -4,10 +4,8 @@ import io.gatling.core.Predef._
 import io.gatling.core.structure.{ChainBuilder, ScenarioBuilder}
 import io.gatling.http.Predef._
 import org.apache.james.gatling.control.UserFeeder.UserFeederBuilder
-import org.apache.james.gatling.jmap.draft.CommonSteps.provisionSystemMailboxes
-import org.apache.james.gatling.jmap.draft.{MailboxId, MailboxName}
 import org.apache.james.gatling.jmap.rfc8621.JmapWebsocket.{enablePush, setMailboxesWs, websocketClose, websocketConnect}
-import org.apache.james.gatling.jmap.rfc8621.SessionStep
+import org.apache.james.gatling.jmap.rfc8621.{JmapMailbox, MailboxId, MailboxName, SessionStep}
 
 import scala.concurrent.duration._
 
@@ -16,7 +14,7 @@ class WebsocketSimpleScenario {
     scenario("WebsocketSimpleScenario")
       .feed(userFeeder)
       .exec(SessionStep.retrieveAccountId)
-      .exec(provisionSystemMailboxes())
+      .exec(JmapMailbox.provisionSystemMailboxes())
       .exec(websocketConnect.onConnected(
         exec(enablePush)
           .during(duration.toSeconds.toInt) {

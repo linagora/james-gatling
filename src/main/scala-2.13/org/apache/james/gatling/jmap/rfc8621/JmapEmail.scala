@@ -9,15 +9,24 @@ import io.gatling.http.Predef._
 import io.gatling.http.check.HttpCheck
 import io.gatling.http.request.builder.HttpRequestBuilder
 import org.apache.james.gatling.control.RecipientFeeder.RecipientFeederBuilder
-import org.apache.james.gatling.jmap.draft.JmapMessages.{JmapParameters, NO_PARAMETERS}
-import org.apache.james.gatling.jmap.draft.{JmapMessages, MessageId, Subject, TextBody}
 import org.apache.james.gatling.jmap.rfc8621.scenari.PushPlatformValidationScenario.accountId
 import org.apache.james.gatling.utils.RandomStringGenerator
 
+case class MessageId(id: String = RandomStringGenerator.randomString) extends AnyVal
+case class RecipientAddress(address: String) extends AnyVal
+case class Subject(subject: String = RandomStringGenerator.randomMeaningWord()) extends AnyVal
+case class TextBody(text: String = RandomStringGenerator.randomString) extends AnyVal
 case class RequestTitle(title: String) extends AnyVal
 case class KeywordName(name: String) extends AnyVal
 
 object JmapEmail {
+  type JmapParameters = String
+  val NO_PARAMETERS : JmapParameters = ""
+
+  val messageIdSessionParam = "messageId"
+  val subjectSessionParam = "subject"
+  val textBodySessionParam = "textBody"
+
   def queryEmailsAndCheck(queryParameters: JmapParameters = NO_PARAMETERS): ChainBuilder =
     exec(queryEmails(queryParameters)
       .check(JmapHttp.statusOk, JmapHttp.noError))
@@ -217,9 +226,9 @@ object JmapEmail {
 
   def submitEmails(recipientFeeder: RecipientFeederBuilder): ChainBuilder = {
     val mailFeeder = Iterator.continually(
-      Map(JmapMessages.messageIdSessionParam -> MessageId().id,
-        JmapMessages.subjectSessionParam -> Subject().subject,
-        JmapMessages.textBodySessionParam -> TextBody().text))
+      Map(messageIdSessionParam -> MessageId().id,
+        subjectSessionParam -> Subject().subject,
+        textBodySessionParam -> TextBody().text))
 
     feed(mailFeeder)
       .feed(recipientFeeder)

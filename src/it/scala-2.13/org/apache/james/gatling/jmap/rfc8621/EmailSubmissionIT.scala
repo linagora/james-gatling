@@ -1,6 +1,5 @@
 package org.apache.james.gatling.jmap.rfc8621
 
-import org.apache.james.gatling.jmap.draft.JmapIT
 import org.apache.james.gatling.jmap.rfc8621.scenari.EmailSubmissionScenario
 
 import scala.concurrent.duration._
