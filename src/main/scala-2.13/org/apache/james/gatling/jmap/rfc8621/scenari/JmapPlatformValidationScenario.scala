@@ -45,7 +45,7 @@ class JmapPlatformValidationScenario (minMessagesInMailbox: Int,
   val selectArbitrary: SelectMailboxScenario = new SelectMailboxScenario(minMessagesInMailbox)
 
   def generate(duration: Duration, userFeeder: UserFeederBuilder, recipientFeeder: RecipientFeederBuilder): ScenarioBuilder =
-    scenario("PushPlatformValidation")
+    scenario("JmapPlatformValidation")
       .feed(userFeeder)
       .group("prepare")(
         exec(SessionStep.retrieveAccountId)
