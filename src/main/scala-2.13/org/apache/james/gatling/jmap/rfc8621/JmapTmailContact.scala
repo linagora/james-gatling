@@ -14,8 +14,8 @@ object JmapTmailContact {
            |  "methodCalls": [[
            |    "TMailContact/autocomplete",
            |    {
-           |      "accountId": "$${$accountId}",
-           |      "filter": {"text":"$${$typeaheadKeyword}"}
+           |      "accountId": "#{$accountId}",
+           |      "filter": {"text":"#{$typeaheadKeyword}"}
            |    },
            |    "c1"]]
            |}""".stripMargin))

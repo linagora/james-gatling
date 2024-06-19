@@ -1,6 +1,6 @@
 package org.apache.james.gatling.control
 
-import java.net.URL
+import java.net.{URI, URL}
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
@@ -55,12 +55,12 @@ object Password {
 
 class JamesWebAdministration(val baseUrl: URL) {
   // Create Akka system for thread and streaming management
-  implicit val system = ActorSystem()
+  implicit val system: ActorSystem = ActorSystem()
   system.registerOnTermination {
     System.exit(0)
   }
-  implicit val materializer = ActorMaterializer()
-  val wsClient = StandaloneAhcWSClient()
+  implicit val materializer: ActorMaterializer = ActorMaterializer()
+  val wsClient: StandaloneAhcWSClient = StandaloneAhcWSClient()
 
   def addDomain(domain: Domain): Future[Domain] = wsClient.url(s"$baseUrl/domains/${domain.value}")
     .put("")
@@ -72,7 +72,7 @@ class JamesWebAdministration(val baseUrl: URL) {
       .map(response => user)
 
   def getMailboxesUrl(username: Username): URL =
-    new URL(s"$baseUrl/users/${username.value}/mailboxes")
+    new URI(s"$baseUrl/users/${username.value}/mailboxes").toURL
 
   def createInbox(username: Username) = {
     createMailbox(username, MailboxName("INBOX"))

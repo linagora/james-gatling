@@ -13,7 +13,7 @@ import play.api.libs.json.{JsResult, JsValue, Reads}
 import scala.concurrent.duration._
 
 object MailboxId {
-  implicit val reads = new Reads[MailboxId] {
+  implicit val reads: Reads[MailboxId] = new Reads[MailboxId] {
     override def reads(json: JsValue): JsResult[MailboxId] = json.validate[String].map(MailboxId.apply)
   }
 
@@ -24,7 +24,7 @@ object MailboxId {
 case class MailboxId(id: String) extends AnyVal
 
 object MailboxName {
-  implicit val reads = new Reads[MailboxName] {
+  implicit val reads: Reads[MailboxName] = new Reads[MailboxName] {
     override def reads(json: JsValue): JsResult[MailboxName] = json.validate[String].map(MailboxName.apply)
   }
   private val words = Words()
@@ -46,7 +46,7 @@ object JmapMailbox {
            |  "methodCalls": [[
            |    "Mailbox/get",
            |    {
-           |      "accountId": "$${accountId}",
+           |      "accountId": "#{accountId}",
            |      "ids": null
            |    },
            |    "c1"]]
@@ -110,11 +110,11 @@ object JmapMailbox {
            |  "using": ["urn:ietf:params:jmap:core", "urn:ietf:params:jmap:mail", "urn:apache:james:params:jmap:mail:shares"],
            |  "methodCalls": [
            |    ["Mailbox/changes", {
-           |      "accountId": "$${$accountId}",
-           |      "sinceState": "$${$oldState}"
+           |      "accountId": "#{$accountId}",
+           |      "sinceState": "#{$oldState}"
            |    }, "c1"],
            |    ["Mailbox/get", {
-           |      "accountId": "$${$accountId}",
+           |      "accountId": "#{$accountId}",
            |      "#ids": {
            |        "resultOf": "c1",
            |        "name": "Mailbox/changes",
@@ -122,7 +122,7 @@ object JmapMailbox {
            |      }
            |    }, "c2"],
            |    ["Mailbox/get", {
-           |      "accountId": "$${$accountId}",
+           |      "accountId": "#{$accountId}",
            |      "#ids": {
            |        "resultOf": "c1",
            |        "name": "Mailbox/changes",

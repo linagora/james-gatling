@@ -1,6 +1,6 @@
 package org.apache.james.gatling.jmap.rfc8621
 
-import java.net.URL
+import java.net.URI
 
 import io.gatling.core.Predef._
 import io.gatling.core.funspec.GatlingFunSpec
@@ -28,7 +28,7 @@ abstract class JmapIT extends GatlingFunSpec {
   private val baseJamesWebsocket: String = s"ws://localhost:${server.mappedJmapPort}"
   lazy val protocolConf: Protocol = http.baseUrl(baseJamesJmap)
     .wsBaseUrl(baseJamesWebsocket)
-  private lazy val jamesJmap: JamesJmap = new JamesJmap(new URL(baseJamesJmap))
+  private lazy val jamesJmap: JamesJmap = new JamesJmap(new URI(baseJamesJmap).toURL)
 
   protected def mappedJmapPort = server.mappedJmapPort
 

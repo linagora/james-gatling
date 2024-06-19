@@ -12,7 +12,7 @@ class ImapFullHeavyUserScenario {
     scenario("ImapFullHeavyUserScenario")
       .feed(feeder)
       .exec(imap("Connect").connect()).exitHereIfFailed
-      .exec(imap("login").login("${username}", "${password}").check(ok))
+      .exec(imap("login").login("#{username}", "#{password}").check(ok))
       .exec(repeat(3)(ImapCommonSteps.receiveEmail))
       .exec(repeat(2)(ImapCommonSteps.readLastEmail))
 }

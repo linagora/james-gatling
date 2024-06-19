@@ -75,7 +75,7 @@ class JmapPlatformValidationScenario (minMessagesInMailbox: Int,
           25.0 -> openArbitrary.openArbitrary,
           10.0 -> flagUpdate,
           15.0 -> getNewState,
-          30.0 -> exec())
+          30.0 -> exec(List.empty))
           .asInstanceOf[ChainBuilder]
           .pause(minWaitDelay, maxWaitDelay))
       }

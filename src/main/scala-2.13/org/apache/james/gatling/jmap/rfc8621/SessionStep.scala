@@ -10,7 +10,7 @@ object SessionStep {
       http("retrieveAccountId")
         .get("/jmap/session")
         .headers(JmapHttp.HEADERS_JSON)
-        .basicAuth("${username}", "${password}")
+        .basicAuth("#{username}", "#{password}")
         .check(status.is(200))
         .check(jsonPath("$.primaryAccounts.urn:ietf:params:jmap:mail").find.saveAs("accountId")))
 }

@@ -7,8 +7,8 @@ import org.apache.james.gatling.control.RecipientFeeder.RecipientFeederBuilder
 import org.apache.james.gatling.control.UserFeeder.UserFeederBuilder
 import org.apache.james.gatling.jmap.rfc8621.JmapEmail.{nonEmptyListMessagesChecks, openpaasEmailQueryParameters, queryEmails, saveOneEmail}
 import org.apache.james.gatling.jmap.rfc8621.JmapHttp.{noError, statusOk}
-import org.apache.james.gatling.jmap.rfc8621.JmapWebsocket.{echoPingWs, enablePush, websocketConnect}
-import org.apache.james.gatling.jmap.rfc8621.scenari.PushPlatformValidationScenario.{accountId, draft, emailId, spam, emailIds, emailState, inbox, mailboxState, messageIds, outbox, randomMailbox}
+import org.apache.james.gatling.jmap.rfc8621.JmapWebsocket.{echoPingWs, enablePush, websocketClose, websocketConnect}
+import org.apache.james.gatling.jmap.rfc8621.scenari.PushPlatformValidationScenario.{accountId, draft, emailId, emailIds, emailState, inbox, mailboxState, messageIds, outbox, randomMailbox, spam}
 import org.apache.james.gatling.jmap.rfc8621.{JmapEmail, JmapMailbox, SessionStep}
 
 import scala.concurrent.duration._
@@ -83,7 +83,7 @@ class PushPlatformValidationScenario(minMessagesInMailbox: Int,
             25.0 -> openArbitrary.openArbitrary,
             10.0 -> flagUpdate,
             15.0 -> getNewState,
-            30.0 -> exec())
+            30.0 -> exec(List.empty))
           .asInstanceOf[ChainBuilder]
           .pause(minWaitDelay, maxWaitDelay))
       }

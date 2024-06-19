@@ -18,7 +18,7 @@ class PlatformValidationScenario(minWaitDelay: FiniteDuration = 2 seconds, maxWa
   val initialConnection: ChainBuilder = group("initialConnection")(
     exec(imap("Connect").connect()).exitHereIfFailed
       .exec(imap("capability").capability().check(ok))
-      .exec(imap("login").login("${username}", "${password}").check(ok)).exitHereIfFailed
+      .exec(imap("login").login("#{username}", "#{password}").check(ok)).exitHereIfFailed
       .exec(imap("capability").capability().check(ok))
       .exec(imap("enableUTF8").enable("UTF8=ACCEPT").check(ok))
       .exec(imap("namespace").namespace().check(ok))
