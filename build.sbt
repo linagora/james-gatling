@@ -32,7 +32,7 @@ lazy val root = (project in file("."))
   .dependsOn(gatlingImap)
 
 // TODO enable WebsocketSimpleScenario and PushPlatformValidationScenario' websocketclose request when upgrade gatlingVersion
-val gatlingVersion = "3.9.5"
+val gatlingVersion = "3.11.3"
 
 scalacOptions := Seq("-unchecked", "-deprecation", "-feature", "-language:postfixOps", "-Ywarn-unused:imports",
       "-Wconf:msg=Auto-application to \\`\\(\\)\\` is deprecated:s")
