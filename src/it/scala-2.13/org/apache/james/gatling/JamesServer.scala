@@ -1,6 +1,6 @@
 package org.apache.james.gatling
 
-import java.net.URL
+import java.net.URI
 import java.nio.charset.StandardCharsets
 
 import javax.mail.internet.InternetAddress
@@ -28,7 +28,7 @@ object JamesServer {
     lazy val mappedWebadminPort: Integer = container.getMappedPort(webadminPort)
     lazy val mappedSmtpPort: Integer = container.getMappedPort(smtpPort)
     lazy val mappedImapPort: Integer = container.getMappedPort(imapPort)
-    lazy val mappedWebadmin = new JamesWebAdministration(new URL(s"http://localhost:$mappedWebadminPort"))
+    lazy val mappedWebadmin = new JamesWebAdministration(new URI(s"http://localhost:$mappedWebadminPort").toURL)
 
     def addUser(user: User): Unit = Await.result(mappedWebadmin.addUser(user), WAIT_TIMEOUT)
 

@@ -1,6 +1,6 @@
 package org.apache.james.gatling.simulation
 
-import java.net.URL
+import java.net.URI
 
 import scala.concurrent.duration._
 import scala.util.Properties
@@ -16,12 +16,12 @@ object Configuration {
   val JMAP_PROTOCOL = Properties.envOrElse("JMAP_PROTOCOL", "http")
   val WS_PROTOCOL = Properties.envOrElse("WS_PROTOCOL", "ws")
   val WS_PORT = Properties.envOrElse("WS_PORT", String.valueOf(JMAP_PORT)).toInt
-  val BaseJmapUrl = new URL(s"$JMAP_PROTOCOL://$JmapServerHostName:$JMAP_PORT")
+  val BaseJmapUrl = new URI(s"$JMAP_PROTOCOL://$JmapServerHostName:$JMAP_PORT").toURL
   val BaseWsUrl = s"$WS_PROTOCOL://$JmapServerHostName:$WS_PORT"
 
   val WEBADMIN_PORT = Properties.envOrElse("WEBADMIN_PORT", "8000").toInt
   val WEBADMIN_PROTOCOL = Properties.envOrElse("WEBADMIN_PROTOCOL", "http")
-  val BaseJamesWebAdministrationUrl = new URL(s"$WEBADMIN_PROTOCOL://$WebadminServerHostName:$WEBADMIN_PORT")
+  val BaseJamesWebAdministrationUrl = new URI(s"$WEBADMIN_PROTOCOL://$WebadminServerHostName:$WEBADMIN_PORT").toURL
 
   val DURATION_PROPERTY = Properties.envOrNone("DURATION") match {
     case Some(duration) => Some(duration.toInt minutes)

@@ -19,12 +19,12 @@ class ImapListMessagesBodyStructureScenario {
       .feed(feeder)
       .pause(1.second)
       .exec(imap("Connect").connect()).exitHereIfFailed
-      .exec(imap("login").login("${username}", "${password}").check(ok))
+      .exec(imap("login").login("#{username}", "#{password}").check(ok))
       .exec(_.set("mailboxes", mailboxes.map(_.name)))
       .group(ListMessageBodyStructure.name) {
         exec(
           exec(imap("select")
-            .select("${mailboxes.random()}")
+            .select("#{mailboxes.random()}")
             .check(ok))
           .exec(imap("fetch")
             .fetch(MessageRanges(Range(1, mailsFetched)), AttributeList("BODYSTRUCTURE"))

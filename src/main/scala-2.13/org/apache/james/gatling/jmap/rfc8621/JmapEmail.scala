@@ -39,7 +39,7 @@ object JmapEmail {
            |  "methodCalls": [[
            |    "Email/query",
            |    {
-           |      "accountId": "$${$accountId}"
+           |      "accountId": "#{$accountId}"
            |      $queryParameters
            |    },
            |    "c1"]]
@@ -63,7 +63,7 @@ object JmapEmail {
   def openpaasEmailQueryParameters(mailboxKey: String = "inboxID"): JmapParameters = {
     s""",
        |"filter": {
-       |  "inMailbox": "$${$mailboxKey}"
+       |  "inMailbox": "#{$mailboxKey}"
        |},
        |"sort": [{
        |  "property": "sentAt",
@@ -108,8 +108,8 @@ object JmapEmail {
            |  "methodCalls": [[
            |    "Email/get",
            |    {
-           |      "accountId": "$${$accountId}",
-           |      "ids": ["$${$emailIdsKey.random()}"],
+           |      "accountId": "#{$accountId}",
+           |      "ids": ["#{$emailIdsKey.random()}"],
            |      "properties": $properties
            |    },
            |    "c1"]]
@@ -126,8 +126,8 @@ object JmapEmail {
            |  "methodCalls": [[
            |    "Email/get",
            |    {
-           |      "accountId": "$${$accountId}",
-           |      "ids": $${$emailIdsKey.jsonStringify()},
+           |      "accountId": "#{$accountId}",
+           |      "ids": #{$emailIdsKey.jsonStringify()},
            |      "properties": $properties
            |    },
            |    "c1"]]
@@ -142,7 +142,7 @@ object JmapEmail {
            |  "methodCalls": [[
            |    "Email/get",
            |    {
-           |      "accountId": "$${$accountId}",
+           |      "accountId": "#{$accountId}",
            |      "ids": []
            |    },
            |    "c1"]]
@@ -175,9 +175,9 @@ object JmapEmail {
            |  "methodCalls": [[
            |    "Email/set",
            |    {
-           |      "accountId": "$${$accountId}",
+           |      "accountId": "#{$accountId}",
            |      "update": {
-           |        "$${$emailIdsKey.random()}": {
+           |        "#{$emailIdsKey.random()}": {
            |          "keywords/${keywordName.name}": true
            |        }
            |      }
@@ -198,11 +198,11 @@ object JmapEmail {
            |  [
            |    "Email/set",
            |    {
-           |      "accountId": "$${$accountId}",
+           |      "accountId": "#{$accountId}",
            |      "update": {
-           |        "$${$emailId}": {
+           |        "#{$emailId}": {
            |          "mailboxIds": {
-           |             "$${$spamMailboxId}": true
+           |             "#{$spamMailboxId}": true
            |          }
            |        }
            |      }
@@ -211,11 +211,11 @@ object JmapEmail {
            |  [
            |    "Email/set",
            |    {
-           |      "accountId": "$${$accountId}",
+           |      "accountId": "#{$accountId}",
            |      "update": {
-           |        "$${$emailId}": {
+           |        "#{$emailId}": {
            |          "mailboxIds": {
-           |             "$${$inboxMailboxId}": true
+           |             "#{$inboxMailboxId}": true
            |          }
            |        }
            |      }
@@ -250,15 +250,15 @@ object JmapEmail {
            |  "using": ["urn:ietf:params:jmap:core","urn:ietf:params:jmap:mail", "urn:ietf:params:jmap:submission", "urn:apache:james:params:jmap:mail:shares"],
            |  "methodCalls": [
            |    ["Email/set", {
-           |      "accountId": "$${$accountId}",
+           |      "accountId": "#{$accountId}",
            |      "create": {
-           |        "$${$messageId}": {
+           |        "#{$messageId}": {
            |          "mailboxIds": {
-           |            "$${$mailboxId}": true
+           |            "#{$mailboxId}": true
            |          },
-           |          "subject": "$${$subject}",
-           |          "from": [{"email": "$${$username}"}],
-           |          "to": [{"email": "$${$recipient}"}],
+           |          "subject": "#{$subject}",
+           |          "from": [{"email": "#{$username}"}],
+           |          "to": [{"email": "#{$recipient}"}],
            |          "htmlBody": [
            |            {
            |              "partId": "1",
@@ -267,20 +267,20 @@ object JmapEmail {
            |          ],
            |          "bodyValues": {
            |            "1": {
-           |              "value": "$${$textBody}"
+           |              "value": "#{$textBody}"
            |            }
            |          }
            |        }
            |      }
            |    }, "c1"],
            |    ["EmailSubmission/set", {
-           |      "accountId": "$${$accountId}",
+           |      "accountId": "#{$accountId}",
            |      "create": {
            |        "$SubmissionId": {
-           |          "emailId": "#$${$messageId}",
+           |          "emailId": "##{$messageId}",
            |          "envelope": {
-           |            "mailFrom": {"email": "$${$username}"},
-           |            "rcptTo": [{"email": "$${$recipient}"}]
+           |            "mailFrom": {"email": "#{$username}"},
+           |            "rcptTo": [{"email": "#{$recipient}"}]
            |          }
            |        }
            |      }
@@ -300,11 +300,11 @@ object JmapEmail {
            |  "using": ["urn:ietf:params:jmap:core", "urn:ietf:params:jmap:mail", "urn:apache:james:params:jmap:mail:shares"],
            |  "methodCalls": [
            |    ["Email/changes", {
-           |      "accountId": "$${$accountId}",
-           |      "sinceState": "$${$oldState}"
+           |      "accountId": "#{$accountId}",
+           |      "sinceState": "#{$oldState}"
            |    }, "c1"],
            |    ["Email/get", {
-           |      "accountId": "$${$accountId}",
+           |      "accountId": "#{$accountId}",
            |      "#ids": {
            |        "resultOf": "c1",
            |        "name": "Email/changes",
@@ -315,7 +315,7 @@ object JmapEmail {
            |                     "sentAt", "hasAttachment", "preview"]
            |    }, "c2"],
            |    ["Email/get", {
-           |      "accountId": "$${$accountId}",
+           |      "accountId": "#{$accountId}",
            |      "#ids": {
            |        "resultOf": "c1",
            |        "name": "Email/changes",

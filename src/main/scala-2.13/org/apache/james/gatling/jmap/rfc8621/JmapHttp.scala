@@ -21,7 +21,7 @@ object JmapHttp {
   def apiCall(callName: String): HttpRequestBuilder = http(callName)
     .post("/jmap")
     .headers(JmapHttp.HEADERS_JSON)
-    .basicAuth("${username}", "${password}")
+    .basicAuth("#{username}", "#{password}")
 
 
   private val hasErrorPath: MultipleFind[JsonPathCheckType, JsonNode, String] with JsonPathOfType = jsonPath("$[?(@[0] == 'error')]")

@@ -14,7 +14,7 @@ class ImapAuthenticationScenario {
       .feed(feeder)
       .pause(1.second)
       .exec(imap("Connect").connect()).exitHereIfFailed
-      .exec(imap("login").login("${username}", "${password}").check(ok))
+      .exec(imap("login").login("#{username}", "#{password}").check(ok))
       .exec(imap("list").list("", "*").check(ok, hasFolder("INBOX")))
       .exec(imap("select").select("INBOX").check(ok, hasRecent(0)))
 }

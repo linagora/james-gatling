@@ -10,7 +10,7 @@ object JmapWebsocket {
     ws("Open websocket")
       .connect("/jmap/ws")
       .headers(JmapHttp.HEADERS_JSON)
-      .basicAuth("${username}", "${password}")
+      .basicAuth("#{username}", "#{password}")
 
   def websocketClose: WsCloseBuilder =
     ws("Close websocket")
@@ -37,10 +37,10 @@ object JmapWebsocket {
                    |  "methodCalls": [[
                    |    "Mailbox/set",
                    |    {
-                   |      "accountId": "$${accountId}",
+                   |      "accountId": "#{accountId}",
                    |      "create": {
-                   |        "$${createdId}": {
-                   |          "name": "$${mailboxName}"
+                   |        "#{createdId}": {
+                   |          "name": "#{mailboxName}"
                    |        }
                    |      }
                    |    },

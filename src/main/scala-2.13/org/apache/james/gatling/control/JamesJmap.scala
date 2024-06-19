@@ -14,12 +14,12 @@ import scala.concurrent.Future
 
 class JamesJmap(val baseUrl: URL) {
   // Create Akka system for thread and streaming management
-  implicit val system = ActorSystem()
+  implicit val system: ActorSystem = ActorSystem()
   system.registerOnTermination {
     System.exit(0)
   }
-  implicit val materializer = ActorMaterializer()
-  val wsClient = StandaloneAhcWSClient()
+  implicit val materializer: ActorMaterializer = ActorMaterializer()
+  val wsClient: StandaloneAhcWSClient = StandaloneAhcWSClient()
   val authenticationUrl = s"$baseUrl/authentication"
 
   def authenticateUser(user: User): Future[AuthenticatedUser] = {
