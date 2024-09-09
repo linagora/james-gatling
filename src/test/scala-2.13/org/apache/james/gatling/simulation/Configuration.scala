@@ -28,13 +28,23 @@ object Configuration {
     case _ => None
   }
 
+  val SCENARIO_DURATION_PROPERTY = Properties.envOrNone("SCENARIO_DURATION") match {
+    case Some(duration) => Some(duration.toInt minutes)
+    case _ => DURATION_PROPERTY
+  }
+
+  val INJECTION_DURATION_PROPERTY = Properties.envOrNone("INJECTION_DURATION") match {
+    case Some(duration) => Some(duration.toInt minutes)
+    case _ => DURATION_PROPERTY
+  }
+
   val MAX_DURATION_PROPERTY = Properties.envOrNone("MAX_DURATION") match {
     case Some(duration) => Some(duration.toInt minutes)
     case _ => None
   }
 
-  val ScenarioDuration = DURATION_PROPERTY.getOrElse(1 hour)
-  val InjectionDuration = DURATION_PROPERTY.getOrElse(1 hour)
+  val ScenarioDuration = SCENARIO_DURATION_PROPERTY.getOrElse(1 hour)
+  val InjectionDuration = INJECTION_DURATION_PROPERTY.getOrElse(1 hour)
   val MaxDuration = MAX_DURATION_PROPERTY.getOrElse(3 hour)
   val UserCount = Properties.envOrElse("USER_COUNT", "100").toInt
   val RandomlySentMails = 10
