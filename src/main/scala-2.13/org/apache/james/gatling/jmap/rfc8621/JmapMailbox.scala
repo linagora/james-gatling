@@ -58,7 +58,7 @@ object JmapMailbox {
   private val sentIdPath = s"$mailboxListPath[?(@.role == 'sent')].id"
   private val draftsIdPath = s"$mailboxListPath[?(@.role == 'drafts')].id"
   private val trashIdPath = s"$mailboxListPath[?(@.role == 'trash')].id"
-  private val spamIdPath = s"$mailboxListPath[?(@.role == 'spam')].id"
+  private val spamIdPath = s"$mailboxListPath[?(@.role == 'junk')].id"
   private val statePath = "$.methodResponses[0][1].state"
   private val newStatePath = "$.methodResponses[0][1].newState"
 
