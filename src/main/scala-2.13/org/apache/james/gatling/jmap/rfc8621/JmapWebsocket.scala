@@ -10,6 +10,7 @@ object JmapWebsocket {
     ws("Open websocket")
       .connect("/jmap/ws")
       .headers(JmapHttp.HEADERS_JSON)
+      .subprotocol("jmap")
       .basicAuth("#{username}", "#{password}")
 
   def websocketClose: WsCloseBuilder =
