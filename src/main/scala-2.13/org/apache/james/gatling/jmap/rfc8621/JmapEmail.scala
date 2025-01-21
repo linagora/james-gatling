@@ -31,8 +31,8 @@ object JmapEmail {
     exec(queryEmails(queryParameters)
       .check(JmapHttp.statusOk, JmapHttp.noError))
 
-  def queryEmails(queryParameters: JmapParameters = NO_PARAMETERS): HttpRequestBuilder = {
-    JmapHttp.apiCall("emailQuery")
+  def queryEmails(callName: String = "emailQuery", queryParameters: JmapParameters = NO_PARAMETERS): HttpRequestBuilder = {
+    JmapHttp.apiCall(callName)
       .body(StringBody(
         s"""{
            |  "using": ["urn:ietf:params:jmap:core","urn:ietf:params:jmap:mail", "urn:apache:james:params:jmap:mail:shares"],
@@ -57,6 +57,20 @@ object JmapEmail {
        |}],
        |"position": 0,
        |"limit": 30
+       |""".stripMargin
+  }
+
+  def filterAttachments(limit: Int = 20): JmapParameters = {
+    s""",
+       |"filter": {
+       |  "hasAttachment": true
+       |},
+       |"sort": [{
+       |  "property": "receivedAt",
+       |  "isAscending": false
+       |}],
+       |"position": 0,
+       |"limit": $limit
        |""".stripMargin
   }
 
@@ -224,7 +238,7 @@ object JmapEmail {
            |}""".stripMargin))
   }
 
-  def submitEmails(recipientFeeder: RecipientFeederBuilder): ChainBuilder = {
+  def submitEmails(recipientFeeder: RecipientFeederBuilder, attachmentId: Option[String] = None): ChainBuilder = {
     val mailFeeder = Iterator.continually(
       Map(messageIdSessionParam -> MessageId().id,
         subjectSessionParam -> Subject().subject,
@@ -232,8 +246,19 @@ object JmapEmail {
 
     feed(mailFeeder)
       .feed(recipientFeeder)
-      .exec(submitEmail()
+      .exec(submitEmail(attachmentsJsonPart = attachmentId.map(JmapEmail.attachmentsJsonPart).getOrElse(""))
         .check(JmapHttp.statusOk, JmapHttp.noError, JmapEmail.emailCreatedChecks(), JmapEmail.emailSubmittedChecks()))
+  }
+
+  def attachmentsJsonPart(attachmentId: String): String = {
+    s""" , "attachments": [
+       |   {
+       |     "blobId": "$attachmentId",
+       |     "type":"text/plain",
+       |     "charset":"UTF-8",
+       |     "disposition": "attachment"
+       |   }
+       | ]""".stripMargin
   }
 
   def submitEmail(title: RequestTitle = RequestTitle("submitEmails"),
@@ -243,7 +268,8 @@ object JmapEmail {
                   messageId: String = "messageId",
                   recipient: String = "recipient",
                   subject: String = "subject",
-                  textBody: String = "textBody"): HttpRequestBuilder =
+                  textBody: String = "textBody",
+                  attachmentsJsonPart: String = ""): HttpRequestBuilder =
     JmapHttp.apiCall(title.title)
       .body(StringBody(
         s"""{
@@ -270,6 +296,7 @@ object JmapEmail {
            |              "value": "#{$textBody}"
            |            }
            |          }
+           |          $attachmentsJsonPart
            |        }
            |      }
            |    }, "c1"],
