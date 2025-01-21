@@ -1,7 +1,7 @@
 package org.apache.james.gatling.jmap.rfc8621
 
 import fabricator.Words
-import io.gatling.core.Predef._
+import io.gatling.core.Predef.{StringBody, _}
 import io.gatling.core.structure.ChainBuilder
 import io.gatling.http.Predef._
 import io.gatling.http.check.HttpCheck
@@ -98,6 +98,23 @@ object JmapMailbox {
           .pause(1 second, 2 seconds)
       }
       .pause(5 second)
+
+  def provisionUsersWithMessagesAndAttachment(recipientFeeder: RecipientFeederBuilder, numberOfMessages: Int): ChainBuilder = {
+    val attachmentBodyLength = RandomStringGenerator.faker.random().nextInt(900, 11000)
+
+    def randomAttachmentBody = RandomStringGenerator.randomAlphaString(attachmentBodyLength)
+
+    exec(provisionSystemMailboxes())
+      .repeat(numberOfMessages, loopVariableName) {
+        exec(JmapHttp.upload(body = randomAttachmentBody)
+          .check(status.is(201), JmapHttp.noError)
+          .check(jsonPath("$.blobId").saveAs("uploadId")))
+          .pause(1 second, 2 seconds)
+          .exec(JmapEmail.submitEmails(recipientFeeder, attachmentId = Some("#{uploadId}")))
+          .pause(1 second, 2 seconds)
+      }
+      .pause(5 second)
+  }
 
   def saveStateAs(key: String): HttpCheck = jsonPath(statePath).saveAs(key)
 
