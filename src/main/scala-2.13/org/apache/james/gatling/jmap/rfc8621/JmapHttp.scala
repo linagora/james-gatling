@@ -18,25 +18,22 @@ object JmapHttp {
   val ACCEPT_JSON_KEY: String = HeaderNames.Accept.toString
   val ACCEPT_JSON_VALUE: String = "application/json; jmapVersion=rfc-8621"
 
-  val HEADERS_JSON = Map(CONTENT_TYPE_JSON_KEY -> CONTENT_TYPE_JSON_VALUE, ACCEPT_JSON_KEY -> ACCEPT_JSON_VALUE)
+  val HEADERS_JSON = Map(CONTENT_TYPE_JSON_KEY -> CONTENT_TYPE_JSON_VALUE, ACCEPT_JSON_KEY -> ACCEPT_JSON_VALUE, "X-User" -> "#{username}")
 
   def apiCall(callName: String): HttpRequestBuilder = http(callName)
     .post("/jmap")
     .headers(JmapHttp.HEADERS_JSON)
-    .basicAuth("#{username}", "#{password}")
 
   def download(callName: String = "Download", accountId: String = "#{accountId}", blobId: String = "#{blobId}"): HttpRequestBuilder =
     http(callName)
       .get(s"/download/$accountId/$blobId")
       .headers(JmapHttp.HEADERS_JSON)
-      .basicAuth("#{username}", "#{password}")
 
   def upload(callName: String = "Upload", accountId: String = "#{accountId}", body: String = RandomStringGenerator.randomAlphaString(1000)): HttpRequestBuilder =
     http(callName)
       .post(s"/upload/$accountId")
       .body(StringBody(body))
-      .headers(Map(CONTENT_TYPE_JSON_KEY -> CONTENT_TYPE_TEXT_PLAIN, ACCEPT_JSON_KEY -> ACCEPT_JSON_VALUE))
-      .basicAuth("#{username}", "#{password}")
+      .headers(Map(CONTENT_TYPE_JSON_KEY -> CONTENT_TYPE_TEXT_PLAIN, ACCEPT_JSON_KEY -> ACCEPT_JSON_VALUE, "X-User" -> "#{username}"))
 
   private val hasErrorPath: MultipleFind[JsonPathCheckType, JsonNode, String] with JsonPathOfType = jsonPath("$[?(@[0] == 'error')]")
   val noError = hasErrorPath.notExists
