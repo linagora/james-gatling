@@ -2,6 +2,8 @@ import sbt.Keys.libraryDependencies
 
 import scala.collection.Seq
 
+ThisBuild / resolvers := Seq(Resolver.mavenCentral)
+
 lazy val root = (project in file("."))
     .settings(
       name := "james-gatling",
