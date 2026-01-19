@@ -2,6 +2,8 @@ import sbt.Keys.libraryDependencies
 
 import scala.collection.Seq
 
+ThisBuild / resolvers := Seq(Resolver.mavenCentral)
+
 lazy val root = (project in file("."))
     .settings(
       name := "james-gatling",
@@ -14,7 +16,7 @@ lazy val root = (project in file("."))
       libraryDependencies += "com.typesafe.akka" %% "akka-testkit" % "2.6.20" % "test,it",
       libraryDependencies += "com.typesafe.akka" %% "akka-protobuf" % "2.6.20" % "test,it",
       libraryDependencies += "com.typesafe.akka" %% "akka-stream" % "2.6.20" % "test,it",
-      libraryDependencies += "org.testcontainers" % "testcontainers" % "1.17.0" % "it",
+      libraryDependencies += "org.testcontainers" % "testcontainers" % "2.0.2" % "it",
 
       libraryDependencies += "com.github.azakordonets" %% "fabricator" % "2.1.9",
 
