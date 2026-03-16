@@ -52,7 +52,7 @@ object JmapEmail {
        |  "text": "$keyword"
        |},
        |"sort": [{
-       |  "property": "sentAt",
+       |  "property": "receivedAt",
        |  "isAscending": false
        |}],
        |"position": 0,
@@ -80,7 +80,7 @@ object JmapEmail {
        |  "inMailbox": "#{$mailboxKey}"
        |},
        |"sort": [{
-       |  "property": "sentAt",
+       |  "property": "receivedAt",
        |  "isAscending": false
        |}],
        |"position": 0,
