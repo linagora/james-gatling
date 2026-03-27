@@ -27,8 +27,8 @@ object JmapEmail {
   val subjectSessionParam = "subject"
   val textBodySessionParam = "textBody"
 
-  def queryEmailsAndCheck(queryParameters: JmapParameters = NO_PARAMETERS): ChainBuilder =
-    exec(queryEmails(queryParameters)
+  def queryEmailsAndCheck(callName: String = "emailQuery", queryParameters: JmapParameters = NO_PARAMETERS): ChainBuilder =
+    exec(queryEmails(callName, queryParameters)
       .check(JmapHttp.statusOk, JmapHttp.noError))
 
   def queryEmails(callName: String = "emailQuery", queryParameters: JmapParameters = NO_PARAMETERS): HttpRequestBuilder = {
@@ -46,10 +46,24 @@ object JmapEmail {
            |}""".stripMargin))
   }
 
-  def filterKeywordQueryParameter(keyword: String = RandomStringGenerator.randomMeaningWord()): JmapParameters = {
+  def filterTextQueryParameter(keyword: String = RandomStringGenerator.randomMeaningWord()): JmapParameters = {
     s""",
        |"filter": {
        |  "text": "$keyword"
+       |},
+       |"sort": [{
+       |  "property": "receivedAt",
+       |  "isAscending": false
+       |}],
+       |"position": 0,
+       |"limit": 30
+       |""".stripMargin
+  }
+
+  def filterKeywordQueryParameter(keyword: String = RandomStringGenerator.randomMeaningWord()): JmapParameters = {
+    s""",
+       |"filter": {
+       |  "hasKeyword": "$keyword"
        |},
        |"sort": [{
        |  "property": "receivedAt",

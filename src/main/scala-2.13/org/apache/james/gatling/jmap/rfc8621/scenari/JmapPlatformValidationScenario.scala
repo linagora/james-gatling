@@ -68,14 +68,15 @@ class JmapPlatformValidationScenario (minMessagesInMailbox: Int,
       .during(duration.toSeconds.toInt) {
         exec(randomSwitch(
           2.0 -> inboxHomeLoading.inboxHomeLoading,
-          2.0 -> JmapEmail.queryEmailsAndCheck(JmapEmail.filterKeywordQueryParameter()),
+          2.0 -> JmapEmail.queryEmailsAndCheck(queryParameters = JmapEmail.filterTextQueryParameter()),
+          2.0 -> JmapEmail.queryEmailsAndCheck("keywordQuery", JmapEmail.filterKeywordQueryParameter()),
           3.0 -> exec(JmapEmail.performMove()),
           5.0 -> JmapEmail.submitEmails(recipientFeeder),
           8.0 -> selectArbitrary.selectArbitrary,
           25.0 -> openArbitrary.openArbitrary,
           10.0 -> flagUpdate,
           15.0 -> getNewState,
-          30.0 -> exec(List.empty))
+          28.0 -> exec(List.empty))
           .asInstanceOf[ChainBuilder]
           .pause(minWaitDelay, maxWaitDelay))
       }
