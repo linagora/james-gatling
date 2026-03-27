@@ -16,7 +16,7 @@ class EmailQueryScenario {
       .exec(JmapMailbox.provisionUsersWithMessages(recipientFeeder, numberOfMessages = 10))
       .exec(SessionStep.retrieveAccountId)
       .during(duration.toSeconds.toInt) {
-        exec(JmapEmail.queryEmails(JmapEmail.filterKeywordQueryParameter())
+        exec(JmapEmail.queryEmails(queryParameters = JmapEmail.filterTextQueryParameter())
           .check(JmapHttp.statusOk, JmapHttp.noError))
           .pause(1 second)
       }
