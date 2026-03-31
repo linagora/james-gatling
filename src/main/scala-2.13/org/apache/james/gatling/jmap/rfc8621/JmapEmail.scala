@@ -60,7 +60,7 @@ object JmapEmail {
        |""".stripMargin
   }
 
-  def filterKeywordQueryParameter(keyword: String = RandomStringGenerator.randomMeaningWord()): JmapParameters = {
+  def filterKeywordQueryParameter(keyword: String = RandomStringGenerator.randomKeyword()): JmapParameters = {
     s""",
        |"filter": {
        |  "hasKeyword": "$keyword"
@@ -283,6 +283,7 @@ object JmapEmail {
                   recipient: String = "recipient",
                   subject: String = "subject",
                   textBody: String = "textBody",
+                  keyword: String = RandomStringGenerator.randomKeyword(),
                   attachmentsJsonPart: String = ""): HttpRequestBuilder =
     JmapHttp.apiCall(title.title)
       .body(StringBody(
@@ -295,6 +296,9 @@ object JmapEmail {
            |        "#{$messageId}": {
            |          "mailboxIds": {
            |            "#{$mailboxId}": true
+           |          },
+           |          "keywords":{
+           |            "$keyword": true
            |          },
            |          "subject": "#{$subject}",
            |          "from": [{"email": "#{$username}"}],
