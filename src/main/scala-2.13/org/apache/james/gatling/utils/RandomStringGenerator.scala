@@ -10,6 +10,19 @@ object RandomStringGenerator {
 
   val faker: Faker = new Faker()
 
+  val keywords: List[String] = List(
+    "keyword0",
+    "keyword1",
+    "keyword2",
+    "keyword3",
+    "keyword4",
+    "keyword5",
+    "keyword6",
+    "keyword7",
+    "keyword8",
+    "keyword9"
+  )
+
   def randomString: String = UUID.randomUUID().toString
 
   def randomAlphaString(length: Int = 5): String = Random.alphanumeric.take(length).mkString("")
@@ -30,4 +43,8 @@ object RandomStringGenerator {
 
   def randomDomain: String = faker.internet().domainName()
 
+  def randomKeyword(): String = {
+    val index: Int = faker.random().nextInt(0, 9).toInt
+    keywords(index)
+  }
 }
