@@ -25,8 +25,8 @@ object JmapEmail {
   private val CompressionCandidateBodyRepeatCount = 190
   // Generates a 21.7 KB compressible body
   def compressionCandidateBody: String =
-    s"${RandomStringGenerator.randomString}\n" +
-      "Compression threshold padding for Gatling JMAP payload. Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n" * CompressionCandidateBodyRepeatCount
+    s"${RandomStringGenerator.randomString} " +
+      "Compression threshold padding for Gatling JMAP payload. Lorem ipsum dolor sit amet, consectetur adipiscing elit. " * CompressionCandidateBodyRepeatCount
 
   val messageIdSessionParam = "messageId"
   val subjectSessionParam = "subject"
