@@ -22,6 +22,11 @@ case class KeywordName(name: String) extends AnyVal
 object JmapEmail {
   type JmapParameters = String
   val NO_PARAMETERS : JmapParameters = ""
+  private val CompressionCandidateBodyRepeatCount = 190
+  // Generates a 21.7 KB compressible body
+  def compressionCandidateBody: String =
+    s"${RandomStringGenerator.randomString}\n" +
+      "Compression threshold padding for Gatling JMAP payload. Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n" * CompressionCandidateBodyRepeatCount
 
   val messageIdSessionParam = "messageId"
   val subjectSessionParam = "subject"
@@ -256,7 +261,7 @@ object JmapEmail {
     val mailFeeder = Iterator.continually(
       Map(messageIdSessionParam -> MessageId().id,
         subjectSessionParam -> Subject().subject,
-        textBodySessionParam -> TextBody().text))
+        textBodySessionParam -> compressionCandidateBody))
 
     feed(mailFeeder)
       .feed(recipientFeeder)
