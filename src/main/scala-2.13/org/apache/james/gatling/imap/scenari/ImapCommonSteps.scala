@@ -9,6 +9,11 @@ import com.linagora.gatling.imap.protocol.command.MessageRanges
 import io.gatling.core.Predef._
 
 object ImapCommonSteps {
+  private val CompressionPaddingRepeatCount = 150
+  // Adds 17 KB to the fixed IMAP MIME payload, making appended mails around 22 KB.
+  private val compressionPadding =
+    "Compression threshold padding for Gatling IMAP payload. Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n" * CompressionPaddingRepeatCount
+
   val receiveEmail = exec(imap("append").append("INBOX", Some(scala.collection.immutable.Seq("\\Flagged")), Option.empty[Calendar],
     """Return-Path: expeditor@linagora.com>
       |Delivered-To: ${username}
@@ -73,7 +78,7 @@ object ImapCommonSteps {
       |aliquam quis. Aliquam feugiat tempus risus. Suspendisse non tellus condimentum, molestie sapien vitae, consequat
       |turpis. Etiam efficitur, odio non blandit scelerisque, leo est aliquet turpis, a condimentum lectus quam vel
       |ipsum. Nam fringilla eros vitae sodales laoreet.
-      |""".stripMargin).check(ok))
+      |""".stripMargin + compressionPadding).check(ok))
 
   val readLastEmail = exec(imap("list").list("", "*").check(ok, hasFolder("INBOX")))
     .exec(imap("select").select("INBOX").check(ok))
