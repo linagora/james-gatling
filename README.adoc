@@ -90,10 +90,14 @@ your local sbt repository as a volume by adding `-v $HOME/.ivy2/cache:/root/.ivy
 == Docker runner
 
 You can use the Dockerfile at the root to build an image that will contain this Gatling project that you can run.
+The image is built from the local sources, thus the build context is the root of the project:
 
 ----
-docker build -t james-gatling-runner dockerfiles/docker-runner
+docker build -f dockerfiles/docker-runner/Dockerfile -t james-gatling-runner .
 ----
+
+That image is also published by the CI: `linagora/james-gatling-runner:branch-master` for the `master` branch,
+and `linagora/james-gatling-runner:<tag>` for each git tag.
 
 To change configuration variables, you should modify the environment file. You can find an example in `sample.env`.
 You should also change the file 'dockerfiles/docker-runner/users.csv` to be able to match your test users on your environment.
