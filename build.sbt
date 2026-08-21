@@ -55,8 +55,8 @@ enablePlugins(GatlingPlugin)
 // far less gatling-actor churn) is unaffected. Restore the dropped GC tunings and give the
 // gatling run more heap headroom. The JVM applies the rightmost value, so these appended
 // options take precedence over gatling-sbt's defaults.
-Gatling / javaOptions ++= Seq("-XX:+UseG1GC", "-XX:+ParallelRefProcEnabled", "-Xmx2G")
-GatlingIt / javaOptions ++= Seq("-XX:+UseG1GC", "-XX:+ParallelRefProcEnabled", "-Xmx2G")
+Gatling / javaOptions ++= Seq("-XX:+UseG1GC", "-XX:+ParallelRefProcEnabled", "-Xmx2G", "-Xms2G", "-XX:+AlwaysPreTouch")
+GatlingIt / javaOptions ++= Seq("-XX:+UseG1GC", "-XX:+ParallelRefProcEnabled", "-Xmx2G, "-Xms2G", "-XX:+AlwaysPreTouch"")
 
 // ponytail: gatling-imap is consumed from its upgrade-gatling-3.13.5 branch (PR linagora/gatling-imap#86)
 // rather than vendored here. That branch adapts gatling-imap to Gatling 3.13.x (drops Akka actors
