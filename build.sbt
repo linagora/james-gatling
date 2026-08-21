@@ -44,6 +44,20 @@ scalacOptions := Seq("-unchecked", "-deprecation", "-feature", "-language:postfi
 
 enablePlugins(GatlingPlugin)
 
+// ponytail: Gatling 3.12+ replaced Akka with its own actor system (io.gatling.core.actor),
+// which raises per-request reference churn on the HTTP path gatling-jmap goes through.
+// Concurrently, gatling-sbt 4.10.2 (required for Gatling 3.13's --add-opens) dropped
+// -XX:+UseG1GC and -XX:+ParallelRefProcEnabled from DEFAULT_JVM_OPTIONS_GATLING (it only
+// kept -server/-Xmx1G/-XX:+HeapDumpOnOutOfMemoryError/-XX:MaxInlineLevel=20/
+// -XX:MaxTrivialSize=12/-XX:-UseBiasedLocking). With serial reference processing and a 1G
+// heap, the high-churn JMAP (HTTP) workload suffers GC-pause-driven p99 spikes (getMailboxes
+// 534->2200ms, emailChanges 320->1475ms, ...); IMAP (gatling-imap, async imapnio futures,
+// far less gatling-actor churn) is unaffected. Restore the dropped GC tunings and give the
+// gatling run more heap headroom. The JVM applies the rightmost value, so these appended
+// options take precedence over gatling-sbt's defaults.
+Gatling / javaOptions ++= Seq("-XX:+UseG1GC", "-XX:+ParallelRefProcEnabled", "-Xmx2G")
+GatlingIt / javaOptions ++= Seq("-XX:+UseG1GC", "-XX:+ParallelRefProcEnabled", "-Xmx2G")
+
 // ponytail: gatling-imap is consumed from its upgrade-gatling-3.13.5 branch (PR linagora/gatling-imap#86)
 // rather than vendored here. That branch adapts gatling-imap to Gatling 3.13.x (drops Akka actors
 // in favour of async imapnio futures).
