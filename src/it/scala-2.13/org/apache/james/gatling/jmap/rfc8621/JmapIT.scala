@@ -43,19 +43,14 @@ abstract class JmapIT extends GatlingFunSpec {
     server.stop()
   }
 
+  // ponytail: gatling 3.15 made ScenarioBuilder.actionBuilders private[core], so the
+  // whole scenario is registered as a single Executable instead of extracting each action.
   protected def scenario(scenarioFromFeeder: (UserFeederBuilder, RecipientFeederBuilder) => ScenarioBuilder) = {
-    val userFeeder = UserFeeder.toFeeder(users)
-    val recipientFeeder = RecipientFeeder.usersToFeeder(users)
-    scenarioFromFeeder(userFeeder, recipientFeeder).actionBuilders.reverse.foreach { actionBuilder =>
-      spec(actionBuilder)
-    }
+    spec(scenarioFromFeeder(UserFeeder.toFeeder(users), RecipientFeeder.usersToFeeder(users)))
   }
 
   protected def scenario(scenarioFromFeeder: AuthenticatedUserFeeder => ScenarioBuilder) = {
     val authenticatedUsers : Iterator[AuthenticatedUser] = users.view.map(user => Await.result(jamesJmap.authenticateUser(user), 5 seconds)).iterator
-    val userFeeder = AuthenticatedUserFeeder.toFeeder(authenticatedUsers)
-    scenarioFromFeeder(userFeeder).actionBuilders.reverse.foreach { actionBuilder =>
-      spec(actionBuilder)
-    }
+    spec(scenarioFromFeeder(AuthenticatedUserFeeder.toFeeder(authenticatedUsers)))
   }
 }

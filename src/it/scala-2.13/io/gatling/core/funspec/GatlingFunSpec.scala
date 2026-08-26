@@ -14,39 +14,39 @@
  * limitations under the License.
  */
 
-// ponytail: Gatling 3.13 removed `io.gatling.core.funspec.GatlingFunSpec` (it existed up to 3.12).
-// Our IT specs rely on it for the spec/before/after pattern. The underlying Simulation hooks
-// (before/after/setUp/private[gatling] params) are unchanged in 3.13, so we re-vendor the class here.
+// ponytail: Gatling dropped `io.gatling.core.funspec.GatlingFunSpec` after 3.12.
+// Our IT specs rely on it for the spec/before/after pattern. Adapted to gatling 3.15,
+// where Simulation.params became parameterless and ScenarioBuilder/ChainBuilder.actionBuilders
+// became private[core]: the whole scenario (an Executable) is registered as a single spec.
 package io.gatling.core.funspec
 
 import scala.collection.mutable.ListBuffer
 
 import io.gatling.core.Predef._
-import io.gatling.core.action.builder.ActionBuilder
-import io.gatling.core.config.GatlingConfiguration
+import io.gatling.core.action.builder.Executable
 import io.gatling.core.protocol.Protocol
-import io.gatling.core.structure.ChainBuilder
+import io.gatling.core.scenario.SimulationParams
 
 abstract class GatlingFunSpec extends Simulation {
 
   def protocolConf: Protocol
 
-  def spec(actionBuilder: ActionBuilder): ListBuffer[ActionBuilder] = specs += actionBuilder
+  def spec(executable: Executable): ListBuffer[Executable] = specs += executable
 
-  private[this] val specs = new ListBuffer[ActionBuilder]
+  private[this] val specs = new ListBuffer[Executable]
 
   private[this] lazy val testScenario = scenario(this.getClass.getSimpleName)
-    .exec(new ChainBuilder(specs.reverse.toList))
+    .exec(specs.toList)
 
-  private def setupRegisteredSpecs() = {
+  private def setupRegisteredSpecs(): Unit = {
     require(specs.nonEmpty, "At least one spec needs to be defined")
     setUp(testScenario.inject(atOnceUsers(1)))
       .protocols(protocolConf)
       .assertions(forAll.failedRequests.percent.is(0))
   }
 
-  override private[gatling] def params(configuration: GatlingConfiguration) = {
+  override private[gatling] def params: SimulationParams = {
     setupRegisteredSpecs()
-    super.params(configuration)
+    super.params
   }
 }

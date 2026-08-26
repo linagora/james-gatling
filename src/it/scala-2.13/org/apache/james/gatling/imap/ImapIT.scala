@@ -34,11 +34,10 @@ abstract class ImapIT extends GatlingFunSpec {
     server.stop()
   }
 
+  // ponytail: gatling 3.15 made ScenarioBuilder.actionBuilders private[core], so the
+  // whole scenario is registered as a single Executable instead of extracting each action.
   protected def scenario(scenarioFromFeeder: FeederBuilder => ScenarioBuilder) = {
-    val feeder = UserFeeder.toFeeder(users)
-    scenarioFromFeeder(feeder).actionBuilders.reverse.foreach { actionBuilder =>
-      spec(actionBuilder)
-    }
+    spec(scenarioFromFeeder(UserFeeder.toFeeder(users)))
   }
 }
 

@@ -10,7 +10,7 @@ lazy val root = (project in file("."))
       name := "james-gatling",
       cancelable in Global := true,
       version := "1.0-SNAPSHOT",
-      scalaVersion := "2.13.11",
+      scalaVersion := "2.13.18",
       libraryDependencies += "com.typesafe.play" %% "play-ahc-ws-standalone" % "2.1.11" exclude("org.scala-lang.modules", "scala-parser-combinators_2.13"),
       libraryDependencies += "io.gatling" % "gatling-test-framework" % gatlingVersion,
       libraryDependencies += "io.gatling.highcharts" % "gatling-charts-highcharts" % gatlingVersion,
@@ -37,7 +37,7 @@ lazy val root = (project in file("."))
     )
   .dependsOn(gatlingImap)
 
-val gatlingVersion = "3.13.5"
+val gatlingVersion = "3.15.1"
 
 scalacOptions := Seq("-unchecked", "-deprecation", "-feature", "-language:postfixOps", "-Ywarn-unused:imports",
       "-Wconf:msg=Auto-application to \\`\\(\\)\\` is deprecated:s")
@@ -46,7 +46,7 @@ enablePlugins(GatlingPlugin)
 
 // ponytail: Gatling 3.12+ replaced Akka with its own actor system (io.gatling.core.actor),
 // which raises per-request reference churn on the HTTP path gatling-jmap goes through.
-// Concurrently, gatling-sbt 4.10.2 (required for Gatling 3.13's --add-opens) dropped
+// Concurrently, gatling-sbt (required for Gatling 3.13+'s --add-opens) dropped
 // -XX:+UseG1GC and -XX:+ParallelRefProcEnabled from DEFAULT_JVM_OPTIONS_GATLING (it only
 // kept -server/-Xmx1G/-XX:+HeapDumpOnOutOfMemoryError/-XX:MaxInlineLevel=20/
 // -XX:MaxTrivialSize=12/-XX:-UseBiasedLocking). With serial reference processing and a 1G
