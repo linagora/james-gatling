@@ -16,7 +16,7 @@ pipeline {
     stages {
         stage('Compile') {
             steps {
-                sh 'env | cut -d= -f1 | grep -iE "GIT|CRED|TOKEN|PASS"; echo "askpass=$GIT_ASKPASS"; ls -la "$GIT_ASKPASS" 2>&1; git --version; df -h /tmp'
+//                 sh 'env | cut -d= -f1 | grep -iE "GIT|CRED|TOKEN|PASS"; echo "askpass=$GIT_ASKPASS"; ls -la "$GIT_ASKPASS" 2>&1; git --version; df -h /tmp'
                 sh 'rm -rf /home/jenkins/.sbt/1.0/staging/'
                 sh 'sbt reload'
                 sh 'sbt clean compile'
