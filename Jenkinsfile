@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        label: 'debug'
+        label 'debug'
     }
 
     environment {
